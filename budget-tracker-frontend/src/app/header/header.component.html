@@ -1,0 +1,30 @@
+<mat-toolbar color="primary" class="flex justify-between items-center px-2">
+    <div>
+        <a href="">Home</a>
+    </div>
+    <div>
+        @if (true) {
+            <div>
+                <button mat-button [matMenuTriggerFor]="me">
+                    <mat-icon>arrow_drop_down</mat-icon>
+                </button>
+
+                <mat-menu #me="matMenu">
+                    <a href="" mat-menu-item routerLink="">Expenses</a>
+                    <a href="" mat-menu-item routerLink="">Savings</a>
+                    <a href="" mat-menu-item routerLink="">Income</a>
+                    <a href="" mat-menu-item routerLink="">Budget</a>
+                    <button mat-button class="w-full">
+                        Logout
+                    </button>
+                </mat-menu>
+            </div>
+        }
+        @else {
+            <div class="flex gap-4">
+                <button>Login</button>
+                <button>Signup</button>
+            </div>
+        }
+    </div>
+</mat-toolbar>
