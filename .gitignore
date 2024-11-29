@@ -55,3 +55,4 @@ dlldata.c
 /budget-tracker-client/obj/
 /obj/
 budget-tracker-frontend/pnpm-lock.yaml
+.vscode/settings.json

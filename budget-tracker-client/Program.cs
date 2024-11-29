@@ -1,9 +1,17 @@
+using budget_tracker_client.Configuration;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
+var appSettings = builder.SetupAppSettings();
+var corsPolicyName = builder.SetupCors();
+
+builder.AddAppServices();
 
 var app = builder.Build();
+
+app.UseCors(corsPolicyName);
 
 app.UseHttpsRedirection();
 
