@@ -5,7 +5,7 @@ namespace budget_tracker_client.Users;
 
 public static class UsersEndpoints
 {
-    public static void MapUsersEndpoint(this RouteGroupBuilder routeGroupBuilder)
+    public static void MapUsersEndpoints(this RouteGroupBuilder routeGroupBuilder)
     {
         routeGroupBuilder.MapGet("/login", _loginUserHandler);
         routeGroupBuilder.MapPost("/register", _registerUserHandler);

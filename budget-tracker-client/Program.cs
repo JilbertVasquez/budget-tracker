@@ -1,4 +1,5 @@
 using budget_tracker_client.Configuration;
+using budget_tracker_client.Periods;
 using budget_tracker_client.Users;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,6 +20,8 @@ app.UseCors(corsPolicyName);
 app.UseHttpsRedirection();
 
 app.MapCustomFallbackToFile();
-app.MapGroup("api/users").MapUsersEndpoint();
+app.MapGroup("api/users").MapUsersEndpoints();
+app.MapGroup("api/periods").MapPeriodsEndpoints();
+
 
 app.Run();
