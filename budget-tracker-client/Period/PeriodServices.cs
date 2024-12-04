@@ -11,6 +11,7 @@ public interface IPeriodService
 {
     Task<Result<PeriodDto[], string>> GetPeriod();
     Task<Result<bool, string>> CreatePeriod(CreatePeriodDto dto);
+    Task<Result<bool, string>> UpdatePeriod(int periodId, UpdatePeriodDto dto);
 }
 
 public class PeriodService(DataContext db, ILogger<PeriodService> logger) : IPeriodService
@@ -53,6 +54,30 @@ public class PeriodService(DataContext db, ILogger<PeriodService> logger) : IPer
         {
             logger.LogError(e, "Failed to create period.");
             return "Failed to create period.";
+        }
+    }
+
+    public async Task<Result<bool, string>> UpdatePeriod(int periodId, UpdatePeriodDto dto)
+    {
+        try
+        {
+            var period = await _db.Periods.FindAsync(periodId);
+
+            if (period == null) return "Period not found.";
+
+            period.Name = dto.Name ?? period.Name;
+            period.Description = dto.Description ?? period.Description;
+            period.CreatedAt = period.CreatedAt;
+            period.IsDeleted = period.IsDeleted;
+
+            await _db.SaveChangesAsync();
+
+            return true;
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Failed to update period.");
+            return "Failed to update period.";
         }
     }
 }

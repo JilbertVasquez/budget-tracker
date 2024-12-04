@@ -10,6 +10,7 @@ public static class PeriodEndpoints
     {
         routeGroupBuilder.MapGet("", _getPeriodHandler);
         routeGroupBuilder.MapPost("", _createPeriodHandler);
+        routeGroupBuilder.MapPut("{periodId}", _updatePeriodHandler);
     }
 
     private static async Task<IResult> _getPeriodHandler(
@@ -38,6 +39,23 @@ public static class PeriodEndpoints
             _ => Results.Problem(new()
             {
                 Title = "Failed to create period.",
+                Detail = result.Error
+            })
+        );
+    }
+
+    private static async Task<IResult> _updatePeriodHandler(
+        int periodId,
+        [FromBody] UpdatePeriodDto dto,
+        IPeriodService periodService
+    )
+    {
+        var result = await periodService.UpdatePeriod(periodId, dto);
+        return result.Match(
+            Results.Ok,
+            _ => Results.Problem(new()
+            {
+                Title = "Failed to update period.",
                 Detail = result.Error
             })
         );
