@@ -15,8 +15,11 @@ namespace budget_tracker_client.Periods
 
         public string? Description { get; set; }
 
-        public DateTime? CreatedAt { get; set; }
+        public DateTime CreatedAt { get; set; }
+
         public bool? IsDeleted { get; set; }
+
+        public Period() { }
 
         public Period(CreatePeriodDto dto)
         {

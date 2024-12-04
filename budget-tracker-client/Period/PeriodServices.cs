@@ -3,17 +3,40 @@ using System.Data.Common;
 using budget_tracker_client.Models;
 using budget_tracker_client.Periods;
 using budget_tracker_client.Shared;
+using Microsoft.EntityFrameworkCore;
 
 namespace budget_tracker_clients.Periods;
 
 public interface IPeriodService
 {
+    Task<Result<PeriodDto[], string>> GetPeriod();
     Task<Result<bool, string>> CreatePeriod(CreatePeriodDto dto);
 }
 
 public class PeriodService(DataContext db, ILogger<PeriodService> logger) : IPeriodService
 {
     private readonly DataContext _db = db;
+
+    public async Task<Result<PeriodDto[], string>> GetPeriod()
+    {
+        try {
+            var periods = await _db.Periods
+                .Select(p => new PeriodDto(
+                    p.PeriodId,
+                    p.Name,
+                    p.Description,
+                    p.CreatedAt
+                ))
+                .ToListAsync();
+            
+            return periods.ToArray();
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Failed to get periods.");
+            return "Failed to get Periods.";
+        }
+    }
 
     public async Task<Result<bool, string>> CreatePeriod(CreatePeriodDto dto)
     {
