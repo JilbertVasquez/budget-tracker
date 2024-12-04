@@ -12,6 +12,7 @@ public interface IPeriodService
     Task<Result<PeriodDto[], string>> GetPeriod();
     Task<Result<bool, string>> CreatePeriod(CreatePeriodDto dto);
     Task<Result<bool, string>> UpdatePeriod(int periodId, UpdatePeriodDto dto);
+    Task<Result<bool, string>> DeletePeriod(int periodId);
 }
 
 public class PeriodService(DataContext db, ILogger<PeriodService> logger) : IPeriodService
@@ -22,6 +23,7 @@ public class PeriodService(DataContext db, ILogger<PeriodService> logger) : IPer
     {
         try {
             var periods = await _db.Periods
+                .Where(p => p.IsDeleted == null)
                 .Select(p => new PeriodDto(
                     p.PeriodId,
                     p.Name,
@@ -78,6 +80,27 @@ public class PeriodService(DataContext db, ILogger<PeriodService> logger) : IPer
         {
             logger.LogError(e, "Failed to update period.");
             return "Failed to update period.";
+        }
+    }
+
+    public async Task<Result<bool, string>> DeletePeriod(int periodId)
+    {
+        try
+        {
+            var period = await _db.Periods.FindAsync(periodId);
+
+            if (period == null) return "Period not found.";
+
+            period.IsDeleted = true;
+
+            await _db.SaveChangesAsync();
+
+            return true;
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Failed to delete period.");
+            return "Failed to delete period.";
         }
     }
 }

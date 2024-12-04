@@ -11,6 +11,7 @@ public static class PeriodEndpoints
         routeGroupBuilder.MapGet("", _getPeriodHandler);
         routeGroupBuilder.MapPost("", _createPeriodHandler);
         routeGroupBuilder.MapPut("{periodId}", _updatePeriodHandler);
+        routeGroupBuilder.MapDelete("{periodId}", _deletePeriodHandler);
     }
 
     private static async Task<IResult> _getPeriodHandler(
@@ -56,6 +57,22 @@ public static class PeriodEndpoints
             _ => Results.Problem(new()
             {
                 Title = "Failed to update period.",
+                Detail = result.Error
+            })
+        );
+    }
+
+    private static async Task<IResult> _deletePeriodHandler(
+       int periodId,
+       IPeriodService periodService
+   )
+    {
+        var result = await periodService.DeletePeriod(periodId);
+        return result.Match(
+            Results.Ok,
+            _ => Results.Problem(new()
+            {
+                Title = "Failed to delete period.",
                 Detail = result.Error
             })
         );
