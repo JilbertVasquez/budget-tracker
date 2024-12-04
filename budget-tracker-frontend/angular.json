@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/budget-tracker-frontend",
+            "outputPath": "../budget-tracker-client/wwwroot",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
