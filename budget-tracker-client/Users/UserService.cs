@@ -12,6 +12,7 @@ public interface IUsersService
     Task<Result<UserDetailsDto, string>> GetUser(int userId);
     Task<Result<UserDetailsDto[], string>> GetUsers();
     Task<Result<bool, string>> UpdateUser(int userId, UpdateUserDto dto);
+    Task<Result<bool, string>> DeleteUser(int userId);
 }
 
 public class UsersService(DataContext db, ILogger<UsersService> logger) : IUsersService
@@ -121,6 +122,25 @@ public class UsersService(DataContext db, ILogger<UsersService> logger) : IUsers
         {
             logger.LogError(e, "Failed to update user.");
             return "Failed to update user.";
+        }
+    }
+
+    public async Task<Result<bool, string>> DeleteUser(int userId)
+    {
+        try
+        {
+            var user = await _db.Users.Where(x => x.UserId == userId && x.IsDeleted == null).FirstOrDefaultAsync();
+            if (user == null) return "Failed to delete user.";
+
+            user.IsDeleted = true;
+
+            await _db.SaveChangesAsync();
+            return true;
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Failed to delete user.");
+            return "Failed to delete user.";
         }
     }
 }

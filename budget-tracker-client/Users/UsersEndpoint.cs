@@ -12,6 +12,7 @@ public static class UsersEndpoints
         routeGroupBuilder.MapGet("/{userId}", _getUserHandler);
         routeGroupBuilder.MapGet("", _getUsersHandler);
         routeGroupBuilder.MapPut("{userId}", _updateUserHandler);
+        routeGroupBuilder.MapDelete("{userId}", _deleteUserHandler);
     }
 
     private static async Task<IResult> _loginUserHandler(
@@ -89,6 +90,22 @@ public static class UsersEndpoints
             _ => Results.Problem(new()
             {
                 Title = "Failed to get users.",
+                Detail = result.Error
+            })
+        );
+    }
+
+    private static async Task<IResult> _deleteUserHandler(
+        int userId,
+        IUsersService usersService
+    )
+    {
+        var result = await usersService.DeleteUser(userId);
+        return result.Match(
+            Results.Ok,
+            _ => Results.Problem(new()
+            {
+                Title = "Failed to delete user.",
                 Detail = result.Error
             })
         );
