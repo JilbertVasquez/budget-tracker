@@ -10,6 +10,7 @@ public interface IUsersService
     Task<Result<UserDto, string>> LoginUser(LoginUserDto dto);
     Task<Result<bool, string>> RegisterUser(RegisterUserDto dto);
     Task<Result<UserDetailsDto, string>> GetUser(int userId);
+    Task<Result<UserDetailsDto[], string>> GetUsers();
 }
 
 public class UsersService(DataContext db, ILogger<UsersService> logger) : IUsersService
@@ -70,6 +71,29 @@ public class UsersService(DataContext db, ILogger<UsersService> logger) : IUsers
 
             var userDto = new UserDetailsDto(user.UserId, user.Name, user.Username, user.Email);
             return userDto;
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Failed to get user.");
+            return "Failed to get user.";
+        }
+    }
+
+    public async Task<Result<UserDetailsDto[], string>> GetUsers()
+    {
+        try
+        {
+            var users = await _db.Users
+                .Where(x => x.IsDeleted == null)
+                .Select(user => new UserDetailsDto(
+                    user.UserId,
+                    user.Name,
+                    user.Username,
+                    user.Email
+                ))
+                .ToListAsync();
+
+            return users.ToArray();
         }
         catch (Exception e)
         {
