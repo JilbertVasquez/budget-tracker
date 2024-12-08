@@ -7,38 +7,24 @@ namespace budget_tracker_client.Users;
 
 public interface IUsersService
 {
-    Task<Result<UserDto, string>> GetUser(LoginUserDto dto);
     Task<Result<UserDto, string>> LoginUser(LoginUserDto dto);
-
     Task<Result<bool, string>> RegisterUser(RegisterUserDto dto);
+    Task<Result<UserDetailsDto, string>> GetUser(int userId);
 }
 
 public class UsersService(DataContext db, ILogger<UsersService> logger) : IUsersService
 {
     private readonly DataContext _db = db;
 
-    public async Task<Result<UserDto, string>> GetUser(LoginUserDto dto)
-    {
-        try
-        {
-            var user = await _db.Users.FirstOrDefaultAsync(x => x.Username == dto.Username && x.IsDeleted == null);
-            if (user == null) return "Failed to get user";
-
-            var userDto = new UserDto(user.UserId, user.Username);
-            return userDto;
-        }
-        catch (Exception e)
-        {
-            logger.LogError(e, "Failed to get user.");
-            return "Failed to get user.";
-        }
-    }
-
     public async Task<Result<UserDto, string>> LoginUser(LoginUserDto dto)
     {
         try
         {
-            return await GetUser(dto);
+            var user = await _db.Users.FirstOrDefaultAsync(x => x.Username == dto.Username && x.IsDeleted == null);
+            if (user == null) return "Login failed.";
+
+            var userDto = new UserDto(user.UserId, user.Username);
+            return userDto;
         }
         catch (Exception e)
         {
@@ -72,6 +58,23 @@ public class UsersService(DataContext db, ILogger<UsersService> logger) : IUsers
         {
             logger.LogError(e, "Failed to register user.");
             return "Failed to register user.";
+        }
+    }
+
+    public async Task<Result<UserDetailsDto, string>> GetUser(int userId)
+    {
+        try
+        {
+            var user = await _db.Users.FirstOrDefaultAsync(x => x.UserId == userId && x.IsDeleted == null);
+            if (user == null) return "Failed to get user";
+
+            var userDto = new UserDetailsDto(user.UserId, user.Name, user.Username, user.Email);
+            return userDto;
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Failed to get user.");
+            return "Failed to get user.";
         }
     }
 }
