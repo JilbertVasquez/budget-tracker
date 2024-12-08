@@ -11,6 +11,7 @@ public interface IUsersService
     Task<Result<bool, string>> RegisterUser(RegisterUserDto dto);
     Task<Result<UserDetailsDto, string>> GetUser(int userId);
     Task<Result<UserDetailsDto[], string>> GetUsers();
+    Task<Result<bool, string>> UpdateUser(int userId, UpdateUserDto dto);
 }
 
 public class UsersService(DataContext db, ILogger<UsersService> logger) : IUsersService
@@ -99,6 +100,27 @@ public class UsersService(DataContext db, ILogger<UsersService> logger) : IUsers
         {
             logger.LogError(e, "Failed to get user.");
             return "Failed to get user.";
+        }
+    }
+
+    public async Task<Result<bool, string>> UpdateUser(int userId, UpdateUserDto dto)
+    {
+        try
+        {
+            var user = await _db.Users.FindAsync(userId);
+            if (user == null) return "Failed to update user.";
+
+            user.Name = dto.Name;
+            user.Username = dto.Username;
+            user.Email = dto.Email;
+
+            await _db.SaveChangesAsync();
+            return true;
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Failed to update user.");
+            return "Failed to update user.";
         }
     }
 }

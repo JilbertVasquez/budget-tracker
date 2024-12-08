@@ -11,6 +11,7 @@ public static class UsersEndpoints
         routeGroupBuilder.MapPost("/register", _registerUserHandler);
         routeGroupBuilder.MapGet("/{userId}", _getUserHandler);
         routeGroupBuilder.MapGet("", _getUsersHandler);
+        routeGroupBuilder.MapPut("{userId}", _updateUserHandler);
     }
 
     private static async Task<IResult> _loginUserHandler(
@@ -66,6 +67,23 @@ public static class UsersEndpoints
     )
     {
         var result = await usersService.GetUsers();
+        return result.Match(
+            Results.Ok,
+            _ => Results.Problem(new()
+            {
+                Title = "Failed to get users.",
+                Detail = result.Error
+            })
+        );
+    }
+
+    private static async Task<IResult> _updateUserHandler(
+        int userId,
+        IUsersService usersService,
+        UpdateUserDto dto
+    )
+    {
+        var result = await usersService.UpdateUser(userId, dto);
         return result.Match(
             Results.Ok,
             _ => Results.Problem(new()
