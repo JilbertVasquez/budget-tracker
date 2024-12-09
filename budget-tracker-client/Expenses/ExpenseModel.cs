@@ -36,5 +36,18 @@ namespace budget_tracker_client.Expenses
         [Required]
         public int UserId { get; set; }
         public User User { get; set; } = default!;
+
+        public Expense() { }
+        public Expense(CreateExpenseDto dto)
+        {
+            Name = dto.Name;
+            Description = dto.Description;
+            Note = dto.Note;
+            Amount = dto.Amount;
+            Category = dto.Category;
+            PeriodId = dto.PeriodId;
+            UserId = dto.UserId;
+            CreatedAt = DateTime.UtcNow;
+        }
     }
 }

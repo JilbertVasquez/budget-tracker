@@ -1,4 +1,5 @@
 using budget_tracker_client.Configuration;
+using budget_tracker_client.Expenses;
 using budget_tracker_client.Periods;
 using budget_tracker_client.Users;
 
@@ -22,6 +23,7 @@ app.UseHttpsRedirection();
 app.MapCustomFallbackToFile();
 app.MapGroup("api/users").MapUsersEndpoints();
 app.MapGroup("api/periods").MapPeriodsEndpoints();
+app.MapGroup("api/expenses").MapExpenseEndpoints();
 
 
 app.Run();
