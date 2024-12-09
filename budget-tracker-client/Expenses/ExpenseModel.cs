@@ -26,7 +26,7 @@ namespace budget_tracker_client.Expenses
         public string? Category { get; set; }
 
         [Required]
-        public DateTime CreatedAt { get; set; } = default!;
+        public DateOnly CreatedAt { get; set; } = default!;
         
         public bool? IsDeleted { get; set; }
 
@@ -47,7 +47,7 @@ namespace budget_tracker_client.Expenses
             Category = dto.Category;
             PeriodId = dto.PeriodId;
             UserId = dto.UserId;
-            CreatedAt = DateTime.UtcNow;
+            CreatedAt = DateOnly.FromDateTime(DateTime.UtcNow);
         }
     }
 }

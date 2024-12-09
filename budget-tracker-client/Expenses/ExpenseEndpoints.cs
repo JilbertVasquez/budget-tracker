@@ -8,6 +8,7 @@ public static class ExpenseEndpoints
     public static void MapExpenseEndpoints(this RouteGroupBuilder routeGroupBuilder)
     {
         routeGroupBuilder.MapPost("", _addExpenseHandler);
+        routeGroupBuilder.MapGet("{expenseId}", _getExpenseHandler);
     }
 
     private static async Task<IResult> _addExpenseHandler(
@@ -21,6 +22,23 @@ public static class ExpenseEndpoints
             _ => Results.Problem(new()
             {
                 Title = "Failed to add expense.",
+                Detail = result.Error
+            })
+        );
+    }
+
+    private static async Task<IResult> _getExpenseHandler(
+        [FromBody] ExpenseRequestDto dto,
+        int expenseId,
+        IExpenseServices expenseServices
+    )
+    {
+        var result = await expenseServices.GetExpense(dto.UserId, expenseId);
+        return result.Match(
+            Results.Ok,
+            _ => Results.Problem(new()
+            {
+                Title = "Failed to get expense.",
                 Detail = result.Error
             })
         );
