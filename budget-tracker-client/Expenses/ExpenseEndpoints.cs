@@ -10,6 +10,7 @@ public static class ExpenseEndpoints
         routeGroupBuilder.MapPost("", _addExpenseHandler);
         routeGroupBuilder.MapGet("{expenseId}", _getExpenseHandler);
         routeGroupBuilder.MapGet("", _getExpensesHandler);
+        routeGroupBuilder.MapPut("{expenseId}", _updateExpenseHandler);
 
     }
 
@@ -57,6 +58,23 @@ public static class ExpenseEndpoints
             _ => Results.Problem(new()
             {
                 Title = "Failed to get expenses.",
+                Detail = result.Error
+            })
+        );
+    }
+
+    private static async Task<IResult> _updateExpenseHandler(
+        [FromBody] UpdateExpenseDto dto,
+        int expenseId,
+        IExpenseServices expenseServices
+    )
+    {
+        var result = await expenseServices.UpdateExpense(expenseId, dto);
+        return result.Match(
+            Results.Ok,
+            _ => Results.Problem(new()
+            {
+                Title = "Failed to update expense.",
                 Detail = result.Error
             })
         );

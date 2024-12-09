@@ -10,6 +10,7 @@ public interface IExpenseServices
     Task<Result<bool, string>> AddExpense(CreateExpenseDto dto);
     Task<Result<ExpenseDetailsDto, string>> GetExpense(int userId, int expenseId);
     Task<Result<ExpensesForListDto, string>> GetExpenses(int userId);
+    Task<Result<bool, string>> UpdateExpense(int expenseId, UpdateExpenseDto dto);
 
 }
 
@@ -95,6 +96,30 @@ public class ExpenseService(DataContext db, ILogger<ExpenseService> logger) : IE
         {
             logger.LogError(e, "Failed to get expenses.");
             return "Failed to get expenses.";
+        }
+    }
+
+    public async Task<Result<bool, string>> UpdateExpense(int expenseId, UpdateExpenseDto dto)
+    {
+        try
+        {
+            var expense = await _db.Expenses.FindAsync(expenseId);
+            if (expense == null || expense.UserId != dto.UserId) return "Failed to update expense.";
+
+            expense.Name = dto.Name;
+            expense.Description = dto.Description;
+            expense.Note = dto.Note;
+            expense.Amount = dto.Amount;
+            expense.Category = dto.Category;
+            expense.Period = dto.Period;
+
+            await _db.SaveChangesAsync();
+            return true;
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Failed to update expense.");
+            return "Failed to update expense.";
         }
     }
 }
