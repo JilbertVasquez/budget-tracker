@@ -1,6 +1,6 @@
 
 using budget_tracker_client.Users;
-using budget_tracker_clients.Periods;
+using budget_tracker_client.Periods;
 
 namespace budget_tracker_client.Configuration;
 

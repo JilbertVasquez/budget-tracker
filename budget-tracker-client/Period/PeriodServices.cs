@@ -5,7 +5,7 @@ using budget_tracker_client.Periods;
 using budget_tracker_client.Shared;
 using Microsoft.EntityFrameworkCore;
 
-namespace budget_tracker_clients.Periods;
+namespace budget_tracker_client.Periods;
 
 public interface IPeriodService
 {

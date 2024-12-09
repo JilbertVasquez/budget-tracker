@@ -1,6 +1,7 @@
 
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using budget_tracker_client.Expenses;
 
 namespace budget_tracker_client.Users
 {
@@ -25,6 +26,8 @@ namespace budget_tracker_client.Users
         public DateTime? CreatedAt { get; set; }
 
         public bool? IsDeleted { get; set; }
+
+        public ICollection<Expense> Expenses { get; set; } = new List<Expense>();
 
         public User() { }
 
