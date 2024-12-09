@@ -11,6 +11,8 @@ public static class ExpenseEndpoints
         routeGroupBuilder.MapGet("{expenseId}", _getExpenseHandler);
         routeGroupBuilder.MapGet("", _getExpensesHandler);
         routeGroupBuilder.MapPut("{expenseId}", _updateExpenseHandler);
+        routeGroupBuilder.MapDelete("{expenseId}", _deleteExpenseHandler);
+
 
     }
 
@@ -36,7 +38,7 @@ public static class ExpenseEndpoints
         IExpenseServices expenseServices
     )
     {
-        var result = await expenseServices.GetExpense(dto.UserId, expenseId);
+        var result = await expenseServices.GetExpense(dto, expenseId);
         return result.Match(
             Results.Ok,
             _ => Results.Problem(new()
@@ -52,7 +54,7 @@ public static class ExpenseEndpoints
         IExpenseServices expenseServices
     )
     {
-        var result = await expenseServices.GetExpenses(dto.UserId);
+        var result = await expenseServices.GetExpenses(dto);
         return result.Match(
             Results.Ok,
             _ => Results.Problem(new()
@@ -75,6 +77,23 @@ public static class ExpenseEndpoints
             _ => Results.Problem(new()
             {
                 Title = "Failed to update expense.",
+                Detail = result.Error
+            })
+        );
+    }
+
+    private static async Task<IResult> _deleteExpenseHandler(
+        [FromBody] ExpenseRequestDto dto,
+        int expenseId,
+        IExpenseServices expenseServices
+    )
+    {
+        var result = await expenseServices.DeleteExpense(dto, expenseId);
+        return result.Match(
+            Results.Ok,
+            _ => Results.Problem(new()
+            {
+                Title = "Failed to delete expense.",
                 Detail = result.Error
             })
         );

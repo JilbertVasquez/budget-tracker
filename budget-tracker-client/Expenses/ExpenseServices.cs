@@ -8,9 +8,10 @@ namespace budget_tracker_client.Expenses;
 public interface IExpenseServices
 {
     Task<Result<bool, string>> AddExpense(CreateExpenseDto dto);
-    Task<Result<ExpenseDetailsDto, string>> GetExpense(int userId, int expenseId);
-    Task<Result<ExpensesForListDto, string>> GetExpenses(int userId);
+    Task<Result<ExpenseDetailsDto, string>> GetExpense(ExpenseRequestDto dto, int expenseId);
+    Task<Result<ExpensesForListDto, string>> GetExpenses(ExpenseRequestDto dto);
     Task<Result<bool, string>> UpdateExpense(int expenseId, UpdateExpenseDto dto);
+    Task<Result<bool, string>> DeleteExpense(ExpenseRequestDto dto, int expenseId);
 
 }
 
@@ -41,12 +42,12 @@ public class ExpenseService(DataContext db, ILogger<ExpenseService> logger) : IE
         }
     }
 
-    public async Task<Result<ExpenseDetailsDto, string>> GetExpense(int userId, int expenseId)
+    public async Task<Result<ExpenseDetailsDto, string>> GetExpense(ExpenseRequestDto dto, int expenseId)
     {
         try
         {
             var expense = await _db.Expenses
-                .Where(x => x.UserId == userId && x.ExpensesId == expenseId && x.IsDeleted == null)
+                .Where(x => x.UserId == dto.UserId && x.ExpensesId == expenseId && x.IsDeleted == null)
                 .Include(p => p.Period)
                 .FirstOrDefaultAsync();
             
@@ -70,12 +71,12 @@ public class ExpenseService(DataContext db, ILogger<ExpenseService> logger) : IE
         }
     }
 
-    public async Task<Result<ExpensesForListDto, string>> GetExpenses(int userId)
+    public async Task<Result<ExpensesForListDto, string>> GetExpenses(ExpenseRequestDto dto)
     {
         try
         {
             var expenses = await _db.Expenses
-                .Where(x => x.UserId == userId && x.IsDeleted == null)
+                .Where(x => x.UserId == dto.UserId && x.IsDeleted == null)
                 .Include(p => p.Period)
                 .ToListAsync();
 
@@ -120,6 +121,25 @@ public class ExpenseService(DataContext db, ILogger<ExpenseService> logger) : IE
         {
             logger.LogError(e, "Failed to update expense.");
             return "Failed to update expense.";
+        }
+    }
+
+    public async Task<Result<bool, string>> DeleteExpense(ExpenseRequestDto dto, int expenseId)
+    {
+        try
+        {
+            var expense = await _db.Expenses.FindAsync(expenseId);
+            if (expense == null || expense.UserId != dto.UserId) return "Failed to delete expense.";
+
+            expense.IsDeleted = true;
+
+            await _db.SaveChangesAsync();
+            return true;
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Failed to delete expense.");
+            return "Failed to delete expense.";
         }
     }
 }
