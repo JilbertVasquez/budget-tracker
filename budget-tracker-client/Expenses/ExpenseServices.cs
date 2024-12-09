@@ -9,6 +9,7 @@ public interface IExpenseServices
 {
     Task<Result<bool, string>> AddExpense(CreateExpenseDto dto);
     Task<Result<ExpenseDetailsDto, string>> GetExpense(int userId, int expenseId);
+    Task<Result<ExpensesForListDto, string>> GetExpenses(int userId);
 
 }
 
@@ -50,12 +51,50 @@ public class ExpenseService(DataContext db, ILogger<ExpenseService> logger) : IE
             
             if (expense == null) return "Failed to get expense.";
 
-            return new ExpenseDetailsDto(expense.ExpensesId, expense.Name, expense.Description, expense.Name, expense.Amount, expense.Category, expense.Period, expense.CreatedAt);
+            return new ExpenseDetailsDto(
+                expense.ExpensesId, 
+                expense.Name, 
+                expense.Description, 
+                expense.Name, 
+                expense.Amount, 
+                expense.Category, 
+                expense.Period, 
+                expense.CreatedAt
+            );
         }
         catch (Exception e)
         {
             logger.LogError(e, "Failed to get expense.");
             return "Failed to get expense.";
+        }
+    }
+
+    public async Task<Result<ExpensesForListDto, string>> GetExpenses(int userId)
+    {
+        try
+        {
+            var expenses = await _db.Expenses
+                .Where(x => x.UserId == userId && x.IsDeleted == null)
+                .Include(p => p.Period)
+                .ToListAsync();
+
+            var expensesList = expenses.Select(x => new ExpenseDetailsDto(
+                x.ExpensesId,
+                x.Name,
+                x.Description,
+                x.Note,
+                x.Amount,
+                x.Category,
+                x.Period,
+                x.CreatedAt
+            )).ToArray();
+
+            return new ExpensesForListDto(expensesList);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Failed to get expenses.");
+            return "Failed to get expenses.";
         }
     }
 }

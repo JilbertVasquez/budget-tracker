@@ -9,6 +9,8 @@ public static class ExpenseEndpoints
     {
         routeGroupBuilder.MapPost("", _addExpenseHandler);
         routeGroupBuilder.MapGet("{expenseId}", _getExpenseHandler);
+        routeGroupBuilder.MapGet("", _getExpensesHandler);
+
     }
 
     private static async Task<IResult> _addExpenseHandler(
@@ -39,6 +41,22 @@ public static class ExpenseEndpoints
             _ => Results.Problem(new()
             {
                 Title = "Failed to get expense.",
+                Detail = result.Error
+            })
+        );
+    }
+
+    private static async Task<IResult> _getExpensesHandler(
+        [FromBody] ExpenseRequestDto dto,
+        IExpenseServices expenseServices
+    )
+    {
+        var result = await expenseServices.GetExpenses(dto.UserId);
+        return result.Match(
+            Results.Ok,
+            _ => Results.Problem(new()
+            {
+                Title = "Failed to get expenses.",
                 Detail = result.Error
             })
         );
