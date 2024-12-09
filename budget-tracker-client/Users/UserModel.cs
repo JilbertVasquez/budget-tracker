@@ -23,7 +23,7 @@ namespace budget_tracker_client.Users
         [Required]
         public string Password { get; set; } = default!;
 
-        public DateTime? CreatedAt { get; set; }
+        public DateOnly? CreatedAt { get; set; }
 
         public bool? IsDeleted { get; set; }
 
@@ -37,7 +37,7 @@ namespace budget_tracker_client.Users
             Email = dto.Email;
             Username = dto.Username;
             Password = BCrypt.Net.BCrypt.HashPassword(dto.Password, 11);
-            CreatedAt = DateTime.Today;
+            CreatedAt = DateOnly.FromDateTime(DateTime.UtcNow);
         }
     }
 }

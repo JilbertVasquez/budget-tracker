@@ -50,7 +50,7 @@ public class UsersService(DataContext db, ILogger<UsersService> logger) : IUsers
 
             var user = new User(dto)
             {
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateOnly.FromDateTime(DateTime.UtcNow)
             };
             _db.Users.Add(user);
 

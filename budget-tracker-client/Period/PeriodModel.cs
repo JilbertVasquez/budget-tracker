@@ -15,7 +15,7 @@ namespace budget_tracker_client.Periods
 
         public string? Description { get; set; }
 
-        public DateTime CreatedAt { get; set; }
+        public DateOnly CreatedAt { get; set; }
 
         public bool? IsDeleted { get; set; }
 
@@ -25,7 +25,7 @@ namespace budget_tracker_client.Periods
         {
             Name = dto.Name;
             Description = dto.Description;
-            CreatedAt = DateTime.UtcNow;
+            CreatedAt = DateOnly.FromDateTime(DateTime.UtcNow);
         }
     }
 }
