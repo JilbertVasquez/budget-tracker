@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace budget_tracker_client.Users;
 
-public interface IUsersService
+public interface IUsersServices
 {
     Task<Result<UserDto, string>> LoginUser(LoginUserDto dto);
     Task<Result<bool, string>> RegisterUser(RegisterUserDto dto);
@@ -15,7 +15,7 @@ public interface IUsersService
     Task<Result<bool, string>> DeleteUser(int userId);
 }
 
-public class UsersService(DataContext db, ILogger<UsersService> logger) : IUsersService
+public class UsersService(DataContext db, ILogger<UsersService> logger) : IUsersServices
 {
     private readonly DataContext _db = db;
 

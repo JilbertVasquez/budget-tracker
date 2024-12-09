@@ -15,7 +15,7 @@ public static class PeriodEndpoints
     }
 
     private static async Task<IResult> _getPeriodHandler(
-        IPeriodService periodService
+        IPeriodServices periodService
     )
     {
         var result = await periodService.GetPeriod();
@@ -31,7 +31,7 @@ public static class PeriodEndpoints
 
     private static async Task<IResult> _createPeriodHandler(
         [FromBody] CreatePeriodDto dto,
-        IPeriodService periodService
+        IPeriodServices periodService
     )
     {
         var result = await periodService.CreatePeriod(dto);
@@ -48,7 +48,7 @@ public static class PeriodEndpoints
     private static async Task<IResult> _updatePeriodHandler(
         int periodId,
         [FromBody] UpdatePeriodDto dto,
-        IPeriodService periodService
+        IPeriodServices periodService
     )
     {
         var result = await periodService.UpdatePeriod(periodId, dto);
@@ -64,7 +64,7 @@ public static class PeriodEndpoints
 
     private static async Task<IResult> _deletePeriodHandler(
        int periodId,
-       IPeriodService periodService
+       IPeriodServices periodService
    )
     {
         var result = await periodService.DeletePeriod(periodId);

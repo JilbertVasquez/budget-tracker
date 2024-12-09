@@ -17,7 +17,7 @@ public static class UsersEndpoints
 
     private static async Task<IResult> _loginUserHandler(
         [FromBody] LoginUserDto dto,
-        IUsersService usersService
+        IUsersServices usersService
     )
     {
         var result = await usersService.LoginUser(dto);
@@ -33,7 +33,7 @@ public static class UsersEndpoints
 
     private static async Task<IResult> _registerUserHandler(
         [FromBody] RegisterUserDto dto,
-        IUsersService usersService
+        IUsersServices usersService
     )
     {
         var result = await usersService.RegisterUser(dto);
@@ -49,7 +49,7 @@ public static class UsersEndpoints
 
     private static async Task<IResult> _getUserHandler(
         int userId,
-        IUsersService usersService
+        IUsersServices usersService
     )
     {
         var result = await usersService.GetUser(userId);
@@ -64,7 +64,7 @@ public static class UsersEndpoints
     }
 
     private static async Task<IResult> _getUsersHandler(
-        IUsersService usersService
+        IUsersServices usersService
     )
     {
         var result = await usersService.GetUsers();
@@ -80,7 +80,7 @@ public static class UsersEndpoints
 
     private static async Task<IResult> _updateUserHandler(
         int userId,
-        IUsersService usersService,
+        IUsersServices usersService,
         UpdateUserDto dto
     )
     {
@@ -97,7 +97,7 @@ public static class UsersEndpoints
 
     private static async Task<IResult> _deleteUserHandler(
         int userId,
-        IUsersService usersService
+        IUsersServices usersService
     )
     {
         var result = await usersService.DeleteUser(userId);

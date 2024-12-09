@@ -1,13 +1,11 @@
 
-using System.Data.Common;
 using budget_tracker_client.Models;
-using budget_tracker_client.Periods;
 using budget_tracker_client.Shared;
 using Microsoft.EntityFrameworkCore;
 
 namespace budget_tracker_client.Periods;
 
-public interface IPeriodService
+public interface IPeriodServices
 {
     Task<Result<PeriodDto[], string>> GetPeriod();
     Task<Result<bool, string>> CreatePeriod(CreatePeriodDto dto);
@@ -15,13 +13,14 @@ public interface IPeriodService
     Task<Result<bool, string>> DeletePeriod(int periodId);
 }
 
-public class PeriodService(DataContext db, ILogger<PeriodService> logger) : IPeriodService
+public class PeriodService(DataContext db, ILogger<PeriodService> logger) : IPeriodServices
 {
     private readonly DataContext _db = db;
 
     public async Task<Result<PeriodDto[], string>> GetPeriod()
     {
-        try {
+        try
+        {
             var periods = await _db.Periods
                 .Where(p => p.IsDeleted == null)
                 .Select(p => new PeriodDto(
@@ -31,7 +30,7 @@ public class PeriodService(DataContext db, ILogger<PeriodService> logger) : IPer
                     p.CreatedAt
                 ))
                 .ToListAsync();
-            
+
             return periods.ToArray();
         }
         catch (Exception e)
