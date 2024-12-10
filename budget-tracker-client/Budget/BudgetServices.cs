@@ -9,6 +9,7 @@ public interface IBudgetServices
 {
     Task<Result<bool, string>> AddBudget(CreateBudgetDto dto);
     Task<Result<BudgetDetailsDto, string>> GetBudget(BudgetRequestDto dto, int budgetId);
+    Task<Result<BudgetForListDto, string>> GetBudgets(BudgetRequestDto dto);
 }
 
 public class BudgetService(DataContext db, ILogger<BudgetService> logger) : IBudgetServices
@@ -27,7 +28,7 @@ public class BudgetService(DataContext db, ILogger<BudgetService> logger) : IBud
                 CreatedAt = DateOnly.FromDateTime(DateTime.UtcNow)
             };
             _db.Budgets.Add(budget);
-            
+
             await _db.SaveChangesAsync();
             return true;
         }
@@ -46,7 +47,7 @@ public class BudgetService(DataContext db, ILogger<BudgetService> logger) : IBud
                 .Where(x => x.UserId == dto.UserId && x.BudgetId == budgetId && x.IsDeleted == null)
                 .FirstOrDefaultAsync();
 
-            if (budget == null) return "Failed to get budget";
+            if (budget == null) return "Failed to get budget.";
 
             return new BudgetDetailsDto(
                 budget.BudgetId,
@@ -57,6 +58,36 @@ public class BudgetService(DataContext db, ILogger<BudgetService> logger) : IBud
                 budget.Period,
                 budget.CreatedAt
             );
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Failed to get budget.");
+            return "Failed to get budget.";
+        }
+    }
+
+    public async Task<Result<BudgetForListDto, string>> GetBudgets(BudgetRequestDto dto)
+    {
+        try
+        {
+            var budget = await _db.Budgets
+                .Where(x => x.UserId == dto.UserId && x.IsDeleted == null)
+                .Include(p => p.Period)
+                .ToListAsync();
+
+            if (budget == null) return "Failed to get budgets.";
+
+            var budgetList = budget.Select(x => new BudgetDetailsDto(
+                x.BudgetId,
+                x.Name,
+                x.Description,
+                x.Note,
+                x.Amount,
+                x.Period,
+                x.CreatedAt
+            )).ToArray();
+
+            return new BudgetForListDto(budgetList);
         }
         catch (Exception e)
         {
