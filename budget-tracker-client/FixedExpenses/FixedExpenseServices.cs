@@ -1,4 +1,5 @@
 
+using System.Xml;
 using budget_tracker_client.Models;
 using budget_tracker_client.Shared;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +10,7 @@ public interface IFixedExpenseServices
 {
     Task<Result<bool, string>> AddFixedExpenses(CreateFixedExpenseDto dto);
     Task<Result<FixedExpenseDetailsDto, string>> GetFixedExpense(FixedExpenseRequestDto dto, int fixedExpenseId);
+    Task<Result<FixedExpensesForListDto, string>> GetFixedExpenses(FixedExpenseRequestDto dto);
 }
 
 public class FixedExpenseService(DataContext db, ILogger<FixedExpenseService> logger) : IFixedExpenseServices
@@ -65,6 +67,35 @@ public class FixedExpenseService(DataContext db, ILogger<FixedExpenseService> lo
         {
             logger.LogError(e, "Failed to get fixed expense.");
             return "Failed to get fixed expense.";
+        }
+    }
+
+    public async Task<Result<FixedExpensesForListDto, string>> GetFixedExpenses(FixedExpenseRequestDto dto)
+    {
+        try
+        {
+            var fixedExpenses = await _db.FixedExpenses
+                .Where(x => x.UserId == dto.UserId && x.IsDeleted == null)
+                .Include(p => p.Period)
+                .ToListAsync();
+
+            var fixedExpensesList = fixedExpenses.Select( x => new FixedExpenseDetailsDto(
+                x.FixedExpensesId,
+                x.Name,
+                x.Description,
+                x.Note,
+                x.Amount,
+                x.Category,
+                x.Period,
+                x.CreatedAt
+            )).ToArray();
+
+            return new FixedExpensesForListDto(fixedExpensesList);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Failed to get fixed expenses.");
+            return "Failed to get fixed expenses.";
         }
     }
 }
