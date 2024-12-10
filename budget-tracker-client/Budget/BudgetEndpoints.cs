@@ -11,6 +11,7 @@ public static class BudgetEndpoints
         routeGroupBuilder.MapGet("{budgetId}", _getBudgetHandler);
         routeGroupBuilder.MapGet("", _getBudgetsHandler);
         routeGroupBuilder.MapPut("{budgetId}", _updateBudgetHandler);
+        routeGroupBuilder.MapDelete("{budgetId}", _deleteBudgetHandler);
     }
 
     private static async Task<IResult> _addBudgetHandler(
@@ -74,6 +75,23 @@ public static class BudgetEndpoints
             _ => Results.Problem(new()
             {
                 Title = "Failed to update budget.",
+                Detail = result.Error
+            })
+        );
+    }
+
+    private static async Task<IResult> _deleteBudgetHandler(
+        [FromBody] UpdateBudgetDto dto,
+        int budgetId,
+        IBudgetServices budgetServices
+    )
+    {
+        var result = await budgetServices.DeleteBudget(budgetId, dto);
+        return result.Match(
+            Results.Ok,
+            _ => Results.Problem(new()
+            {
+                Title = "Failed to delete budget.",
                 Detail = result.Error
             })
         );
