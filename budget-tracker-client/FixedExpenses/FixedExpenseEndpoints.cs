@@ -1,4 +1,5 @@
 
+using budget_tracker_client.Expenses;
 using Microsoft.AspNetCore.Mvc;
 
 namespace budget_tracker_client.FixedExpenses;
@@ -10,7 +11,9 @@ public static class FixedExpenseEndpoints
         routeGroupBuilder.MapPost("", _addFixedExpenseHandler);
         routeGroupBuilder.MapGet("{fixedExpenseId}", _getFixedExpenseHandler);
         routeGroupBuilder.MapGet("", _getFixedExpensesHandler);
-        routeGroupBuilder.MapPut("{fixedExpenseId}", _updateFixedExpensesHandler);
+        routeGroupBuilder.MapPut("{fixedExpenseId}", _updateFixedExpenseHandler);
+        routeGroupBuilder.MapDelete("{fixedExpenseId}", _deleteFixedExpenseHandler);
+        
     }
 
     private static async Task<IResult> _addFixedExpenseHandler(
@@ -62,7 +65,7 @@ public static class FixedExpenseEndpoints
         );
     }
 
-    private static async Task<IResult> _updateFixedExpensesHandler(
+    private static async Task<IResult> _updateFixedExpenseHandler(
         [FromBody] UpdateFixedExpenseDto dto,
         int fixedExpenseId,
         IFixedExpenseServices fixedExpenseServices
@@ -76,6 +79,23 @@ public static class FixedExpenseEndpoints
                 Title = "Failed to update fixed expense.",
                 Detail = result.Error
             })
+        );
+    }
+
+    private static async Task<IResult> _deleteFixedExpenseHandler(
+        [FromBody] FixedExpenseRequestDto dto,
+        int fixedExpenseId,
+        IFixedExpenseServices fixedExpenseServices
+    )
+    {
+        var result = await fixedExpenseServices.DeleteFixedExpense(dto, fixedExpenseId);
+        return result.Match(
+            Results.Ok,
+             _ => Results.Problem(new()
+             {
+                 Title = "Failed to delete fixed expense.",
+                 Detail = result.Error
+             })
         );
     }
 }

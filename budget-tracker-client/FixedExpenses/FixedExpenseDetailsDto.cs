@@ -4,7 +4,7 @@ namespace budget_tracker_client.FixedExpenses;
 
 public record FixedExpenseDetailsDto
 (
-    int ExpenseId,
+    int FixedExpenseId,
     string Name,
     string Description,
     string? Note,
