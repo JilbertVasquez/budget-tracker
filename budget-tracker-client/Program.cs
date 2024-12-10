@@ -1,3 +1,4 @@
+using budget_tracker_client.Budgets;
 using budget_tracker_client.Configuration;
 using budget_tracker_client.Expenses;
 using budget_tracker_client.FixedExpenses;
@@ -26,5 +27,6 @@ app.MapGroup("api/users").MapUsersEndpoints();
 app.MapGroup("api/periods").MapPeriodsEndpoints();
 app.MapGroup("api/expenses").MapExpenseEndpoints();
 app.MapGroup("api/fixedExpenses").MapFixedExpenseEndpoints();
+app.MapGroup("api/budgets").MapBudgetEndpoints();
 
 app.Run();
