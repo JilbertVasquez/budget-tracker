@@ -10,6 +10,7 @@ public interface IBudgetServices
     Task<Result<bool, string>> AddBudget(CreateBudgetDto dto);
     Task<Result<BudgetDetailsDto, string>> GetBudget(BudgetRequestDto dto, int budgetId);
     Task<Result<BudgetForListDto, string>> GetBudgets(BudgetRequestDto dto);
+    Task<Result<bool, string>> UpdateBudget(int budgetId, UpdateBudgetDto dto);
 }
 
 public class BudgetService(DataContext db, ILogger<BudgetService> logger) : IBudgetServices
@@ -93,6 +94,29 @@ public class BudgetService(DataContext db, ILogger<BudgetService> logger) : IBud
         {
             logger.LogError(e, "Failed to get budget");
             return "Failed to get budget";
+        }
+    }
+
+    public async Task<Result<bool, string>> UpdateBudget(int budgetId, UpdateBudgetDto dto)
+    {
+        try
+        {
+            var budget = await _db.Budgets.FindAsync(budgetId);
+            if (budget == null || budget.UserId != dto.UserId) return "Failed to update budget.";
+
+            budget.Name = dto.Name;
+            budget.Description = dto.Description;
+            budget.Note = dto.Note;
+            budget.Amount = dto.Amount;
+            budget.Period = dto.Period;
+
+            await _db.SaveChangesAsync();
+            return true;
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Failed to update budget.");
+            return "Failed to update budget.";
         }
     }
 }

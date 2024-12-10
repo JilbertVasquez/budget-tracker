@@ -10,7 +10,7 @@ public static class BudgetEndpoints
         routeGroupBuilder.MapPost("", _addBudgetHandler);
         routeGroupBuilder.MapGet("{budgetId}", _getBudgetHandler);
         routeGroupBuilder.MapGet("", _getBudgetsHandler);
-
+        routeGroupBuilder.MapPut("{budgetId}", _updateBudgetHandler);
     }
 
     private static async Task<IResult> _addBudgetHandler(
@@ -57,6 +57,23 @@ public static class BudgetEndpoints
             _ => Results.Problem(new()
             {
                 Title = "Failed to get budgets.",
+                Detail = result.Error
+            })
+        );
+    }
+
+    private static async Task<IResult> _updateBudgetHandler(
+        [FromBody] UpdateBudgetDto dto,
+        int budgetId,
+        IBudgetServices budgetServices
+    )
+    {
+        var result = await budgetServices.UpdateBudget(budgetId, dto);
+        return result.Match(
+            Results.Ok,
+            _ => Results.Problem(new()
+            {
+                Title = "Failed to update budget.",
                 Detail = result.Error
             })
         );
