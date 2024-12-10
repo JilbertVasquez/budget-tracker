@@ -11,6 +11,7 @@ public interface IFixedExpenseServices
     Task<Result<bool, string>> AddFixedExpenses(CreateFixedExpenseDto dto);
     Task<Result<FixedExpenseDetailsDto, string>> GetFixedExpense(FixedExpenseRequestDto dto, int fixedExpenseId);
     Task<Result<FixedExpensesForListDto, string>> GetFixedExpenses(FixedExpenseRequestDto dto);
+    Task<Result<bool, string>> UpdateFixedExpense(int fixedExpenseId, UpdateFixedExpenseDto dto);
 }
 
 public class FixedExpenseService(DataContext db, ILogger<FixedExpenseService> logger) : IFixedExpenseServices
@@ -96,6 +97,31 @@ public class FixedExpenseService(DataContext db, ILogger<FixedExpenseService> lo
         {
             logger.LogError(e, "Failed to get fixed expenses.");
             return "Failed to get fixed expenses.";
+        }
+    }
+
+    public async Task<Result<bool, string>> UpdateFixedExpense(int fixedExpenseId, UpdateFixedExpenseDto dto)
+    {
+        try
+        {
+            var fixedExpense = await _db.FixedExpenses.FindAsync(fixedExpenseId);
+
+            if (fixedExpense == null || fixedExpense.UserId != dto.UserId) return "Failed to update fixed expense.";
+
+            fixedExpense.Name = dto.Name;
+            fixedExpense.Description = dto.Description;
+            fixedExpense.Note = dto.Note;
+            fixedExpense.Amount = dto.Amount;
+            fixedExpense.Category = dto.Category;
+            fixedExpense.Period = dto.Period;
+
+            await _db.SaveChangesAsync();
+            return true;
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Failed to update fixed expense.");
+            return "Failed to update fixed expense.";
         }
     }
 }

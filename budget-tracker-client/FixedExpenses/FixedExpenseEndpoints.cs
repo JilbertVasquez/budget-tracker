@@ -10,6 +10,7 @@ public static class FixedExpenseEndpoints
         routeGroupBuilder.MapPost("", _addFixedExpenseHandler);
         routeGroupBuilder.MapGet("{fixedExpenseId}", _getFixedExpenseHandler);
         routeGroupBuilder.MapGet("", _getFixedExpensesHandler);
+        routeGroupBuilder.MapPut("{fixedExpenseId}", _updateFixedExpensesHandler);
     }
 
     private static async Task<IResult> _addFixedExpenseHandler(
@@ -56,6 +57,23 @@ public static class FixedExpenseEndpoints
             _ => Results.Problem(new()
             {
                 Title = "Failed to get fixed expenses.",
+                Detail = result.Error
+            })
+        );
+    }
+
+    private static async Task<IResult> _updateFixedExpensesHandler(
+        [FromBody] UpdateFixedExpenseDto dto,
+        int fixedExpenseId,
+        IFixedExpenseServices fixedExpenseServices
+    )
+    {
+        var result = await fixedExpenseServices.UpdateFixedExpense(fixedExpenseId, dto);
+        return result.Match(
+            Results.Ok,
+            _ => Results.Problem(new()
+            {
+                Title = "Failed to update fixed expense.",
                 Detail = result.Error
             })
         );
