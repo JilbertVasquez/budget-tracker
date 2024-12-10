@@ -8,6 +8,8 @@ public static class BudgetEndpoints
     public static void MapBudgetEndpoints(this RouteGroupBuilder routeGroupBuilder)
     {
         routeGroupBuilder.MapPost("", _addBudgetHandler);
+        routeGroupBuilder.MapGet("{budgetId}", _getBudgetHandler);
+
     }
 
     private static async Task<IResult> _addBudgetHandler(
@@ -21,6 +23,23 @@ public static class BudgetEndpoints
             _ => Results.Problem(new ()
             {
                 Title = "Failed to add budget.",
+                Detail = result.Error
+            })
+        );
+    }
+
+    private static async Task<IResult> _getBudgetHandler(
+        [FromBody] BudgetRequestDto dto,
+        int budgetId,
+        IBudgetServices budgetServices
+    )
+    {
+        var result = await budgetServices.GetBudget(dto, budgetId);
+        return result.Match(
+            Results.Ok,
+            _ => Results.Problem(new()
+            {
+                Title = "Failed to get budget.",
                 Detail = result.Error
             })
         );
