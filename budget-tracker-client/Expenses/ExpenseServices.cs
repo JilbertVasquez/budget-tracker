@@ -57,7 +57,7 @@ public class ExpenseService(DataContext db, ILogger<ExpenseService> logger) : IE
                 expense.ExpensesId, 
                 expense.Name, 
                 expense.Description, 
-                expense.Name, 
+                expense.Note, 
                 expense.Amount, 
                 expense.Category, 
                 expense.Period, 
