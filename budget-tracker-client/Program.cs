@@ -4,6 +4,7 @@ using budget_tracker_client.Expenses;
 using budget_tracker_client.FixedExpenses;
 using budget_tracker_client.Periods;
 using budget_tracker_client.Users;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +20,16 @@ builder.SetupDataContext(appSettings);
 var app = builder.Build();
 
 app.UseCors(corsPolicyName);
+
+app.UseDefaultFiles(new DefaultFilesOptions
+{
+    FileProvider = new PhysicalFileProvider(Path.Combine(app.Environment.WebRootPath, "browser"))
+});
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(Path.Combine(app.Environment.WebRootPath, "browser"))
+});
 
 app.UseHttpsRedirection();
 
