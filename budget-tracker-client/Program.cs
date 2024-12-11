@@ -3,6 +3,7 @@ using budget_tracker_client.Configuration;
 using budget_tracker_client.Expenses;
 using budget_tracker_client.FixedExpenses;
 using budget_tracker_client.Periods;
+using budget_tracker_client.Savings;
 using budget_tracker_client.Users;
 using Microsoft.Extensions.FileProviders;
 
@@ -39,5 +40,6 @@ app.MapGroup("api/periods").MapPeriodsEndpoints();
 app.MapGroup("api/expenses").MapExpenseEndpoints();
 app.MapGroup("api/fixedExpenses").MapFixedExpenseEndpoints();
 app.MapGroup("api/budgets").MapBudgetEndpoints();
+app.MapGroup("api/savings").MapSavingEndpoints();
 
 app.Run();
