@@ -129,7 +129,7 @@ public class UsersService(DataContext db, ILogger<UsersService> logger) : IUsers
     {
         try
         {
-            var user = await _db.Users.Where(x => x.UserId == userId && x.IsDeleted == null).FirstOrDefaultAsync();
+            var user = await _db.Users.FindAsync(userId);
             if (user == null || user.IsDeleted != null) return "Failed to delete user.";
 
             user.IsDeleted = true;
