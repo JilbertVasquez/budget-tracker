@@ -9,6 +9,7 @@ public record BudgetDetailsDto
     string Description,
     string? Note,
     double Amount,
+    string? Category,
     Period Period,
     DateOnly CreatedAt
 );

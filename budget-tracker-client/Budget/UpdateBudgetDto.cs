@@ -8,6 +8,7 @@ public record UpdateBudgetDto
     string Description,
     string? Note,
     double Amount,
+    string? Category,
     Period Period,
     int UserId
 );

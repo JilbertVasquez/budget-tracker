@@ -23,6 +23,8 @@ namespace budget_tracker_client.Budgets
         [Required]
         public double Amount { get; set; } = default!;
 
+        public string? Category { get; set; }
+
         [Required]
         public DateOnly CreatedAt { get; set; } = default!;
 
@@ -43,6 +45,7 @@ namespace budget_tracker_client.Budgets
             Description = dto.Description;
             Note = dto.Note;
             Amount = dto.Amount;
+            Category = dto.Category;
             PeriodId = dto.PeriodId;
             UserId = dto.UserId;
             CreatedAt = DateOnly.FromDateTime(DateTime.UtcNow);

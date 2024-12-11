@@ -57,6 +57,7 @@ public class BudgetService(DataContext db, ILogger<BudgetService> logger) : IBud
                 budget.Description,
                 budget.Note,
                 budget.Amount,
+                budget.Category,
                 budget.Period,
                 budget.CreatedAt
             );
@@ -85,6 +86,7 @@ public class BudgetService(DataContext db, ILogger<BudgetService> logger) : IBud
                 x.Description,
                 x.Note,
                 x.Amount,
+                x.Category,
                 x.Period,
                 x.CreatedAt
             )).ToArray();

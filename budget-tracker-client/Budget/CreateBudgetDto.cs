@@ -5,6 +5,7 @@ public record CreateBudgetDto(
     string Description,
     string? Note,
     double Amount,
+    string? Category,
     int PeriodId,
     int UserId
 );
