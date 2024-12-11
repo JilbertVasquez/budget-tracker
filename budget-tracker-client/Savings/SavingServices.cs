@@ -10,6 +10,7 @@ public interface ISavingServices
     Task<Result<bool, string>> AddSaving(CreateSavingDto dto);
     Task<Result<SavingDetailsDto, string>> GetSaving(SavingRequestDto dto, int savingId);
     Task<Result<SavingForListDto, string>> GetSavings(SavingRequestDto dto);
+    Task<Result<bool, string>> UpdateSaving(UpdateSavingDto dto, int savingId);
 }
 
 public class SavingService(DataContext db, ILogger<SavingService> logger) : ISavingServices
@@ -92,8 +93,33 @@ public class SavingService(DataContext db, ILogger<SavingService> logger) : ISav
         }
         catch (Exception e)
         {
-            logger.LogError(e, "Failed to get saving.");
-            return "Failed to get saving.";
+            logger.LogError(e, "Failed to get savings.");
+            return "Failed to get savings.";
+        }
+    }
+
+    public async Task<Result<bool, string>> UpdateSaving(UpdateSavingDto dto, int savingId)
+    {
+        try
+        {
+            var saving = await _db.Savings.FindAsync(savingId);
+
+            if (saving == null) return "Failed to update saving.";
+
+            saving.Name = dto.Name;
+            saving.Description = dto.Description;
+            saving.Note = dto.Note;
+            saving.Amount = dto.Amount;
+            saving.Category = dto.Category;
+            saving.Period = dto.Period;
+
+            await _db.SaveChangesAsync();
+            return true;
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Failed to update saving.");
+            return "Failed to update saving.";
         }
     }
 }

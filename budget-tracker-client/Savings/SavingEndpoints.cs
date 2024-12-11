@@ -10,6 +10,7 @@ public static class SavingEndpoints
         routeGroupBuilder.MapPost("", _addSavingHandler);
         routeGroupBuilder.MapGet("{savingId}", _getSavingHandler);
         routeGroupBuilder.MapGet("", _getSavingsHandler);
+        routeGroupBuilder.MapPut("{savingId}", _updateSavingHandler);
     }
 
     public static async Task<IResult> _addSavingHandler(
@@ -56,6 +57,23 @@ public static class SavingEndpoints
             _ => Results.Problem(new()
             {
                 Title = "Failed to get savings.",
+                Detail = result.Error
+            })
+        );
+    }
+
+    public static async Task<IResult> _updateSavingHandler(
+        [FromBody] UpdateSavingDto dto,
+        int savingId,
+        ISavingServices savingServices
+    )
+    {
+        var result = await savingServices.UpdateSaving(dto, savingId);
+        return result.Match(
+            Results.Ok,
+            _ => Results.Problem(new()
+            {
+                Title = "Failed to update saving.",
                 Detail = result.Error
             })
         );
