@@ -9,6 +9,7 @@ public interface ISavingServices
 {
     Task<Result<bool, string>> AddSaving(CreateSavingDto dto);
     Task<Result<SavingDetailsDto, string>> GetSaving(SavingRequestDto dto, int savingId);
+    Task<Result<SavingForListDto, string>> GetSavings(SavingRequestDto dto);
 }
 
 public class SavingService(DataContext db, ILogger<SavingService> logger) : ISavingServices
@@ -59,6 +60,35 @@ public class SavingService(DataContext db, ILogger<SavingService> logger) : ISav
                 saving.Period,
                 saving.CreatedAt
             );
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Failed to get saving.");
+            return "Failed to get saving.";
+        }
+    }
+
+    public async Task<Result<SavingForListDto, string>> GetSavings(SavingRequestDto dto)
+    {
+        try
+        {
+            var savings = await _db.Savings
+                .Where(x => x.UserId == dto.UserId && x.IsDeleted == null)
+                .Include(p => p.Period)
+                .ToListAsync();
+
+            var savingsList = savings.Select(x => new SavingDetailsDto(
+                x.SavingId,
+                x.Name,
+                x.Description,
+                x.Note,
+                x.Amount,
+                x.Category,
+                x.Period,
+                x.CreatedAt
+            )).ToArray();
+
+            return new SavingForListDto(savingsList);
         }
         catch (Exception e)
         {
