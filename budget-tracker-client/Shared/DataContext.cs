@@ -4,6 +4,7 @@ using budget_tracker_client.Budgets;
 using budget_tracker_client.Expenses;
 using budget_tracker_client.FixedExpenses;
 using budget_tracker_client.Periods;
+using budget_tracker_client.Savings;
 using budget_tracker_client.Users;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,12 +18,14 @@ namespace budget_tracker_client.Shared
         public required DbSet<Expense> Expenses { get; set; }
         public required DbSet<FixedExpense> FixedExpenses { get; set; }
         public required DbSet<Budget> Budgets { get; set; }
+        public required DbSet<Saving> Savings { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
             {
                 onExpensesModelCreating(modelBuilder);
                 onFixedExpensesModelCreating(modelBuilder);
                 onBudgetModelCreating(modelBuilder);
+                onSavingModelCreating(modelBuilder);
         }
 
         private void onExpensesModelCreating(ModelBuilder modelBuilder)
@@ -46,6 +49,14 @@ namespace budget_tracker_client.Shared
             modelBuilder.Entity<Budget>()
                 .HasOne(e => e.User)
                 .WithMany(u => u.Budgets)
+                .HasForeignKey(e => e.UserId);
+        }
+
+        private void onSavingModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Saving>()
+                .HasOne(e => e.User)
+                .WithMany(u => u.Savings)
                 .HasForeignKey(e => e.UserId);
         }
     }

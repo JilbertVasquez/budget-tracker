@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using budget_tracker_client.Budgets;
 using budget_tracker_client.Expenses;
 using budget_tracker_client.FixedExpenses;
+using budget_tracker_client.Savings;
 
 namespace budget_tracker_client.Users
 {
@@ -33,6 +34,7 @@ namespace budget_tracker_client.Users
        
         public ICollection<FixedExpense> FixedExpenses { get; set; } = new List<FixedExpense>();
         public ICollection<Budget> Budgets { get; set; } = new List<Budget>();
+        public ICollection<Saving> Savings { get; set; } = new List<Saving>();
 
         public User() { }
 
