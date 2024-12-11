@@ -11,6 +11,7 @@ public interface ISavingServices
     Task<Result<SavingDetailsDto, string>> GetSaving(SavingRequestDto dto, int savingId);
     Task<Result<SavingForListDto, string>> GetSavings(SavingRequestDto dto);
     Task<Result<bool, string>> UpdateSaving(UpdateSavingDto dto, int savingId);
+    Task<Result<bool, string>> DeleteSaving(SavingRequestDto dto, int savingId);
 }
 
 public class SavingService(DataContext db, ILogger<SavingService> logger) : ISavingServices
@@ -120,6 +121,26 @@ public class SavingService(DataContext db, ILogger<SavingService> logger) : ISav
         {
             logger.LogError(e, "Failed to update saving.");
             return "Failed to update saving.";
+        }
+    }
+
+    public async Task<Result<bool, string>> DeleteSaving(SavingRequestDto dto, int savingId)
+    {
+        try
+        {
+            var saving = await _db.Savings.FindAsync(savingId);
+
+            if (saving == null || saving.UserId != dto.UserId) return "Failed to delete saving.";
+
+            saving.IsDeleted = true;
+
+            await _db.SaveChangesAsync();
+            return true;
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Failed to delete saving.");
+            return "Failed to delete saving.";
         }
     }
 }

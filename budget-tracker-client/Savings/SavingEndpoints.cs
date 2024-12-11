@@ -11,6 +11,8 @@ public static class SavingEndpoints
         routeGroupBuilder.MapGet("{savingId}", _getSavingHandler);
         routeGroupBuilder.MapGet("", _getSavingsHandler);
         routeGroupBuilder.MapPut("{savingId}", _updateSavingHandler);
+        routeGroupBuilder.MapDelete("{savingId}", _deleteSavingHandler);
+
     }
 
     public static async Task<IResult> _addSavingHandler(
@@ -74,6 +76,23 @@ public static class SavingEndpoints
             _ => Results.Problem(new()
             {
                 Title = "Failed to update saving.",
+                Detail = result.Error
+            })
+        );
+    }
+
+    public static async Task<IResult> _deleteSavingHandler(
+        [FromBody] SavingRequestDto dto,
+        int savingId,
+        ISavingServices savingServices
+    )
+    {
+        var result = await savingServices.DeleteSaving(dto, savingId);
+        return result.Match(
+            Results.Ok,
+            _ => Results.Problem(new()
+            {
+                Title = "Failed to delete saving.",
                 Detail = result.Error
             })
         );
