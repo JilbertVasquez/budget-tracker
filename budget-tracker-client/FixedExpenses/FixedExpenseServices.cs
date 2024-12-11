@@ -107,7 +107,7 @@ public class FixedExpenseService(DataContext db, ILogger<FixedExpenseService> lo
         {
             var fixedExpense = await _db.FixedExpenses.FindAsync(fixedExpenseId);
 
-            if (fixedExpense == null || fixedExpense.UserId != dto.UserId) return "Failed to update fixed expense.";
+            if (fixedExpense == null || fixedExpense.UserId != dto.UserId || fixedExpense.IsDeleted != null) return "Failed to update fixed expense.";
 
             fixedExpense.Name = dto.Name;
             fixedExpense.Description = dto.Description;
@@ -131,7 +131,7 @@ public class FixedExpenseService(DataContext db, ILogger<FixedExpenseService> lo
         try
         {
             var fixedExpense = await _db.FixedExpenses.FindAsync(fixedExpenseId);
-            if (fixedExpense == null || fixedExpense.UserId != dto.UserId) return "Failed to delete fixed expense.";
+            if (fixedExpense == null || fixedExpense.UserId != dto.UserId || fixedExpense.IsDeleted != null) return "Failed to delete fixed expense.";
 
             fixedExpense.IsDeleted = true;
 

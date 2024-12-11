@@ -105,7 +105,7 @@ public class BudgetService(DataContext db, ILogger<BudgetService> logger) : IBud
         try
         {
             var budget = await _db.Budgets.FindAsync(budgetId);
-            if (budget == null || budget.UserId != dto.UserId) return "Failed to update budget.";
+            if (budget == null || budget.UserId != dto.UserId || budget.IsDeleted != null) return "Failed to update budget.";
 
             budget.Name = dto.Name;
             budget.Description = dto.Description;
@@ -128,7 +128,7 @@ public class BudgetService(DataContext db, ILogger<BudgetService> logger) : IBud
         try
         {
             var budget = await _db.Budgets.FindAsync(budgetId);
-            if (budget == null || budget.UserId != dto.UserId) return "Failed to delete budget.";
+            if (budget == null || budget.UserId != dto.UserId || budget.IsDeleted != null) return "Failed to delete budget.";
 
             budget.IsDeleted = true;
 

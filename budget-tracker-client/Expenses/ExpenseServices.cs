@@ -105,7 +105,7 @@ public class ExpenseService(DataContext db, ILogger<ExpenseService> logger) : IE
         try
         {
             var expense = await _db.Expenses.FindAsync(expenseId);
-            if (expense == null || expense.UserId != dto.UserId) return "Failed to update expense.";
+            if (expense == null || expense.UserId != dto.UserId || expense.IsDeleted != null) return "Failed to update expense.";
 
             expense.Name = dto.Name;
             expense.Description = dto.Description;
@@ -129,7 +129,7 @@ public class ExpenseService(DataContext db, ILogger<ExpenseService> logger) : IE
         try
         {
             var expense = await _db.Expenses.FindAsync(expenseId);
-            if (expense == null || expense.UserId != dto.UserId) return "Failed to delete expense.";
+            if (expense == null || expense.UserId != dto.UserId || expense.IsDeleted != null) return "Failed to delete expense.";
 
             expense.IsDeleted = true;
 

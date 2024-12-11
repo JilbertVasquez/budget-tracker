@@ -105,7 +105,7 @@ public class SavingService(DataContext db, ILogger<SavingService> logger) : ISav
         {
             var saving = await _db.Savings.FindAsync(savingId);
 
-            if (saving == null) return "Failed to update saving.";
+            if (saving == null || saving.IsDeleted != null || saving.IsDeleted != null) return "Failed to update saving.";
 
             saving.Name = dto.Name;
             saving.Description = dto.Description;
@@ -130,7 +130,7 @@ public class SavingService(DataContext db, ILogger<SavingService> logger) : ISav
         {
             var saving = await _db.Savings.FindAsync(savingId);
 
-            if (saving == null || saving.UserId != dto.UserId) return "Failed to delete saving.";
+            if (saving == null || saving.UserId != dto.UserId || saving.IsDeleted != null) return "Failed to delete saving.";
 
             saving.IsDeleted = true;
 

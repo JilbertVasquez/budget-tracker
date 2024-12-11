@@ -64,7 +64,7 @@ public class PeriodService(DataContext db, ILogger<PeriodService> logger) : IPer
         {
             var period = await _db.Periods.FindAsync(periodId);
 
-            if (period == null) return "Period not found.";
+            if (period == null || period.IsDeleted != null) return "Period not found.";
 
             period.Name = dto.Name ?? period.Name;
             period.Description = dto.Description ?? period.Description;
@@ -88,7 +88,7 @@ public class PeriodService(DataContext db, ILogger<PeriodService> logger) : IPer
         {
             var period = await _db.Periods.FindAsync(periodId);
 
-            if (period == null) return "Period not found.";
+            if (period == null || period.IsDeleted != null) return "Period not found.";
 
             period.IsDeleted = true;
 

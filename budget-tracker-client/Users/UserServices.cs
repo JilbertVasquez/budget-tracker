@@ -109,7 +109,7 @@ public class UsersService(DataContext db, ILogger<UsersService> logger) : IUsers
         try
         {
             var user = await _db.Users.FindAsync(userId);
-            if (user == null) return "Failed to update user.";
+            if (user == null || user.IsDeleted != null) return "Failed to update user.";
 
             user.Name = dto.Name;
             user.Username = dto.Username;
@@ -130,7 +130,7 @@ public class UsersService(DataContext db, ILogger<UsersService> logger) : IUsers
         try
         {
             var user = await _db.Users.Where(x => x.UserId == userId && x.IsDeleted == null).FirstOrDefaultAsync();
-            if (user == null) return "Failed to delete user.";
+            if (user == null || user.IsDeleted != null) return "Failed to delete user.";
 
             user.IsDeleted = true;
 
