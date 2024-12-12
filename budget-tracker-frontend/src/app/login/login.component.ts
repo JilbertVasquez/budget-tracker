@@ -9,18 +9,19 @@ import { MatButtonModule } from '@angular/material/button';
 import { LoginDto } from '../_services/login-dto';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { ErrorService } from '../_services/error.service';
 
 @Component({
-  selector: 'app-login',
+    selector: 'app-login',
     imports: [MatCardModule, MatInputModule, MatFormFieldModule, MatIconModule, MatButtonModule, ReactiveFormsModule, CommonModule],
-  templateUrl: './login.component.html',
-  styleUrl: './login.component.css'
+    templateUrl: './login.component.html',
+    styleUrl: './login.component.css'
 })
 export class LoginComponent {
     loginForm: FormGroup;
     isBusy = false;
 
-    constructor(private _authService: AuthService, private _router: Router) {
+    constructor(private _authService: AuthService, private _router: Router, private _errorService: ErrorService) {
         this.loginForm = new FormGroup({
             username: new FormControl('',
                 [
@@ -56,8 +57,7 @@ export class LoginComponent {
                 this._router.navigate(['/']);
             }
             catch (error: any) {
-                console.log(error.error.detail);
-                this.isBusy = false;
+                this._errorService.handle(error);
             }
             finally {
                 this.isBusy = false;

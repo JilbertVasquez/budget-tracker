@@ -1,1 +1,47 @@
-<p>signup works!</p>
+<div class="w-full h-full flex">
+    <div class="w-full h-full flex justify-center items-center">
+        <mat-card appearance="outlined" class="w-[60%] h-[70%] md:h-auto p-5">
+            <mat-card-title class="py-3">Sign Up</mat-card-title>
+
+            <mat-card-content>
+                <form (ngSubmit)="submit()" [formGroup]="signupForm" class="flex flex-col gap-2">
+                    <div class="flex w-full gap-4">
+                        <mat-form-field appearance="outline" class="w-full">
+                            <mat-label>Name</mat-label>
+                            <input matInput formControlName="name" name="name" placeholder="name"
+                                type="text">
+                            <mat-error *ngIf="signupForm.touched && signupForm.get('name')?.errors">Last Name is
+                                required.</mat-error>
+                        </mat-form-field>
+                    </div>
+
+                    <mat-form-field appearance="outline" class="w-full">
+                        <mat-label>Email</mat-label>
+                        <input matInput formControlName="email" name="email" placeholder="email" type="email">
+                        <mat-error *ngIf="signupForm.touched && signupForm.get('email')?.errors">Email is required.</mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" class="w-full">
+                        <mat-label>Username</mat-label>
+                        <input #usernameInput="matInput" matInput formControlName="username" name="username"
+                            placeholder="username" type="text">
+                        <mat-error *ngIf="signupForm.touched && signupForm.get('username')?.errors">Username is required and must be
+                            at least 3 characters.</mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" class="w-full">
+                        <mat-label>Password</mat-label>
+                        <input matInput formControlName="password" name="password" placeholder="password"
+                            type="password">
+                        <mat-error *ngIf="signupForm.touched && signupForm.get('password')?.errors">Password is
+                            required.</mat-error>
+                    </mat-form-field>
+
+                    <button mat-raised-button color="primary" [disabled]="signupForm.untouched || signupForm.invalid || isBusy"
+                        type="submit">{{isBusy ? 'Submitting...' : 'Submit'}}</button>
+
+                </form>
+            </mat-card-content>
+        </mat-card>
+    </div>
+</div>
