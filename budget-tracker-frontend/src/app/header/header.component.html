@@ -3,7 +3,7 @@
         <a href="">Home</a>
     </div>
     <div>
-        @if (true) {
+        @if (!true) {
             <div>
                 <button mat-button [matMenuTriggerFor]="me">
                     <mat-icon>arrow_drop_down</mat-icon>
@@ -22,8 +22,8 @@
         }
         @else {
             <div class="flex gap-4">
-                <button>Login</button>
-                <button>Signup</button>
+                <button (click)="login()">Login</button>
+                <button (click)="signup()">Signup</button>
             </div>
         }
     </div>

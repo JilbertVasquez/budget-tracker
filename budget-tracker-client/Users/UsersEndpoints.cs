@@ -7,7 +7,7 @@ public static class UsersEndpoints
 {
     public static void MapUsersEndpoints(this RouteGroupBuilder routeGroupBuilder)
     {
-        routeGroupBuilder.MapGet("/login", _loginUserHandler);
+        routeGroupBuilder.MapPost("/login", _loginUserHandler);
         routeGroupBuilder.MapPost("/register", _registerUserHandler);
         routeGroupBuilder.MapGet("/{userId}", _getUserHandler);
         routeGroupBuilder.MapGet("", _getUsersHandler);

@@ -10,7 +10,7 @@ public static class AppCorsConfigurator
     {
         builder.Services.AddCors(x => x.AddPolicy(_localCorsPolicy, CorsPolicyBuilder => {
             CorsPolicyBuilder
-                .WithOrigins("https:localhost:4200")
+                .WithOrigins("http://localhost:4200")
                 .AllowAnyHeader()
                 .AllowAnyMethod()
                 .AllowCredentials();
