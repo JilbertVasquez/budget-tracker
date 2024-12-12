@@ -21,7 +21,7 @@ import { AuthService } from '../_services/auth.service';
     styleUrl: './header.component.css'
 })
 export class HeaderComponent {
-    constructor(private _authService: AuthService, private _router: Router) { }
+    constructor(public authService: AuthService, private _router: Router) { }
 
     login() {
         this._router.navigate(['/login']);
@@ -29,5 +29,11 @@ export class HeaderComponent {
 
     signup() {
         this._router.navigate(["/signup"]);
+    }
+
+    logout() {
+        localStorage.removeItem('Budget-Tracker-Token');
+        this.authService.isLoggedIn.set(false);
+        this._router.navigate(['/']);
     }
 }

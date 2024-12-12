@@ -22,6 +22,7 @@ export class AuthService
         const token = this._getToken();
         if (!token) return;
         this.isLoggedIn.set(!this._jwtHelper.isTokenExpired(token));
+        this.getUser();
     }
 
     signup(dto: SignUpDto) {

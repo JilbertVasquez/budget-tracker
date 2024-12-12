@@ -1,1 +1,30 @@
-<p>login works!</p>
+<div class="w-full h-full flex">
+    <div class="w-full h-full flex justify-center items-center">
+        <mat-card appearance="outlined" class="w-[25%] h-[40%] md:h-auto p-5">
+            <mat-card-title class="py-3">Login</mat-card-title>
+
+            <mat-card-content>
+                <form (ngSubmit)="submit()" [formGroup]="loginForm" class="flex flex-col gap-2">
+
+                    <mat-form-field appearance="outline" class="w-full">
+                        <mat-label>Username</mat-label>
+                        <input #usernameInput="matInput" matInput formControlName="username" name="username" placeholder="username"
+                            type="text">
+                        <mat-error *ngIf="loginForm.touched && loginForm.get('username')?.errors">Username is required and must be at least 3
+                            characters.</mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" class="w-full">
+                        <mat-label>Password</mat-label>
+                        <input matInput formControlName="password" name="password" placeholder="password" type="password">
+                        <mat-error *ngIf="loginForm.touched && loginForm.get('password')?.errors">Password is required.</mat-error>
+                    </mat-form-field>
+
+                    <button mat-raised-button color="primary" [disabled]="loginForm.untouched || loginForm.invalid || isBusy" type="submit">{{isBusy
+                        ? 'Logging in...' : 'Login'}}</button>
+
+                </form>
+            </mat-card-content>
+        </mat-card>
+    </div>
+</div>

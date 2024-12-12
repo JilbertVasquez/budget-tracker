@@ -3,10 +3,12 @@
         <a href="">Home</a>
     </div>
     <div>
-        @if (!true) {
+        @if (authService.isLoggedIn()) {
             <div>
                 <button mat-button [matMenuTriggerFor]="me">
+                    {{authService.loggedInUser()?.username}}
                     <mat-icon>arrow_drop_down</mat-icon>
+
                 </button>
 
                 <mat-menu #me="matMenu">
@@ -14,7 +16,7 @@
                     <a href="" mat-menu-item routerLink="">Savings</a>
                     <a href="" mat-menu-item routerLink="">Income</a>
                     <a href="" mat-menu-item routerLink="">Budget</a>
-                    <button mat-button class="w-full">
+                    <button mat-button class="w-full" (click)="logout()">
                         Logout
                     </button>
                 </mat-menu>
