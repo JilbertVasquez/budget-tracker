@@ -5,6 +5,7 @@ using budget_tracker_client.Expenses;
 using budget_tracker_client.FixedExpenses;
 using budget_tracker_client.Budgets;
 using budget_tracker_client.Savings;
+using budget_tracker_client.Helpers;
 
 namespace budget_tracker_client.Configuration;
 
@@ -18,5 +19,6 @@ public static class DiConfigurator
         services.AddScoped<IFixedExpenseServices, FixedExpenseService>();
         services.AddScoped<IBudgetServices, BudgetService>();
         services.AddScoped<ISavingServices, SavingService>();
+        services.AddScoped<IAuthGuard, AuthGuard>();
     }
 }

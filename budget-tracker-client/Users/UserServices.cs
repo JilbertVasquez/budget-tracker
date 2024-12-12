@@ -1,4 +1,6 @@
 
+using System.Security.Claims;
+using budget_tracker_client.Helpers;
 using budget_tracker_client.Models;
 using budget_tracker_client.Shared;
 using Microsoft.EntityFrameworkCore;
@@ -7,7 +9,7 @@ namespace budget_tracker_client.Users;
 
 public interface IUsersServices
 {
-    Task<Result<UserDto, string>> LoginUser(LoginUserDto dto);
+    Task<Result<string, string>> LoginUser(LoginUserDto dto);
     Task<Result<bool, string>> RegisterUser(RegisterUserDto dto);
     Task<Result<UserDetailsDto, string>> GetUser(int userId);
     Task<Result<UserDetailsDto[], string>> GetUsers();
@@ -15,24 +17,33 @@ public interface IUsersServices
     Task<Result<bool, string>> DeleteUser(int userId);
 }
 
-public class UsersService(DataContext db, ILogger<UsersService> logger) : IUsersServices
+public class UsersService(DataContext db, ILogger<UsersService> logger, IAuthGuard ag) : IUsersServices
 {
     private readonly DataContext _db = db;
+    private readonly IAuthGuard _ag = ag;
 
-    public async Task<Result<UserDto, string>> LoginUser(LoginUserDto dto)
+    public async Task<Result<string, string>> LoginUser(LoginUserDto dto)
     {
         try
         {
             var user = await _db.Users.FirstOrDefaultAsync(x => x.Username == dto.Username && x.IsDeleted == null);
-            if (user == null) return "Login failed.";
+            if (user == null) return Result<string, string>.Err("Login failed.");
 
             var userDto = new UserDto(user.UserId, user.Username);
-            return userDto;
+            
+            var claims = new List<Claim>
+            {
+                new(ClaimTypes.Name, user.Name),
+                new(ClaimTypes.NameIdentifier, user.UserId.ToString()),
+            };
+
+            var token = _ag.EncodeToken(claims);
+            return Result<string, string>.Ok(token);
         }
         catch (Exception e)
         {
             logger.LogError(e, "Login failed.");
-            return "Login failed.";
+            return Result<string, string>.Err("Login failed.");
         }
     }
 
