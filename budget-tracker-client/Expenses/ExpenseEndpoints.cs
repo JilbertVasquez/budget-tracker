@@ -50,11 +50,11 @@ public static class ExpenseEndpoints
     }
 
     private static async Task<IResult> _getExpensesHandler(
-        [FromBody] ExpenseRequestDto dto,
+        [FromQuery] int userId,
         IExpenseServices expenseServices
     )
     {
-        var result = await expenseServices.GetExpenses(dto);
+        var result = await expenseServices.GetExpenses(userId);
         return result.Match(
             Results.Ok,
             _ => Results.Problem(new()

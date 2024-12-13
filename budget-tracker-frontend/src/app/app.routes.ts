@@ -14,5 +14,9 @@ export const routes: Routes = [
     {
         path: 'signup',
         component: SignupComponent
+    },
+    {
+        path: 'expenses',
+        loadChildren: () => import('./expenses/expenses-routing.module')
     }
 ];

@@ -1,0 +1,36 @@
+<div class="flex flex-col justify-center">
+    @if(isLoading) {
+        <mat-progress-bar mode="buffer"></mat-progress-bar>
+    }
+
+    <div class="flex overflow-auto">
+        <table [dataSource]="dataSource" mat-table matSort>
+            @for (column of columns; track column) {
+                <ng-container [matColumnDef]="column.identifier">
+                    @if (column.identifier === 'actions') {
+                        <th mat-header-cell *matHeaderCellDef>{{column.title}}</th>
+                        <td mat-cell *matCellDef="let element">
+                            <div class="flex justify-center items-center gap-2 flex-1">
+                                <button mat-icon-button color="primary" (click)="onEdit(element.id)">
+                                    <mat-icon>edit</mat-icon>
+                                </button>
+                                <button mat-icon-button color="primary" (click)="onDelete(element)">
+                                    <mat-icon>delete</mat-icon>
+                                </button>
+                            </div>
+                        </td>
+                    }
+                    @else {
+                        <th mat-header-cell *matHeaderCellDef>{{column.title}}</th>
+                        <td mat-cell *matCellDef="let element">{{element[column.identifier]}}</td>
+                    }
+                </ng-container>
+            }
+            <tr mat-header-row *matHeaderRowDef="displayColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayColumns"></tr>
+        </table>
+    </div>
+
+    <mat-paginator #paginator [pageSize]="10" [pageSizeOptions]="[10, 20, 50]"></mat-paginator>
+
+</div>

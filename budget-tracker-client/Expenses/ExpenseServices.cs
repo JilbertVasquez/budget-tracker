@@ -9,7 +9,7 @@ public interface IExpenseServices
 {
     Task<Result<bool, string>> AddExpense(CreateExpenseDto dto);
     Task<Result<ExpenseDetailsDto, string>> GetExpense(ExpenseRequestDto dto, int expenseId);
-    Task<Result<ExpensesForListDto, string>> GetExpenses(ExpenseRequestDto dto);
+    Task<Result<ExpensesForListDto, string>> GetExpenses(int userId);
     Task<Result<bool, string>> UpdateExpense(int expenseId, UpdateExpenseDto dto);
     Task<Result<bool, string>> DeleteExpense(ExpenseRequestDto dto, int expenseId);
 
@@ -71,12 +71,12 @@ public class ExpenseService(DataContext db, ILogger<ExpenseService> logger) : IE
         }
     }
 
-    public async Task<Result<ExpensesForListDto, string>> GetExpenses(ExpenseRequestDto dto)
+    public async Task<Result<ExpensesForListDto, string>> GetExpenses(int userId)
     {
         try
         {
             var expenses = await _db.Expenses
-                .Where(x => x.UserId == dto.UserId && x.IsDeleted == null)
+                .Where(x => x.UserId == userId && x.IsDeleted == null)
                 .Include(p => p.Period)
                 .ToListAsync();
 
