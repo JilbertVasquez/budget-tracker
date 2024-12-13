@@ -48,7 +48,7 @@ ClientBin/
 #Build Results of an ATL Project
 dlldata.c
 
-# Ignore everything in the bin folder of the todo-app-client project
+# Ignore everything in the bin folder of the budget-tracker-client project
 /budget-tracker-client/bin/
 
 # Ignore all other build outputs and temporary files for ASP.NET Core

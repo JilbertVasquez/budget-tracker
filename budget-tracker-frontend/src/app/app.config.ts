@@ -7,7 +7,7 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 import { JwtModule } from '@auth0/angular-jwt';
 
 function getToken() {
-  return localStorage.getItem('Todo-App-Token');
+  return localStorage.getItem('Budget-Tracker-Token');
 }
 
 export const appConfig: ApplicationConfig = {
