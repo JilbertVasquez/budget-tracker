@@ -33,12 +33,11 @@ public static class FixedExpenseEndpoints
     }
 
     private static async Task<IResult> _getFixedExpenseHandler(
-       [FromBody] FixedExpenseRequestDto dto,
         int fixedExpenseId,
        IFixedExpenseServices fixedExpenseServices
    )
     {
-        var result = await fixedExpenseServices.GetFixedExpense(dto, fixedExpenseId);
+        var result = await fixedExpenseServices.GetFixedExpense(fixedExpenseId);
         return result.Match(
             Results.Ok,
             _ => Results.Problem(new()
@@ -50,11 +49,10 @@ public static class FixedExpenseEndpoints
     }
 
     private static async Task<IResult> _getFixedExpensesHandler(
-        [FromBody] FixedExpenseRequestDto dto,
         IFixedExpenseServices fixedExpenseServices
     )
     {
-        var result = await fixedExpenseServices.GetFixedExpenses(dto);
+        var result = await fixedExpenseServices.GetFixedExpenses();
         return result.Match(
             Results.Ok,
             _ => Results.Problem(new()
@@ -83,12 +81,11 @@ public static class FixedExpenseEndpoints
     }
 
     private static async Task<IResult> _deleteFixedExpenseHandler(
-        [FromBody] FixedExpenseRequestDto dto,
         int fixedExpenseId,
         IFixedExpenseServices fixedExpenseServices
     )
     {
-        var result = await fixedExpenseServices.DeleteFixedExpense(dto, fixedExpenseId);
+        var result = await fixedExpenseServices.DeleteFixedExpense(fixedExpenseId);
         return result.Match(
             Results.Ok,
              _ => Results.Problem(new()

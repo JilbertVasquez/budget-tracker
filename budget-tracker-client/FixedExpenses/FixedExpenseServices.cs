@@ -1,5 +1,6 @@
 
 using System.Xml;
+using budget_tracker_client.Helpers;
 using budget_tracker_client.Models;
 using budget_tracker_client.Shared;
 using Microsoft.EntityFrameworkCore;
@@ -9,15 +10,16 @@ namespace budget_tracker_client.FixedExpenses;
 public interface IFixedExpenseServices
 {
     Task<Result<bool, string>> AddFixedExpenses(CreateFixedExpenseDto dto);
-    Task<Result<FixedExpenseDetailsDto, string>> GetFixedExpense(FixedExpenseRequestDto dto, int fixedExpenseId);
-    Task<Result<FixedExpensesForListDto, string>> GetFixedExpenses(FixedExpenseRequestDto dto);
+    Task<Result<FixedExpenseDetailsDto, string>> GetFixedExpense(int fixedExpenseId);
+    Task<Result<FixedExpensesForListDto, string>> GetFixedExpenses();
     Task<Result<bool, string>> UpdateFixedExpense(int fixedExpenseId, UpdateFixedExpenseDto dto);
-    Task<Result<bool, string>> DeleteFixedExpense(FixedExpenseRequestDto dto, int fixedExpenseId);
+    Task<Result<bool, string>> DeleteFixedExpense(int fixedExpenseId);
 }
 
-public class FixedExpenseService(DataContext db, ILogger<FixedExpenseService> logger) : IFixedExpenseServices
+public class FixedExpenseService(DataContext db, IAuthGuard ag, ILogger<FixedExpenseService> logger) : IFixedExpenseServices
 {
     private readonly DataContext _db = db;
+    private readonly IAuthGuard _ag = ag;
 
     public async Task<Result<bool, string>> AddFixedExpenses(CreateFixedExpenseDto dto)
     {
@@ -43,12 +45,14 @@ public class FixedExpenseService(DataContext db, ILogger<FixedExpenseService> lo
         }
     }
 
-    public async Task<Result<FixedExpenseDetailsDto, string>> GetFixedExpense(FixedExpenseRequestDto dto, int fixedExpenseId)
+    public async Task<Result<FixedExpenseDetailsDto, string>> GetFixedExpense(int fixedExpenseId)
     {
         try
         {
+            var userId = _ag.GetUserId();
+
             var fixedExpense = await _db.FixedExpenses
-                .Where(x => x.UserId == dto.UserId && x.FixedExpensesId == fixedExpenseId && x.IsDeleted == null)
+                .Where(x => x.UserId == userId && x.FixedExpensesId == fixedExpenseId && x.IsDeleted == null)
                 .Include(p => p.Period)
                 .FirstOrDefaultAsync();
 
@@ -72,12 +76,14 @@ public class FixedExpenseService(DataContext db, ILogger<FixedExpenseService> lo
         }
     }
 
-    public async Task<Result<FixedExpensesForListDto, string>> GetFixedExpenses(FixedExpenseRequestDto dto)
+    public async Task<Result<FixedExpensesForListDto, string>> GetFixedExpenses()
     {
         try
         {
+            var userId = _ag.GetUserId();
+
             var fixedExpenses = await _db.FixedExpenses
-                .Where(x => x.UserId == dto.UserId && x.IsDeleted == null)
+                .Where(x => x.UserId == userId && x.IsDeleted == null)
                 .Include(p => p.Period)
                 .ToListAsync();
 
@@ -126,12 +132,14 @@ public class FixedExpenseService(DataContext db, ILogger<FixedExpenseService> lo
         }
     }
 
-    public async Task<Result<bool, string>> DeleteFixedExpense(FixedExpenseRequestDto dto, int fixedExpenseId)
+    public async Task<Result<bool, string>> DeleteFixedExpense(int fixedExpenseId)
     {
         try
         {
+            var userId = _ag.GetUserId();
+
             var fixedExpense = await _db.FixedExpenses.FindAsync(fixedExpenseId);
-            if (fixedExpense == null || fixedExpense.UserId != dto.UserId || fixedExpense.IsDeleted != null) return "Failed to delete fixed expense.";
+            if (fixedExpense == null || fixedExpense.UserId != userId || fixedExpense.IsDeleted != null) return "Failed to delete fixed expense.";
 
             fixedExpense.IsDeleted = true;
 
