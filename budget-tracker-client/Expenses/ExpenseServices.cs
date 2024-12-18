@@ -1,4 +1,5 @@
 
+using budget_tracker_client.Helpers;
 using budget_tracker_client.Models;
 using budget_tracker_client.Shared;
 using Microsoft.EntityFrameworkCore;
@@ -8,16 +9,17 @@ namespace budget_tracker_client.Expenses;
 public interface IExpenseServices
 {
     Task<Result<bool, string>> AddExpense(CreateExpenseDto dto);
-    Task<Result<ExpenseDetailsDto, string>> GetExpense(ExpenseRequestDto dto, int expenseId);
-    Task<Result<ExpensesForListDto, string>> GetExpenses(int userId);
+    Task<Result<ExpenseDetailsDto, string>> GetExpense(int expenseId);
+    Task<Result<ExpensesForListDto, string>> GetExpenses();
     Task<Result<bool, string>> UpdateExpense(int expenseId, UpdateExpenseDto dto);
-    Task<Result<bool, string>> DeleteExpense(ExpenseRequestDto dto, int expenseId);
+    Task<Result<bool, string>> DeleteExpense(int expenseId);
 
 }
 
-public class ExpenseService(DataContext db, ILogger<ExpenseService> logger) : IExpenseServices
+public class ExpenseService(DataContext db, IAuthGuard ag, ILogger<ExpenseService> logger) : IExpenseServices
 {
     private readonly DataContext _db = db;
+    private readonly IAuthGuard _ag = ag;
 
     public async Task<Result<bool, string>> AddExpense(CreateExpenseDto dto)
     {
@@ -42,12 +44,14 @@ public class ExpenseService(DataContext db, ILogger<ExpenseService> logger) : IE
         }
     }
 
-    public async Task<Result<ExpenseDetailsDto, string>> GetExpense(ExpenseRequestDto dto, int expenseId)
+    public async Task<Result<ExpenseDetailsDto, string>> GetExpense(int expenseId)
     {
         try
         {
+            var userId = _ag.GetUserId();
+
             var expense = await _db.Expenses
-                .Where(x => x.UserId == dto.UserId && x.ExpensesId == expenseId && x.IsDeleted == null)
+                .Where(x => x.UserId == userId && x.ExpensesId == expenseId && x.IsDeleted == null)
                 .Include(p => p.Period)
                 .FirstOrDefaultAsync();
             
@@ -71,10 +75,12 @@ public class ExpenseService(DataContext db, ILogger<ExpenseService> logger) : IE
         }
     }
 
-    public async Task<Result<ExpensesForListDto, string>> GetExpenses(int userId)
+    public async Task<Result<ExpensesForListDto, string>> GetExpenses()
     {
         try
         {
+            var userId = _ag.GetUserId();
+
             var expenses = await _db.Expenses
                 .Where(x => x.UserId == userId && x.IsDeleted == null)
                 .Include(p => p.Period)
@@ -124,12 +130,14 @@ public class ExpenseService(DataContext db, ILogger<ExpenseService> logger) : IE
         }
     }
 
-    public async Task<Result<bool, string>> DeleteExpense(ExpenseRequestDto dto, int expenseId)
+    public async Task<Result<bool, string>> DeleteExpense(int expenseId)
     {
         try
         {
+            var userId = _ag.GetUserId();
+
             var expense = await _db.Expenses.FindAsync(expenseId);
-            if (expense == null || expense.UserId != dto.UserId || expense.IsDeleted != null) return "Failed to delete expense.";
+            if (expense == null || expense.UserId != userId || expense.IsDeleted != null) return "Failed to delete expense.";
 
             expense.IsDeleted = true;
 

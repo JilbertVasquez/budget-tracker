@@ -11,6 +11,7 @@ namespace budget_tracker_client.Helpers;
 public interface IAuthGuard
 {
     string EncodeToken(IEnumerable<Claim> claims);
+    int GetUserId();
 }
 
 public class AuthGuard : IAuthGuard
@@ -43,6 +44,11 @@ public class AuthGuard : IAuthGuard
         var tokenHandler = new JwtSecurityTokenHandler();
         var token = tokenHandler.CreateToken(tokenDescriptor);
         return tokenHandler.WriteToken(token);
+    }
 
+    public int GetUserId() {
+        var userIdClaim = _http.User.FindFirst(ClaimTypes.NameIdentifier);
+        if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out var userId)) throw new("Unable to get user id.");
+        return userId;
     }
 }

@@ -33,12 +33,11 @@ public static class ExpenseEndpoints
     }
 
     private static async Task<IResult> _getExpenseHandler(
-        [FromBody] ExpenseRequestDto dto,
         int expenseId,
         IExpenseServices expenseServices
     )
     {
-        var result = await expenseServices.GetExpense(dto, expenseId);
+        var result = await expenseServices.GetExpense(expenseId);
         return result.Match(
             Results.Ok,
             _ => Results.Problem(new()
@@ -50,11 +49,10 @@ public static class ExpenseEndpoints
     }
 
     private static async Task<IResult> _getExpensesHandler(
-        [FromQuery] int userId,
         IExpenseServices expenseServices
     )
     {
-        var result = await expenseServices.GetExpenses(userId);
+        var result = await expenseServices.GetExpenses();
         return result.Match(
             Results.Ok,
             _ => Results.Problem(new()
@@ -83,12 +81,11 @@ public static class ExpenseEndpoints
     }
 
     private static async Task<IResult> _deleteExpenseHandler(
-        [FromBody] ExpenseRequestDto dto,
         int expenseId,
         IExpenseServices expenseServices
     )
     {
-        var result = await expenseServices.DeleteExpense(dto, expenseId);
+        var result = await expenseServices.DeleteExpense(expenseId);
         return result.Match(
             Results.Ok,
             _ => Results.Problem(new()
