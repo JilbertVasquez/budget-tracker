@@ -1,4 +1,5 @@
 
+using budget_tracker_client.Helpers;
 using budget_tracker_client.Models;
 using budget_tracker_client.Shared;
 using Microsoft.EntityFrameworkCore;
@@ -8,15 +9,16 @@ namespace budget_tracker_client.Budgets;
 public interface IBudgetServices
 {
     Task<Result<bool, string>> AddBudget(CreateBudgetDto dto);
-    Task<Result<BudgetDetailsDto, string>> GetBudget(BudgetRequestDto dto, int budgetId);
-    Task<Result<BudgetForListDto, string>> GetBudgets(BudgetRequestDto dto);
+    Task<Result<BudgetDetailsDto, string>> GetBudget(int budgetId);
+    Task<Result<BudgetForListDto, string>> GetBudgets();
     Task<Result<bool, string>> UpdateBudget(int budgetId, UpdateBudgetDto dto);
-    Task<Result<bool, string>> DeleteBudget(int budgetId, UpdateBudgetDto dto);
+    Task<Result<bool, string>> DeleteBudget(int budgetId);
 }
 
-public class BudgetService(DataContext db, ILogger<BudgetService> logger) : IBudgetServices
+public class BudgetService(DataContext db, IAuthGuard ag, ILogger<BudgetService> logger) : IBudgetServices
 {
     private readonly DataContext _db = db;
+    private readonly IAuthGuard _ag = ag;
 
     public async Task<Result<bool, string>> AddBudget(CreateBudgetDto dto)
     {
@@ -41,12 +43,14 @@ public class BudgetService(DataContext db, ILogger<BudgetService> logger) : IBud
         }
     }
 
-    public async Task<Result<BudgetDetailsDto, string>> GetBudget(BudgetRequestDto dto, int budgetId)
+    public async Task<Result<BudgetDetailsDto, string>> GetBudget(int budgetId)
     {
         try
         {
+            var userId = _ag.GetUserId();
+
             var budget = await _db.Budgets
-                .Where(x => x.UserId == dto.UserId && x.BudgetId == budgetId && x.IsDeleted == null)
+                .Where(x => x.UserId == userId && x.BudgetId == budgetId && x.IsDeleted == null)
                 .FirstOrDefaultAsync();
 
             if (budget == null) return "Failed to get budget.";
@@ -69,12 +73,14 @@ public class BudgetService(DataContext db, ILogger<BudgetService> logger) : IBud
         }
     }
 
-    public async Task<Result<BudgetForListDto, string>> GetBudgets(BudgetRequestDto dto)
+    public async Task<Result<BudgetForListDto, string>> GetBudgets()
     {
         try
         {
+            var userId = _ag.GetUserId();
+
             var budget = await _db.Budgets
-                .Where(x => x.UserId == dto.UserId && x.IsDeleted == null)
+                .Where(x => x.UserId == userId && x.IsDeleted == null)
                 .Include(p => p.Period)
                 .ToListAsync();
 
@@ -123,12 +129,14 @@ public class BudgetService(DataContext db, ILogger<BudgetService> logger) : IBud
         }
     }
 
-    public async Task<Result<bool, string>> DeleteBudget(int budgetId, UpdateBudgetDto dto)
+    public async Task<Result<bool, string>> DeleteBudget(int budgetId)
     {
         try
         {
+            var userId = _ag.GetUserId();
+
             var budget = await _db.Budgets.FindAsync(budgetId);
-            if (budget == null || budget.UserId != dto.UserId || budget.IsDeleted != null) return "Failed to delete budget.";
+            if (budget == null || budget.UserId != userId || budget.IsDeleted != null) return "Failed to delete budget.";
 
             budget.IsDeleted = true;
 

@@ -32,12 +32,11 @@ public static class BudgetEndpoints
     }
 
     private static async Task<IResult> _getBudgetHandler(
-        [FromBody] BudgetRequestDto dto,
         int budgetId,
         IBudgetServices budgetServices
     )
     {
-        var result = await budgetServices.GetBudget(dto, budgetId);
+        var result = await budgetServices.GetBudget(budgetId);
         return result.Match(
             Results.Ok,
             _ => Results.Problem(new()
@@ -49,11 +48,10 @@ public static class BudgetEndpoints
     }
 
     private static async Task<IResult> _getBudgetsHandler(
-        [FromBody] BudgetRequestDto dto,
         IBudgetServices budgetServices
     )
     {
-        var result = await budgetServices.GetBudgets(dto);
+        var result = await budgetServices.GetBudgets();
         return result.Match(
             Results.Ok,
             _ => Results.Problem(new()
@@ -82,12 +80,11 @@ public static class BudgetEndpoints
     }
 
     private static async Task<IResult> _deleteBudgetHandler(
-        [FromBody] UpdateBudgetDto dto,
         int budgetId,
         IBudgetServices budgetServices
     )
     {
-        var result = await budgetServices.DeleteBudget(budgetId, dto);
+        var result = await budgetServices.DeleteBudget(budgetId);
         return result.Match(
             Results.Ok,
             _ => Results.Problem(new()
