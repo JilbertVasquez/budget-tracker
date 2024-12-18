@@ -32,12 +32,11 @@ public static class SavingEndpoints
     }
 
     public static async Task<IResult> _getSavingHandler(
-        [FromBody] SavingRequestDto dto,
         int savingId,
         ISavingServices savingServices
     )
     {
-        var result = await savingServices.GetSaving(dto, savingId);
+        var result = await savingServices.GetSaving(savingId);
         return result.Match(
             Results.Ok,
             _ => Results.Problem(new()
@@ -49,11 +48,10 @@ public static class SavingEndpoints
     }
 
     public static async Task<IResult> _getSavingsHandler(
-        [FromBody] SavingRequestDto dto,
         ISavingServices savingServices
     )
     {
-        var result = await savingServices.GetSavings(dto);
+        var result = await savingServices.GetSavings();
         return result.Match(
             Results.Ok,
             _ => Results.Problem(new()
@@ -82,12 +80,11 @@ public static class SavingEndpoints
     }
 
     public static async Task<IResult> _deleteSavingHandler(
-        [FromBody] SavingRequestDto dto,
         int savingId,
         ISavingServices savingServices
     )
     {
-        var result = await savingServices.DeleteSaving(dto, savingId);
+        var result = await savingServices.DeleteSaving(savingId);
         return result.Match(
             Results.Ok,
             _ => Results.Problem(new()

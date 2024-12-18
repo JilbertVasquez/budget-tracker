@@ -1,4 +1,5 @@
 
+using budget_tracker_client.Helpers;
 using budget_tracker_client.Models;
 using budget_tracker_client.Shared;
 using Microsoft.EntityFrameworkCore;
@@ -8,15 +9,16 @@ namespace budget_tracker_client.Savings;
 public interface ISavingServices
 {
     Task<Result<bool, string>> AddSaving(CreateSavingDto dto);
-    Task<Result<SavingDetailsDto, string>> GetSaving(SavingRequestDto dto, int savingId);
-    Task<Result<SavingForListDto, string>> GetSavings(SavingRequestDto dto);
+    Task<Result<SavingDetailsDto, string>> GetSaving(int savingId);
+    Task<Result<SavingForListDto, string>> GetSavings();
     Task<Result<bool, string>> UpdateSaving(UpdateSavingDto dto, int savingId);
-    Task<Result<bool, string>> DeleteSaving(SavingRequestDto dto, int savingId);
+    Task<Result<bool, string>> DeleteSaving(int savingId);
 }
 
-public class SavingService(DataContext db, ILogger<SavingService> logger) : ISavingServices
+public class SavingService(DataContext db, IAuthGuard ag,  ILogger<SavingService> logger) : ISavingServices
 {
     private readonly DataContext _db = db;
+    private readonly IAuthGuard _ag = ag;
 
     public async Task<Result<bool, string>> AddSaving(CreateSavingDto dto)
     {
@@ -41,12 +43,14 @@ public class SavingService(DataContext db, ILogger<SavingService> logger) : ISav
         }
     }
 
-    public async Task<Result<SavingDetailsDto, string>> GetSaving(SavingRequestDto dto, int savingId)
+    public async Task<Result<SavingDetailsDto, string>> GetSaving(int savingId)
     {
         try
         {
+            var userId = _ag.GetUserId();
+
             var saving = await _db.Savings
-                .Where(x => x.UserId == dto.UserId && x.SavingId == savingId && x.IsDeleted == null)
+                .Where(x => x.UserId == userId && x.SavingId == savingId && x.IsDeleted == null)
                 .Include(p => p.Period)
                 .FirstOrDefaultAsync();
 
@@ -70,12 +74,14 @@ public class SavingService(DataContext db, ILogger<SavingService> logger) : ISav
         }
     }
 
-    public async Task<Result<SavingForListDto, string>> GetSavings(SavingRequestDto dto)
+    public async Task<Result<SavingForListDto, string>> GetSavings()
     {
         try
         {
+            var userId = _ag.GetUserId();
+
             var savings = await _db.Savings
-                .Where(x => x.UserId == dto.UserId && x.IsDeleted == null)
+                .Where(x => x.UserId == userId && x.IsDeleted == null)
                 .Include(p => p.Period)
                 .ToListAsync();
 
@@ -124,13 +130,15 @@ public class SavingService(DataContext db, ILogger<SavingService> logger) : ISav
         }
     }
 
-    public async Task<Result<bool, string>> DeleteSaving(SavingRequestDto dto, int savingId)
+    public async Task<Result<bool, string>> DeleteSaving(int savingId)
     {
         try
         {
+            var userId = _ag.GetUserId();
+
             var saving = await _db.Savings.FindAsync(savingId);
 
-            if (saving == null || saving.UserId != dto.UserId || saving.IsDeleted != null) return "Failed to delete saving.";
+            if (saving == null || saving.UserId != userId || saving.IsDeleted != null) return "Failed to delete saving.";
 
             saving.IsDeleted = true;
 
