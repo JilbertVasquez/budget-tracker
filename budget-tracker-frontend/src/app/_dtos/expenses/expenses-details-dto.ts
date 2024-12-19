@@ -1,4 +1,4 @@
-import { PeriodDto } from "../../periods/periodDto";
+import { PeriodDto } from "../periods/periodDto";
 
 export interface ExpenseDetailsDto {
     expenseId: number;

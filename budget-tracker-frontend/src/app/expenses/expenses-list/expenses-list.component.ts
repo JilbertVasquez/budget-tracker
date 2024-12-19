@@ -2,7 +2,7 @@ import { Component, ViewChild } from '@angular/core';
 import { Column, DataTableComponent } from '../../_shared/data-table/data-table.component';
 import { ExpensesService } from '../../_services/expenses.service';
 import { MatCardModule } from '@angular/material/card';
-import { ExpenseDetailsDto } from '../../_dtos/users/expenses/expenses-details-dto';
+import { ExpenseDetailsDto } from '../../_dtos/expenses/expenses-details-dto';
 
 @Component({
     selector: 'app-expenses-list',
