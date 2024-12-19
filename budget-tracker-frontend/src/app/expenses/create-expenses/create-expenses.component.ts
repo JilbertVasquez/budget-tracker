@@ -37,7 +37,7 @@ export class CreateExpensesComponent {
 
     constructor(private _periodService: PeriodService,
         private _authService: AuthService,
-        private _expenseService: ExpensesService,
+        private _expensesservice: ExpensesService,
         private _dialogService: DialogService,
         private _errorService: ErrorService,
         private _route: Router
@@ -118,7 +118,7 @@ export class CreateExpensesComponent {
         };
 
         try {
-            await this._expenseService.createExpense(createExpense);
+            await this._expensesservice.createExpense(createExpense);
             this._dialogService.message('Expense successfully added.');
             this._route.navigate(['./expenses/expenses-list']);
         }

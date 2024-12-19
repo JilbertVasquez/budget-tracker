@@ -3,7 +3,7 @@ import { ExpensesHomeComponent } from "./expenses-home/expenses-home.component";
 import { ExpensesListComponent } from "./expenses-list/expenses-list.component";
 import { ExpensesDetailsComponent } from "./expenses-details/expenses-details.component";
 import { CreateExpensesComponent } from "./create-expenses/create-expenses.component";
-import { loadExpensesResolver } from "../_resolvers/expenses.resolver";
+// import { loadExpensesResolver } from "../_resolvers/expenses.resolver";
 import { loadPeriodResolver } from "../_resolvers/period.resolver";
 
 export default [
@@ -14,7 +14,7 @@ export default [
     {
         path: 'expenses-list',
         component: ExpensesListComponent,
-        resolve: { loadExpenses: loadExpensesResolver }
+        // resolve: { loadExpenses: loadExpensesResolver }
     },
     {
         path: 'expenses-details',

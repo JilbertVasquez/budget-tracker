@@ -29,4 +29,8 @@ export class ExpensesService {
     createExpense(createExpenseDto: CreateExpenseDto) {
         return lastValueFrom(this._http.post(this._baseUrl, createExpenseDto));
     }
+
+    deleteExpense(expenseId: number) {
+        return lastValueFrom(this._http.delete(`${this._baseUrl}/${expenseId}`));
+    }
 }

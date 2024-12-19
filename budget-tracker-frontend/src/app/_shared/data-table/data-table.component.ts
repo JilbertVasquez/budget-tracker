@@ -50,6 +50,10 @@ export class DataTableComponent<T> {
         }
     }
 
+    forcedUpdateDataSource() {
+        this.dataSource._updateChangeSubscription();
+    }
+
     onEdit(id: number) {
         this.editData.emit(id);
     }
