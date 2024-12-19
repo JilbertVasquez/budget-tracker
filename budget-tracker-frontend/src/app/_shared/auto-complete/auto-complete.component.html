@@ -1,0 +1,21 @@
+<mat-form-field appearance="outline" class="w-full">
+    <mat-label>{{showLoading ? loadingText : label}}</mat-label>
+
+    <input #input="matInput"
+    matInput
+    [matAutocomplete]="auto"
+    autocomplete="off"
+    name="data"
+    type="text"
+    [(ngModel)]="inputValue"
+    [disabled]="showLoading || !isAvailable"
+    >
+
+    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" autoActiveFirstOption="">
+        @for (data of filteredData(); track data.id) {
+            <mat-option (onSelectionChange)="onSelect(data)" [value]="data">
+                {{data.display}}
+            </mat-option>
+        }
+    </mat-autocomplete>
+</mat-form-field>
