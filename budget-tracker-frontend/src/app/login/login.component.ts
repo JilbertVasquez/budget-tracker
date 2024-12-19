@@ -6,7 +6,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { LoginDto } from '../_services/login-dto';
+import { LoginDto } from '../_dtos/users/login-dto';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ErrorService } from '../_services/error.service';
