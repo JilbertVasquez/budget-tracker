@@ -1,18 +1,28 @@
-import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
-import { MatSort, MatSortModule } from '@angular/material/sort';
-import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
-import { MatTable, MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { MatCardModule } from '@angular/material/card';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
-
+import {Component, EventEmitter, Input, Output, ViewChild} from '@angular/core';
+import {MatSort, MatSortModule} from '@angular/material/sort';
+import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
+import {
+    MatTableDataSource,
+    MatTableModule,
+} from '@angular/material/table';
+import {MatCardModule} from '@angular/material/card';
+import {MatButtonModule} from '@angular/material/button';
+import {MatIconModule} from '@angular/material/icon';
+import {MatProgressBarModule} from '@angular/material/progress-bar';
 
 @Component({
-  selector: 'app-data-table',
-    imports: [MatSortModule, MatPaginatorModule, MatTableModule, MatCardModule, MatButtonModule, MatIconModule, MatProgressBarModule],
-  templateUrl: './data-table.component.html',
-  styleUrl: './data-table.component.css'
+    selector: 'app-data-table',
+    imports: [
+        MatSortModule,
+        MatPaginatorModule,
+        MatTableModule,
+        MatCardModule,
+        MatButtonModule,
+        MatIconModule,
+        MatProgressBarModule,
+    ],
+    templateUrl: './data-table.component.html',
+    styleUrl: './data-table.component.css',
 })
 export class DataTableComponent<T> {
     @ViewChild(MatSort) sort!: MatSort;
@@ -52,4 +62,4 @@ export class DataTableComponent<T> {
 export type Column = {
     identifier: string;
     title: string;
-}
+};

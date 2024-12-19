@@ -2,9 +2,10 @@ import { Injectable, signal } from "@angular/core";
 import { environment } from "../../environments/environment";
 import { lastValueFrom } from "rxjs";
 import { HttpClient } from "@angular/common/http";
-import { ExpensesForListDto } from "../_dtos/users/expenses/expenses-for-list-dto";
 import { AuthService } from "./auth.service";
-import { ExpenseDetailsDto } from "../_dtos/users/expenses/expenses-details-dto";
+import { ExpenseDetailsDto } from "../_dtos/expenses/expenses-details-dto";
+import { ExpensesForListDto } from "../_dtos/expenses/expenses-for-list-dto";
+import { CreateExpenseDto } from "../_dtos/expenses/create-expense-dto";
 
 @Injectable({
     providedIn: "root"
@@ -22,7 +23,10 @@ export class ExpensesService {
 
     async loadExpensesList() {
         const expensesList = await this.getExpensesList();
-        console.log(expensesList);
         this.expensesList.set(expensesList.expensesList);
+    }
+
+    createExpense(createExpenseDto: CreateExpenseDto) {
+        return lastValueFrom(this._http.post(this._baseUrl, createExpenseDto));
     }
 }

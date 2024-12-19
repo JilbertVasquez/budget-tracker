@@ -3,7 +3,7 @@ import { environment } from "../../environments/environment"
 import { UserProfileDto } from "../_dtos/users/user-profile-dto";
 import { HttpClient } from "@angular/common/http";
 import { JwtHelperService } from "@auth0/angular-jwt";
-import { LoginDto } from "./login-dto";
+import { LoginDto } from "../_dtos/users/login-dto";
 import { lastValueFrom } from "rxjs";
 import { SignUpDto } from "../_dtos/users/signup-dto";
 
@@ -39,7 +39,7 @@ export class AuthService
 
         const user = this._decodeToken(token);
         const userProfile: UserProfileDto = {
-            userid: user.nameId,
+            userid: user.nameid,
             username: user.unique_name
         };
 
