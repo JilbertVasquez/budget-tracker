@@ -17,8 +17,9 @@ export default [
         // resolve: { loadExpenses: loadExpensesResolver }
     },
     {
-        path: 'expenses-details',
-        component: ExpensesDetailsComponent
+        path: 'expenses-details/:id',
+        component: ExpensesDetailsComponent,
+        resolve: { loadPeriods: loadPeriodResolver }
     },
     {
         path: 'create-expenses',

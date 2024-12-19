@@ -9,6 +9,6 @@ public record UpdateExpenseDto
     string? Note,
     double Amount,
     string? Category,
-    Period Period,
+    int PeriodId,
     int UserId
 );

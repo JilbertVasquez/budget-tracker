@@ -5,6 +5,7 @@ import { MatCardModule } from '@angular/material/card';
 import { ExpenseDetailsDto } from '../../_dtos/expenses/expenses-details-dto';
 import { DialogService } from '../../_services/dialog.service';
 import { ErrorService } from '../../_services/error.service';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-expenses-list',
@@ -29,7 +30,8 @@ export class ExpensesListComponent implements OnInit, OnDestroy, AfterViewInit {
 
     constructor(private _expensesService: ExpensesService,
         private _dialogService: DialogService,
-        private _errorService: ErrorService
+        private _errorService: ErrorService,
+        private _router: Router
     ) { }
 
     async ngOnInit() {
@@ -46,13 +48,8 @@ export class ExpensesListComponent implements OnInit, OnDestroy, AfterViewInit {
         });
     }
 
-    editExpense(id: number) {
-        try {
-
-        }
-        catch (error: any) {
-            this._errorService.handle(error);
-        }
+    editExpense(data: ExpenseDetailsDto) {
+        this._router.navigate(['expenses/expenses-details/', data.expenseId]);
     }
 
     async deleteExpense(data: ExpenseDetailsDto) {

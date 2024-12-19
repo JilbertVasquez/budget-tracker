@@ -118,7 +118,7 @@ public class ExpenseService(DataContext db, IAuthGuard ag, ILogger<ExpenseServic
             expense.Note = dto.Note;
             expense.Amount = dto.Amount;
             expense.Category = dto.Category;
-            expense.Period = dto.Period;
+            expense.PeriodId = dto.PeriodId;
 
             await _db.SaveChangesAsync();
             return true;

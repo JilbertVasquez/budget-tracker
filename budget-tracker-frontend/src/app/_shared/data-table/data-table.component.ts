@@ -27,7 +27,7 @@ import {MatProgressBarModule} from '@angular/material/progress-bar';
 export class DataTableComponent<T> {
     @ViewChild(MatSort) sort!: MatSort;
     @ViewChild(MatPaginator) paginator!: MatPaginator;
-    @Output() editData = new EventEmitter<number>();
+    @Output() editData = new EventEmitter<T>();
     @Output() deleteData = new EventEmitter<T>();
     @Input() isLoading = false;
     @Input() columns!: Column[];
@@ -54,8 +54,8 @@ export class DataTableComponent<T> {
         this.dataSource._updateChangeSubscription();
     }
 
-    onEdit(id: number) {
-        this.editData.emit(id);
+    onEdit(data: T) {
+        this.editData.emit(data);
     }
 
     onDelete(data: T) {

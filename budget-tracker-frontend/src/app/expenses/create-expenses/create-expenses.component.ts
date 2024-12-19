@@ -42,8 +42,6 @@ export class CreateExpensesComponent {
         private _errorService: ErrorService,
         private _route: Router
     ) {
-        console.log(this._periodService.periods());
-
         this.createForm = new FormGroup({
             name: new FormControl('',
                 [
@@ -96,7 +94,9 @@ export class CreateExpensesComponent {
     async submit() {
         const user = this._authService.loggedInUser();
 
-        if (!this.createForm.valid || !this.selectedPeriod || !user) return;
+        if (!this.createForm.valid) return this._dialogService.error("Invalid form.");
+        if (!user) return this._dialogService.error("Invalid user.");
+        if (!this.selectedPeriod) return this._dialogService.error("No selected period.");
 
         const name = this.createForm.value.name;
         const description = this.createForm.value.description;
@@ -125,7 +125,6 @@ export class CreateExpensesComponent {
         catch( error: any) {
             this._errorService.handle(error);
         }
-
     }
 
     private _convertToAutoCompleteData(periods: PeriodDto[]) {
