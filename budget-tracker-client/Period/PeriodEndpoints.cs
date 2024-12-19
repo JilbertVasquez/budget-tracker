@@ -8,17 +8,34 @@ public static class PeriodEndpoints
 {
     public static void MapPeriodsEndpoints(this RouteGroupBuilder routeGroupBuilder)
     {
-        routeGroupBuilder.MapGet("", _getPeriodHandler);
+        routeGroupBuilder.MapGet("{periodId}", _getPeriodHandler);
+        routeGroupBuilder.MapGet("", _getPeriodsHandler);
         routeGroupBuilder.MapPost("", _createPeriodHandler);
         routeGroupBuilder.MapPut("{periodId}", _updatePeriodHandler);
         routeGroupBuilder.MapDelete("{periodId}", _deletePeriodHandler);
     }
 
     private static async Task<IResult> _getPeriodHandler(
+        int periodId,
         IPeriodServices periodService
     )
     {
-        var result = await periodService.GetPeriod();
+        var result = await periodService.GetPeriod(periodId);
+        return result.Match(
+            Results.Ok,
+            _ => Results.Problem(new()
+            {
+                Title = "Failed to get periods.",
+                Detail = result.Error
+            })
+        );
+    }
+
+    private static async Task<IResult> _getPeriodsHandler(
+        IPeriodServices periodService
+    )
+    {
+        var result = await periodService.GetPeriods();
         return result.Match(
             Results.Ok,
             _ => Results.Problem(new()

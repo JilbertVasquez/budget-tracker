@@ -7,7 +7,8 @@ namespace budget_tracker_client.Periods;
 
 public interface IPeriodServices
 {
-    Task<Result<PeriodDto[], string>> GetPeriod();
+    Task<Result<PeriodDto, string>> GetPeriod(int periodId);
+    Task<Result<PeriodsForListDto, string>> GetPeriods();
     Task<Result<bool, string>> CreatePeriod(CreatePeriodDto dto);
     Task<Result<bool, string>> UpdatePeriod(int periodId, UpdatePeriodDto dto);
     Task<Result<bool, string>> DeletePeriod(int periodId);
@@ -17,21 +18,43 @@ public class PeriodService(DataContext db, ILogger<PeriodService> logger) : IPer
 {
     private readonly DataContext _db = db;
 
-    public async Task<Result<PeriodDto[], string>> GetPeriod()
+    public async Task<Result<PeriodDto, string>> GetPeriod(int periodId)
+    {
+        try
+        {
+            var period = await _db.Periods.FindAsync(periodId);
+            if (period == null) return "Failed to get period";
+
+            return new PeriodDto(
+                period.PeriodId,
+                period.Name,
+                period.Description,
+                period.CreatedAt
+            );
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Failed to get period.");
+            return "Failed to get Period.";
+        }
+    }
+
+    public async Task<Result<PeriodsForListDto, string>> GetPeriods()
     {
         try
         {
             var periods = await _db.Periods
                 .Where(p => p.IsDeleted == null)
-                .Select(p => new PeriodDto(
-                    p.PeriodId,
-                    p.Name,
-                    p.Description,
-                    p.CreatedAt
-                ))
                 .ToListAsync();
 
-            return periods.ToArray();
+            var periodsList = periods.Select(x => new PeriodDto(
+                x.PeriodId,
+                x.Name,
+                x.Description,
+                x.CreatedAt
+            )).ToArray();
+
+            return new PeriodsForListDto(periodsList);
         }
         catch (Exception e)
         {
