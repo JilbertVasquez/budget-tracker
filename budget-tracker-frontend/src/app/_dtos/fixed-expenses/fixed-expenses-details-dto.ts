@@ -1,7 +1,7 @@
 import { PeriodDto } from "../periods/periodDto";
 
 export interface FixedExpenseDetailsDto {
-    expenseId: number;
+    fixedExpenseId: number;
     name: string;
     description: string;
     note?: string;

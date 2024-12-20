@@ -8,10 +8,10 @@ import { Router } from '@angular/router';
 import { FixedExpensesService } from '../../_services/fixed-expenses.service';
 
 @Component({
-  selector: 'app-fixed-expenses-list',
-  imports: [MatCardModule, DataTableComponent],
-  templateUrl: './fixed-expenses-list.component.html',
-  styleUrl: './fixed-expenses-list.component.css'
+    selector: 'app-fixed-expenses-list',
+    imports: [MatCardModule, DataTableComponent],
+    templateUrl: './fixed-expenses-list.component.html',
+    styleUrl: './fixed-expenses-list.component.css'
 })
 export class FixedExpensesListComponent {
     @ViewChild('dt') dt!: DataTableComponent<FixedExpenseDetailsDto>;
@@ -29,10 +29,10 @@ export class FixedExpensesListComponent {
     ];
 
     constructor(private _fixedexpensesService: FixedExpensesService,
-            private _dialogService: DialogService,
-            private _errorService: ErrorService,
-            private _router: Router
-        ) { }
+        private _dialogService: DialogService,
+        private _errorService: ErrorService,
+        private _router: Router
+    ) { }
 
     async ngOnInit() {
         await this._fixedexpensesService.loadFixedExpensesList();
@@ -46,6 +46,11 @@ export class FixedExpensesListComponent {
         setTimeout(() => {
             this._loadData();
         });
+    }
+
+    editFixedExpense(data: FixedExpenseDetailsDto) {
+        console.log(data);
+        this._router.navigate(['expenses/fixed-expenses-details/', data.fixedExpenseId]);
     }
 
     private _loadData() {

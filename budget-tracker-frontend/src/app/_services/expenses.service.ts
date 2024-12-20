@@ -36,7 +36,6 @@ export class ExpensesService {
 
     updateExpense(expenseId: number, updateExpense: UpdateExpenseDto) {
         return lastValueFrom(this._http.put(`${this._baseUrl}/${expenseId}`, updateExpense));
-
     }
 
     deleteExpense(expenseId: number) {

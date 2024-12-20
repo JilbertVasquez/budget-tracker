@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { lastValueFrom } from 'rxjs';
 import { FixedExpensesForListDto } from '../_dtos/fixed-expenses/fixed-expenses-for-list-dto';
 import { CreateFixedExpenseDto } from '../_dtos/fixed-expenses/create-fixed-expense-dto';
+import { UpdateFixedExpenseDto } from '../_dtos/fixed-expenses/update-expense-dto';
 
 @Injectable({
     providedIn: 'root'
@@ -19,6 +20,10 @@ export class FixedExpensesService {
         return lastValueFrom(this._http.get<FixedExpensesForListDto>(`${this._baseUrl}`));
     }
 
+    getFixedExpense(fixedExpenseId: number) {
+        return lastValueFrom(this._http.get<FixedExpenseDetailsDto>(`${this._baseUrl}/${fixedExpenseId}`));
+    }
+
     async loadFixedExpensesList() {
         const fixedExpensesList = await this.getFixedExpensesList();
         this.fixedExpensesList.set(fixedExpensesList.fixedExpensesList);
@@ -26,5 +31,9 @@ export class FixedExpensesService {
 
     createFixedExpense(createFixedExpenseDto: CreateFixedExpenseDto) {
         return lastValueFrom(this._http.post(this._baseUrl, createFixedExpenseDto));
+    }
+
+    updateFixedExpense(fixedExpenseId: number, updateFixedExpense: UpdateFixedExpenseDto) {
+        return lastValueFrom(this._http.put(`${this._baseUrl}/${fixedExpenseId}`, updateFixedExpense));
     }
 }
