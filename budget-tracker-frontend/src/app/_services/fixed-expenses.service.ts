@@ -4,9 +4,10 @@ import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { lastValueFrom } from 'rxjs';
 import { FixedExpensesForListDto } from '../_dtos/fixed-expenses/fixed-expenses-for-list-dto';
+import { CreateFixedExpenseDto } from '../_dtos/fixed-expenses/create-fixed-expense-dto';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class FixedExpensesService {
     private _baseUrl = environment.apiUrl + '/api/fixedExpenses';
@@ -19,7 +20,11 @@ export class FixedExpensesService {
     }
 
     async loadFixedExpensesList() {
-        const expensesList = await this.getFixedExpensesList();
-        this.fixedExpensesList.set(expensesList.expensesList);
+        const fixedExpensesList = await this.getFixedExpensesList();
+        this.fixedExpensesList.set(fixedExpensesList.fixedExpensesList);
+    }
+
+    createFixedExpense(createFixedExpenseDto: CreateFixedExpenseDto) {
+        return lastValueFrom(this._http.post(this._baseUrl, createFixedExpenseDto));
     }
 }
