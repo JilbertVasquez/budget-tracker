@@ -8,5 +8,5 @@ export interface ExpenseDetailsDto {
     category?: string;
     amount: number;
     period: PeriodDto;
-    createAt: string
+    createdAt: string
 }
