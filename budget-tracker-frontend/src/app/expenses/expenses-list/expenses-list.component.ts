@@ -6,6 +6,7 @@ import { ExpenseDetailsDto } from '../../_dtos/expenses/expenses-details-dto';
 import { DialogService } from '../../_services/dialog.service';
 import { ErrorService } from '../../_services/error.service';
 import { Router } from '@angular/router';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
     selector: 'app-expenses-list',
@@ -54,6 +55,9 @@ export class ExpensesListComponent implements OnInit, OnDestroy, AfterViewInit {
 
     async deleteExpense(data: ExpenseDetailsDto) {
         try {
+            const isConfirm = await this._getUserConfirmation(`Do you want to delete ${data.name} expense?`);
+            if (!isConfirm) return;
+            
             await this._expensesService.deleteExpense(data.expenseId);
             this._dialogService.message("Expense successfully deleted.");
             await this._expensesService.loadExpensesList();
@@ -67,5 +71,10 @@ export class ExpensesListComponent implements OnInit, OnDestroy, AfterViewInit {
     private _loadData() {
         this.data = this._expensesService.expensesList();
         this.dt.dataSource.data = this.data;
+    }
+
+    private async _getUserConfirmation(message: string) {
+        const dialogRef = this._dialogService.confirmationModal(message);
+        return await firstValueFrom(dialogRef.afterClosed());
     }
 }

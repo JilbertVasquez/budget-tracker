@@ -3,7 +3,7 @@
         <mat-card appearance="outlined" class="w-[96%] flex">
             <div class="flex-1">
                 <app-data-table #dt [columns]="columns" [isLoading]="isLoading" (editData)="editFixedExpense($event)"
-                    >
+                    (deleteData)="deleteFixedExpense($event)">
                 </app-data-table>
 
                 @if(!data.length) {

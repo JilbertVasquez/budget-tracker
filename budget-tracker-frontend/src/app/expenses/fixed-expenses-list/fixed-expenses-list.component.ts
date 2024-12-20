@@ -6,6 +6,7 @@ import { DialogService } from '../../_services/dialog.service';
 import { ErrorService } from '../../_services/error.service';
 import { Router } from '@angular/router';
 import { FixedExpensesService } from '../../_services/fixed-expenses.service';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
     selector: 'app-fixed-expenses-list',
@@ -53,8 +54,11 @@ export class FixedExpensesListComponent {
         this._router.navigate(['expenses/fixed-expenses-details/', data.fixedExpenseId]);
     }
 
-    async deleteExpense(data: FixedExpenseDetailsDto) {
+    async deleteFixedExpense(data: FixedExpenseDetailsDto) {
         try {
+            const isConfirm = await this._getUserConfirmation(`Do you want to delete ${data.name} fixed expense?`);
+            if (!isConfirm) return;
+
             await this._fixedexpensesService.deleteFixedExpense(data.fixedExpenseId);
             this._dialogService.message("Expense successfully deleted.");
             await this._fixedexpensesService.loadFixedExpensesList();
@@ -69,4 +73,9 @@ export class FixedExpensesListComponent {
         this.data = this._fixedexpensesService.fixedExpensesList();
         this.dt.dataSource.data = this.data;
     }
+
+    private async _getUserConfirmation(message: string) {
+            const dialogRef = this._dialogService.confirmationModal(message);
+            return await firstValueFrom(dialogRef.afterClosed());
+        }
 }
