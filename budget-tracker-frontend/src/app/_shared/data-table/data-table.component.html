@@ -3,6 +3,11 @@
         <mat-progress-bar mode="buffer"></mat-progress-bar>
     }
 
+    <mat-form-field appearance="outline" class="w-[300px] px-5 pt-5">
+        <mat-label>Filter</mat-label>
+        <input matInput placeholder="Search..." type="text" (keyup)="getFilterInput($event)">
+    </mat-form-field>
+
     <div class="flex overflow-auto">
         <table [dataSource]="dataSource" mat-table matSort>
             @for (column of columns; track column) {

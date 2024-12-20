@@ -1,6 +1,7 @@
 <div class=" flex-1">
     <div class="flex justify-center mx-8 mt-8">
         <mat-card appearance="outlined" class="w-[96%] flex">
+            <mat-card-title class="px-5 pt-4">Fixed Expenses List</mat-card-title>
             <div class="flex-1">
                 <app-data-table #dt [columns]="columns" [isLoading]="isLoading" (editData)="editFixedExpense($event)"
                     (deleteData)="deleteFixedExpense($event)">
