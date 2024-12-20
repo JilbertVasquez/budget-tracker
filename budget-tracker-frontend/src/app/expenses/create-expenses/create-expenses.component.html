@@ -5,10 +5,10 @@
                 <mat-card-title class="py-3 px-4">Create Expense</mat-card-title>
 
                 <div class="flex justify-end p-4 gap-4">
-                    <button mat-raised-button (click)="toggleNote()">
+                    <button mat-raised-button (click)="toggleNote()" type="button">
                         {{withNote ? "remove Note" : "add Note"}}
                     </button>
-                    <button mat-raised-button (click)="toggleCategory()">
+                    <button mat-raised-button (click)="toggleCategory()" type="button">
                         {{withCategory ? "remove Category" : "add Category"}}
                     </button>
                 </div>

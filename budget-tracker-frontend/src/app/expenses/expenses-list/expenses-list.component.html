@@ -1,6 +1,6 @@
 <div class=" flex-1">
-    <div class="flex justify-between mx-8 mt-8">
-        <mat-card appearance="outlined" class="w-[96%]">
+    <div class="flex justify-center mx-8 mt-8">
+        <mat-card appearance="outlined" class="w-[96%] flex">
             <div class="flex-1">
                 <app-data-table #dt [columns]="columns" [isLoading]="isLoading" (editData)="editExpense($event)"
                     (deleteData)="deleteExpense($event)">
