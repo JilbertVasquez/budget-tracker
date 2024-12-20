@@ -36,4 +36,8 @@ export class FixedExpensesService {
     updateFixedExpense(fixedExpenseId: number, updateFixedExpense: UpdateFixedExpenseDto) {
         return lastValueFrom(this._http.put(`${this._baseUrl}/${fixedExpenseId}`, updateFixedExpense));
     }
+
+    deleteFixedExpense(fixedExpenseId: number) {
+        return lastValueFrom(this._http.delete(`${this._baseUrl}/${fixedExpenseId}`));
+    }
 }

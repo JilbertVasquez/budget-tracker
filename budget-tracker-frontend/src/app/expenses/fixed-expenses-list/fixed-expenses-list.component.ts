@@ -53,6 +53,18 @@ export class FixedExpensesListComponent {
         this._router.navigate(['expenses/fixed-expenses-details/', data.fixedExpenseId]);
     }
 
+    async deleteExpense(data: FixedExpenseDetailsDto) {
+        try {
+            await this._fixedexpensesService.deleteFixedExpense(data.fixedExpenseId);
+            this._dialogService.message("Expense successfully deleted.");
+            await this._fixedexpensesService.loadFixedExpensesList();
+            this._loadData();
+        }
+        catch (error: any) {
+            this._errorService.handle(error);
+        }
+    }
+
     private _loadData() {
         this.data = this._fixedexpensesService.fixedExpensesList();
         this.dt.dataSource.data = this.data;
