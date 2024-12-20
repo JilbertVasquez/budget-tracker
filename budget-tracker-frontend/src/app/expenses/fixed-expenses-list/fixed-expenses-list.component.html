@@ -1,0 +1,17 @@
+<div class=" flex-1">
+    <div class="flex justify-center mx-8 mt-8">
+        <mat-card appearance="outlined" class="w-[96%] flex">
+            <div class="flex-1">
+                <app-data-table #dt [columns]="columns" [isLoading]="isLoading">
+
+                </app-data-table>
+
+                @if(!data.length) {
+                <div class="flex justify-center my-5">
+                    {{isLoading ? "Fetching data..." : "No data to display"}}
+                </div>
+                }
+            </div>
+        </mat-card>
+    </div>
+</div>
