@@ -4,16 +4,24 @@
             <div class="flex justify-between">
                 <mat-card-title class="px-5 pt-4">Expenses List</mat-card-title>
 
-                <mat-form-field appearance="outline" class="w-[350px] px-5 pt-5">
-                    <mat-label>Enter a date range</mat-label>
-                    <mat-date-range-input [rangePicker]="picker">
-                        <input matStartDate placeholder="Start date" [(ngModel)]="dateRange.start"
-                            (ngModelChange)="onDateRangeChange()">>
-                        <input matEndDate placeholder="End date" [(ngModel)]="dateRange.end" (ngModelChange)="onDateRangeChange()">>
-                    </mat-date-range-input>
-                    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-                    <mat-date-range-picker #picker></mat-date-range-picker>
-                </mat-form-field>
+                <div class="px-4">
+                    <mat-form-field appearance="outline" class="w-[350px] px-5 pt-5">
+                        <mat-label>Enter a date range</mat-label>
+                        <mat-date-range-input [rangePicker]="picker">
+                            <input matStartDate placeholder="Start date" [(ngModel)]="dateRange.start"
+                                (ngModelChange)="onDateRangeChange()">>
+                            <input matEndDate placeholder="End date" [(ngModel)]="dateRange.end" (ngModelChange)="onDateRangeChange()">>
+                        </mat-date-range-input>
+                        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                        <mat-date-range-picker #picker></mat-date-range-picker>
+                    </mat-form-field>
+
+                    @if (dateRange.start && dateRange.end) {
+                        <button mat-raised-button color="primary" (click)="clearDatePicker()">
+                            clear
+                        </button>
+                    }
+                </div>
             </div>
 
             <div class="flex-1">

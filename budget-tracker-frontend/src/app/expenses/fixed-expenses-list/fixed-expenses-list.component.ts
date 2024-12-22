@@ -11,10 +11,11 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { FormsModule } from '@angular/forms';
 import { provideNativeDateAdapter } from '@angular/material/core';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
     selector: 'app-fixed-expenses-list',
-    imports: [MatCardModule, DataTableComponent, MatFormFieldModule, MatDatepickerModule, FormsModule],
+    imports: [MatCardModule, DataTableComponent, MatFormFieldModule, MatDatepickerModule, FormsModule, MatButtonModule],
     templateUrl: './fixed-expenses-list.component.html',
     styleUrl: './fixed-expenses-list.component.css',
         providers: [provideNativeDateAdapter()],
@@ -66,6 +67,12 @@ export class FixedExpensesListComponent {
         else {
             this.dt.dataSource.data = this.data;
         }
+    }
+
+    clearDatePicker() {
+        this.dateRange.start = null;
+        this.dateRange.end = null;
+        this._loadData();
     }
 
     editFixedExpense(data: FixedExpenseDetailsDto) {

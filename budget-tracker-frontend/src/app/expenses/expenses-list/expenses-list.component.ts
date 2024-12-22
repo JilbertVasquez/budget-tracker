@@ -11,9 +11,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 @Component({
     selector: 'app-expenses-list',
-    imports: [MatCardModule, DataTableComponent, MatFormFieldModule, MatDatepickerModule, FormsModule],
+    imports: [MatCardModule, DataTableComponent, MatFormFieldModule, MatDatepickerModule, FormsModule, MatButtonModule],
     templateUrl: './expenses-list.component.html',
     styleUrl: './expenses-list.component.css',
     providers: [provideNativeDateAdapter()],
@@ -65,6 +66,12 @@ export class ExpensesListComponent implements OnInit, OnDestroy, AfterViewInit {
         else {
             this.dt.dataSource.data = this.data;
         }
+    }
+
+    clearDatePicker() {
+        this.dateRange.start = null;
+        this.dateRange.end = null;
+        this._loadData();
     }
 
     editExpense(data: ExpenseDetailsDto) {
