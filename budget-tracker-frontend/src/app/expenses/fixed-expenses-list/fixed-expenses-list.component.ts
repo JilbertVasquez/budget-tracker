@@ -7,18 +7,24 @@ import { ErrorService } from '../../_services/error.service';
 import { Router } from '@angular/router';
 import { FixedExpensesService } from '../../_services/fixed-expenses.service';
 import { firstValueFrom } from 'rxjs';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { FormsModule } from '@angular/forms';
+import { provideNativeDateAdapter } from '@angular/material/core';
 
 @Component({
     selector: 'app-fixed-expenses-list',
-    imports: [MatCardModule, DataTableComponent],
+    imports: [MatCardModule, DataTableComponent, MatFormFieldModule, MatDatepickerModule, FormsModule],
     templateUrl: './fixed-expenses-list.component.html',
-    styleUrl: './fixed-expenses-list.component.css'
+    styleUrl: './fixed-expenses-list.component.css',
+        providers: [provideNativeDateAdapter()],
 })
 export class FixedExpensesListComponent {
     @ViewChild('dt') dt!: DataTableComponent<FixedExpenseDetailsDto>;
     isLoading = false;
     isBusy = false;
     data: FixedExpenseDetailsDto[] = [];
+    dateRange: { start: Date | null, end: Date | null } = { start: null, end: null };
     columns: Column[] = [
         // { identifier: 'expenseId', title: 'Id' },
         { identifier: 'name', title: 'Name' },
@@ -47,6 +53,19 @@ export class FixedExpensesListComponent {
         setTimeout(() => {
             this._loadData();
         });
+    }
+
+    onDateRangeChange(): void {
+        if (this.dateRange.start && this.dateRange.end) {
+            const filteredData = this.data.filter(x => {
+                const createdAt = new Date(x.createdAt);
+                return createdAt >= this.dateRange.start! && createdAt <= this.dateRange.end!;
+            });
+            this.dt.dataSource.data = filteredData;
+        }
+        else {
+            this.dt.dataSource.data = this.data;
+        }
     }
 
     editFixedExpense(data: FixedExpenseDetailsDto) {
