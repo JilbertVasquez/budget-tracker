@@ -52,7 +52,7 @@ public class ExpenseService(DataContext db, IAuthGuard ag, ILogger<ExpenseServic
 
             var expense = await _db.Expenses
                 .Where(x => x.UserId == userId && x.ExpensesId == expenseId && x.IsDeleted == null)
-                .Include(p => p.Period)
+                // .Include(p => p.Period)
                 .FirstOrDefaultAsync();
             
             if (expense == null) return "Failed to get expense.";
@@ -64,7 +64,7 @@ public class ExpenseService(DataContext db, IAuthGuard ag, ILogger<ExpenseServic
                 expense.Note, 
                 expense.Amount, 
                 expense.Category, 
-                expense.Period, 
+                // expense.Period, 
                 expense.CreatedAt
             );
         }
@@ -83,7 +83,7 @@ public class ExpenseService(DataContext db, IAuthGuard ag, ILogger<ExpenseServic
 
             var expenses = await _db.Expenses
                 .Where(x => x.UserId == userId && x.IsDeleted == null)
-                .Include(p => p.Period)
+                // .Include(p => p.Period)
                 .ToListAsync();
 
             var expensesList = expenses.Select(x => new ExpenseDetailsDto(
@@ -93,7 +93,7 @@ public class ExpenseService(DataContext db, IAuthGuard ag, ILogger<ExpenseServic
                 x.Note,
                 x.Amount,
                 x.Category,
-                x.Period,
+                // x.Period,
                 x.CreatedAt
             )).ToArray();
 
@@ -118,7 +118,7 @@ public class ExpenseService(DataContext db, IAuthGuard ag, ILogger<ExpenseServic
             expense.Note = dto.Note;
             expense.Amount = dto.Amount;
             expense.Category = dto.Category;
-            expense.PeriodId = dto.PeriodId;
+            // expense.PeriodId = dto.PeriodId;
 
             await _db.SaveChangesAsync();
             return true;

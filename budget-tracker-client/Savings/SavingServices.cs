@@ -51,7 +51,7 @@ public class SavingService(DataContext db, IAuthGuard ag,  ILogger<SavingService
 
             var saving = await _db.Savings
                 .Where(x => x.UserId == userId && x.SavingId == savingId && x.IsDeleted == null)
-                .Include(p => p.Period)
+                // .Include(p => p.Period)
                 .FirstOrDefaultAsync();
 
             if (saving == null) return "Failed to get saving.";
@@ -63,7 +63,7 @@ public class SavingService(DataContext db, IAuthGuard ag,  ILogger<SavingService
                 saving.Note,
                 saving.Amount,
                 saving.Category,
-                saving.Period,
+                // saving.Period,
                 saving.CreatedAt
             );
         }
@@ -82,7 +82,7 @@ public class SavingService(DataContext db, IAuthGuard ag,  ILogger<SavingService
 
             var savings = await _db.Savings
                 .Where(x => x.UserId == userId && x.IsDeleted == null)
-                .Include(p => p.Period)
+                // .Include(p => p.Period)
                 .ToListAsync();
 
             var savingsList = savings.Select(x => new SavingDetailsDto(
@@ -92,7 +92,7 @@ public class SavingService(DataContext db, IAuthGuard ag,  ILogger<SavingService
                 x.Note,
                 x.Amount,
                 x.Category,
-                x.Period,
+                // x.Period,
                 x.CreatedAt
             )).ToArray();
 
@@ -118,7 +118,7 @@ public class SavingService(DataContext db, IAuthGuard ag,  ILogger<SavingService
             saving.Note = dto.Note;
             saving.Amount = dto.Amount;
             saving.Category = dto.Category;
-            saving.Period = dto.Period;
+            // saving.Period = dto.Period;
 
             await _db.SaveChangesAsync();
             return true;

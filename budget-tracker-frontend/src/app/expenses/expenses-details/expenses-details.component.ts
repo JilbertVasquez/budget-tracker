@@ -17,24 +17,24 @@ import { UpdateExpenseDto } from '../../_dtos/expenses/update-expense-dto';
 
 @Component({
     selector: 'app-expenses-details',
-    imports: [MatCardModule, MatFormFieldModule, MatButtonModule, FormsModule, MatInputModule, ReactiveFormsModule, AutoCompleteComponent],
+    imports: [MatCardModule, MatFormFieldModule, MatButtonModule, FormsModule, MatInputModule, ReactiveFormsModule],
     templateUrl: './expenses-details.component.html',
     styleUrl: './expenses-details.component.css',
 })
 export class ExpensesDetailsComponent {
-    @ViewChild('autocompleteForPeriods') autocompleteForPeriods!: AutoCompleteComponent;
-    selectedPeriod: PeriodDto | null = null;
+    // @ViewChild('autocompleteForPeriods') autocompleteForPeriods!: AutoCompleteComponent;
+    // selectedPeriod: PeriodDto | null = null;
     editForm: FormGroup;
     expenseId: number | null = null;
     isBusy = false;
 
     expenseDetails: ExpenseDetailsDto | null = null;
-    autoCompleteData = computed(() => {
-        const periods = this._periodService.periods();
+    // autoCompleteData = computed(() => {
+    //     const periods = this._periodService.periods();
 
-        if (!periods.length) return [];
-        return this._convertToAutoCompleteData(periods);
-    })
+    //     if (!periods.length) return [];
+    //     return this._convertToAutoCompleteData(periods);
+    // })
 
     constructor(private _periodService: PeriodService,
             private _authService: AuthService,
@@ -100,22 +100,22 @@ export class ExpensesDetailsComponent {
         }
     }
 
-    onSelect(data: AutoCompleteData) {
-        const period: PeriodDto = {
-            periodId: data.id,
-            name: data.display,
-            description: data.description,
-            createdAt: data.createdAt
-        }
-        this.selectedPeriod = period;
-    }
+    // onSelect(data: AutoCompleteData) {
+    //     const period: PeriodDto = {
+    //         periodId: data.id,
+    //         name: data.display,
+    //         description: data.description,
+    //         createdAt: data.createdAt
+    //     }
+    //     this.selectedPeriod = period;
+    // }
 
     async submit() {
             const user = this._authService.loggedInUser();
 
             if (!this.editForm.valid) return this._dialogService.error("Invalid form.");
             if (!user) return this._dialogService.error("Invalid user.");
-            if (!this.selectedPeriod) return this._dialogService.error("No selected period.");
+            // if (!this.selectedPeriod) return this._dialogService.error("No selected period.");
 
             const name = this.editForm.value.name;
             const description = this.editForm.value.description;
@@ -123,7 +123,7 @@ export class ExpensesDetailsComponent {
             const amount = this.editForm.value.amount;
             const category = this.editForm.value.category;
 
-            const periodId = this.selectedPeriod!.periodId;
+            // const periodId = this.selectedPeriod!.periodId;
             const userId = user!.userid;
 
             const updateExpense: UpdateExpenseDto = {
@@ -132,7 +132,7 @@ export class ExpensesDetailsComponent {
                 note: note,
                 amount: amount,
                 category: category,
-                periodId: periodId,
+                // periodId: periodId,
                 userId: userId
             };
 
@@ -147,14 +147,14 @@ export class ExpensesDetailsComponent {
         }
 
 
-    private _convertToAutoCompleteData(periods: PeriodDto[]) {
-        return periods.map(x => {
-            return {
-                id: x.periodId,
-                display: x.name,
-                description: x.description,
-                createdAt: x.createdAt
-            }
-        })
-    }
+    // private _convertToAutoCompleteData(periods: PeriodDto[]) {
+    //     return periods.map(x => {
+    //         return {
+    //             id: x.periodId,
+    //             display: x.name,
+    //             description: x.description,
+    //             createdAt: x.createdAt
+    //         }
+    //     })
+    // }
 }

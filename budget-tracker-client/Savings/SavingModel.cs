@@ -30,8 +30,8 @@ namespace budget_tracker_client.Savings
 
         public bool? IsDeleted { get; set; }
 
-        public int PeriodId { get; set; } = default!;
-        public Period Period { get; set; } = default!;
+        // public int PeriodId { get; set; } = default!;
+        // public Period Period { get; set; } = default!;
 
         [Required]
         public int UserId { get; set; }
@@ -45,7 +45,7 @@ namespace budget_tracker_client.Savings
             Note = dto.Note;
             Amount = dto.Amount;
             Category = dto.Category;
-            PeriodId = dto.PeriodId;
+            // PeriodId = dto.PeriodId;
             UserId = dto.UserId;
             CreatedAt = DateOnly.FromDateTime(DateTime.UtcNow);
         }

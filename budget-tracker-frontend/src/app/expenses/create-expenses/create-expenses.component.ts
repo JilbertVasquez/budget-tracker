@@ -16,24 +16,24 @@ import { Route, Router } from '@angular/router';
 
 @Component({
     selector: 'app-create-expenses',
-    imports: [MatCardModule, MatFormFieldModule, MatButtonModule, FormsModule, MatInputModule, ReactiveFormsModule, AutoCompleteComponent],
+    imports: [MatCardModule, MatFormFieldModule, MatButtonModule, FormsModule, MatInputModule, ReactiveFormsModule],
     templateUrl: './create-expenses.component.html',
     styleUrl: './create-expenses.component.css'
 })
 export class CreateExpensesComponent {
-    @ViewChild('autocompleteForPeriods') autocompleteForPeriods!: AutoCompleteComponent;
+    // @ViewChild('autocompleteForPeriods') autocompleteForPeriods!: AutoCompleteComponent;
     createForm: FormGroup;
     isBusy = false;
     withNote = false;
     withCategory = false;
-    selectedPeriod: PeriodDto | null = null;
+    // selectedPeriod: PeriodDto | null = null;
 
-    autoCompleteData = computed(() => {
-        const periods = this._periodService.periods();
+    // autoCompleteData = computed(() => {
+    //     const periods = this._periodService.periods();
 
-        if (!periods.length) return [];
-        return this._convertToAutoCompleteData(periods);
-    })
+    //     if (!periods.length) return [];
+    //     return this._convertToAutoCompleteData(periods);
+    // })
 
     constructor(private _periodService: PeriodService,
         private _authService: AuthService,
@@ -81,22 +81,22 @@ export class CreateExpensesComponent {
         this.withCategory = !this.withCategory;
     }
 
-    onSelect(data: AutoCompleteData) {
-        const period: PeriodDto = {
-            periodId: data.id,
-            name: data.display,
-            description: data.description,
-            createdAt: data.createdAt
-        }
-        this.selectedPeriod = period;
-    }
+    // onSelect(data: AutoCompleteData) {
+    //     const period: PeriodDto = {
+    //         periodId: data.id,
+    //         name: data.display,
+    //         description: data.description,
+    //         createdAt: data.createdAt
+    //     }
+    //     // this.selectedPeriod = period;
+    // }
 
     async submit() {
         const user = this._authService.loggedInUser();
 
         if (!this.createForm.valid) return this._dialogService.error("Invalid form.");
         if (!user) return this._dialogService.error("Invalid user.");
-        if (!this.selectedPeriod) return this._dialogService.error("No selected period.");
+        // if (!this.selectedPeriod) return this._dialogService.error("No selected period.");
 
         const name = this.createForm.value.name;
         const description = this.createForm.value.description;
@@ -104,7 +104,7 @@ export class CreateExpensesComponent {
         const amount = this.createForm.value.amount;
         const category = this.createForm.value.category;
 
-        const periodId = this.selectedPeriod!.periodId;
+        // const periodId = this.selectedPeriod!.periodId;
         const userId = user!.userid;
 
         const createExpense: CreateExpenseDto = {
@@ -113,7 +113,7 @@ export class CreateExpensesComponent {
             note: note,
             amount: amount,
             category: category,
-            periodId: periodId,
+            // periodId: periodId,
             userId: userId
         };
 
@@ -127,14 +127,14 @@ export class CreateExpensesComponent {
         }
     }
 
-    private _convertToAutoCompleteData(periods: PeriodDto[]) {
-        return periods.map(x => {
-            return {
-                id: x.periodId,
-                display: x.name,
-                description: x.description,
-                createdAt: x.createdAt
-            }
-        })
-    }
+    // private _convertToAutoCompleteData(periods: PeriodDto[]) {
+    //     return periods.map(x => {
+    //         return {
+    //             id: x.periodId,
+    //             display: x.name,
+    //             description: x.description,
+    //             createdAt: x.createdAt
+    //         }
+    //     })
+    // }
 }

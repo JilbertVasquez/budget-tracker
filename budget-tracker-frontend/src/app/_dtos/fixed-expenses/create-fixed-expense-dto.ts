@@ -4,6 +4,6 @@ export interface CreateFixedExpenseDto {
     note?: string;
     amount: number;
     category?: string;
-    periodId: number;
+    // periodId: number;
     userId: number;
 }

@@ -62,7 +62,7 @@ public class BudgetService(DataContext db, IAuthGuard ag, ILogger<BudgetService>
                 budget.Note,
                 budget.Amount,
                 budget.Category,
-                budget.Period,
+                // budget.Period,
                 budget.CreatedAt
             );
         }
@@ -81,7 +81,7 @@ public class BudgetService(DataContext db, IAuthGuard ag, ILogger<BudgetService>
 
             var budget = await _db.Budgets
                 .Where(x => x.UserId == userId && x.IsDeleted == null)
-                .Include(p => p.Period)
+                // .Include(p => p.Period)
                 .ToListAsync();
 
             if (budget == null) return "Failed to get budgets.";
@@ -93,7 +93,7 @@ public class BudgetService(DataContext db, IAuthGuard ag, ILogger<BudgetService>
                 x.Note,
                 x.Amount,
                 x.Category,
-                x.Period,
+                // x.Period,
                 x.CreatedAt
             )).ToArray();
 
@@ -117,7 +117,7 @@ public class BudgetService(DataContext db, IAuthGuard ag, ILogger<BudgetService>
             budget.Description = dto.Description;
             budget.Note = dto.Note;
             budget.Amount = dto.Amount;
-            budget.Period = dto.Period;
+            // budget.Period = dto.Period;
 
             await _db.SaveChangesAsync();
             return true;

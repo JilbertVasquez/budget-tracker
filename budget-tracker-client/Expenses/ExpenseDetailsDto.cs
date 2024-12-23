@@ -10,6 +10,6 @@ public record ExpenseDetailsDto
     string? Note,
     double Amount,
     string? Category,
-    Period Period,
+    // Period Period,
     DateOnly CreatedAt
 );

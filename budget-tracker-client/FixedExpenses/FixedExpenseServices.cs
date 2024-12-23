@@ -53,7 +53,7 @@ public class FixedExpenseService(DataContext db, IAuthGuard ag, ILogger<FixedExp
 
             var fixedExpense = await _db.FixedExpenses
                 .Where(x => x.UserId == userId && x.FixedExpensesId == fixedExpenseId && x.IsDeleted == null)
-                .Include(p => p.Period)
+                // .Include(p => p.Period)
                 .FirstOrDefaultAsync();
 
             if (fixedExpense == null) return "Failed to get fixed expense.";
@@ -65,7 +65,7 @@ public class FixedExpenseService(DataContext db, IAuthGuard ag, ILogger<FixedExp
                 fixedExpense.Note,
                 fixedExpense.Amount,
                 fixedExpense.Category,
-                fixedExpense.Period,
+                // fixedExpense.Period,
                 fixedExpense.CreatedAt
             );
         }
@@ -84,7 +84,7 @@ public class FixedExpenseService(DataContext db, IAuthGuard ag, ILogger<FixedExp
 
             var fixedExpenses = await _db.FixedExpenses
                 .Where(x => x.UserId == userId && x.IsDeleted == null)
-                .Include(p => p.Period)
+                // .Include(p => p.Period)
                 .ToListAsync();
 
             var fixedExpensesList = fixedExpenses.Select( x => new FixedExpenseDetailsDto(
@@ -94,7 +94,7 @@ public class FixedExpenseService(DataContext db, IAuthGuard ag, ILogger<FixedExp
                 x.Note,
                 x.Amount,
                 x.Category,
-                x.Period,
+                // x.Period,
                 x.CreatedAt
             )).ToArray();
 
@@ -120,7 +120,7 @@ public class FixedExpenseService(DataContext db, IAuthGuard ag, ILogger<FixedExp
             fixedExpense.Note = dto.Note;
             fixedExpense.Amount = dto.Amount;
             fixedExpense.Category = dto.Category;
-            fixedExpense.Period = dto.Period;
+            // fixedExpense.Period = dto.Period;
 
             await _db.SaveChangesAsync();
             return true;

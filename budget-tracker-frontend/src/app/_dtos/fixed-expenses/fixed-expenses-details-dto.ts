@@ -7,6 +7,6 @@ export interface FixedExpenseDetailsDto {
     note?: string;
     category?: string;
     amount: number;
-    period: PeriodDto;
+    // period: PeriodDto;
     createdAt: string
 }
