@@ -12,25 +12,30 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { FormsModule } from '@angular/forms';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { MatButtonModule } from '@angular/material/button';
+import { DateRangePickerComponent } from '../../date-range-picker/date-range-picker.component';
+import { DatePipe } from '@angular/common';
+import { DateFilterDto } from '../../_dtos/date/date-filter-dto';
 
 @Component({
     selector: 'app-fixed-expenses-list',
-    imports: [MatCardModule, DataTableComponent, MatFormFieldModule, MatDatepickerModule, FormsModule, MatButtonModule],
+    imports: [MatCardModule, DataTableComponent, MatFormFieldModule, MatDatepickerModule, FormsModule, MatButtonModule, DateRangePickerComponent],
     templateUrl: './fixed-expenses-list.component.html',
     styleUrl: './fixed-expenses-list.component.css',
-        providers: [provideNativeDateAdapter()],
+        providers: [DatePipe],
 })
 export class FixedExpensesListComponent {
     @ViewChild('dt') dt!: DataTableComponent<FixedExpenseDetailsDto>;
     isLoading = false;
     isBusy = false;
     data: FixedExpenseDetailsDto[] = [];
-    dateRange: { start: Date | null, end: Date | null } = { start: null, end: null };
+        dateRange: DateFilterDto | undefined = undefined;
+
     columns: Column[] = [
         // { identifier: 'expenseId', title: 'Id' },
         { identifier: 'name', title: 'Name' },
         { identifier: 'description', title: 'Description' },
         { identifier: 'category', title: 'Category' },
+        { identifier: 'note', title: 'Note' },
         { identifier: 'amount', title: 'Amount' },
         { identifier: 'createdAt', title: 'CreatedAt' },
         { identifier: 'actions', title: 'Actions' }
@@ -39,41 +44,25 @@ export class FixedExpensesListComponent {
     constructor(private _fixedexpensesService: FixedExpensesService,
         private _dialogService: DialogService,
         private _errorService: ErrorService,
-        private _router: Router
+        private _router: Router,
+        private datePipe: DatePipe
     ) { }
 
-    async ngOnInit() {
-        await this._fixedexpensesService.loadFixedExpensesList();
-    }
+    async ngOnInit() { }
 
     ngOnDestroy() {
         this.data = [];
     }
 
-    ngAfterViewInit() {
-        setTimeout(() => {
+    ngAfterViewInit() { }
+
+    onRangeInput(dateFilterDto: DateFilterDto) {
+            this.dateRange = dateFilterDto;
+        }
+
+        async search() {
             this._loadData();
-        });
-    }
-
-    onDateRangeChange(): void {
-        if (this.dateRange.start && this.dateRange.end) {
-            const filteredData = this.data.filter(x => {
-                const createdAt = new Date(x.createdAt);
-                return createdAt >= this.dateRange.start! && createdAt <= this.dateRange.end!;
-            });
-            this.dt.dataSource.data = filteredData;
         }
-        else {
-            this.dt.dataSource.data = this.data;
-        }
-    }
-
-    clearDatePicker() {
-        this.dateRange.start = null;
-        this.dateRange.end = null;
-        this._loadData();
-    }
 
     editFixedExpense(data: FixedExpenseDetailsDto) {
         console.log(data);
@@ -87,7 +76,6 @@ export class FixedExpensesListComponent {
 
             await this._fixedexpensesService.deleteFixedExpense(data.fixedExpenseId);
             this._dialogService.message("Expense successfully deleted.");
-            await this._fixedexpensesService.loadFixedExpensesList();
             this._loadData();
         }
         catch (error: any) {
@@ -96,8 +84,30 @@ export class FixedExpensesListComponent {
     }
 
     private _loadData() {
-        this.data = this._fixedexpensesService.fixedExpensesList();
-        this.dt.dataSource.data = this.data;
+        if (!this.dateRange?.start && !this.dateRange?.end) {
+            this._dialogService.message("Please enter valid date.");
+            return;
+        }
+
+        const start = this.dateRange.start;
+        const end = this.dateRange.end;
+
+        const formattedStart = this.datePipe.transform(start, 'yyyy-MM-dd');
+        const formattedEnd = this.datePipe.transform(end, 'yyyy-MM-dd');
+
+        this._getExpensesList(formattedStart!, formattedEnd!);
+
+    }
+
+    private async _getExpensesList(formattedStart: string, formattedEnd: string) {
+        try {
+            const response = await this._fixedexpensesService.getFixedExpensesList(formattedStart!.toString(), formattedEnd!.toString());
+            this.data = response.fixedExpensesList;
+            this.dt.dataSource.data = this.data;
+        }
+        catch (error: any) {
+            this._errorService.handle(error);
+        }
     }
 
     private async _getUserConfirmation(message: string) {

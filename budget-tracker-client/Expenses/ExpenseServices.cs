@@ -1,4 +1,6 @@
 
+using budget_tracker_client.Dtos;
+using budget_tracker_client.Extensions;
 using budget_tracker_client.Helpers;
 using budget_tracker_client.Models;
 using budget_tracker_client.Shared;
@@ -10,7 +12,7 @@ public interface IExpenseServices
 {
     Task<Result<bool, string>> AddExpense(CreateExpenseDto dto);
     Task<Result<ExpenseDetailsDto, string>> GetExpense(int expenseId);
-    Task<Result<ExpensesForListDto, string>> GetExpenses();
+    Task<Result<ExpensesForListDto, string>> GetExpenses(DateFilterDto dateFilterDto);
     Task<Result<bool, string>> UpdateExpense(int expenseId, UpdateExpenseDto dto);
     Task<Result<bool, string>> DeleteExpense(int expenseId);
 
@@ -75,14 +77,22 @@ public class ExpenseService(DataContext db, IAuthGuard ag, ILogger<ExpenseServic
         }
     }
 
-    public async Task<Result<ExpensesForListDto, string>> GetExpenses()
+    public async Task<Result<ExpensesForListDto, string>> GetExpenses(DateFilterDto dateFilterDto)
     {
         try
         {
+            dateFilterDto.EnsureStartBeforeEnd();
+            dateFilterDto.StartDate = dateFilterDto.GetStartOfStartDate();
+            dateFilterDto.EndDate = dateFilterDto.GetEndOfEndDate();
             var userId = _ag.GetUserId();
 
             var expenses = await _db.Expenses
-                .Where(x => x.UserId == userId && x.IsDeleted == null)
+                .Where(x => 
+                    x.UserId == userId && 
+                    x.IsDeleted == null &&
+                    x.CreatedAt >= dateFilterDto.StartDate &&
+                    x.CreatedAt <= dateFilterDto.EndDate
+                    )
                 // .Include(p => p.Period)
                 .ToListAsync();
 

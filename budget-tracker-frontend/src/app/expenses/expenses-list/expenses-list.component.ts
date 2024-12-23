@@ -8,28 +8,31 @@ import { ErrorService } from '../../_services/error.service';
 import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { provideNativeDateAdapter } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { DateFilterDto } from '../../_dtos/date/date-filter-dto';
+import { DateRangePickerComponent } from '../../date-range-picker/date-range-picker.component';
+import { DatePipe } from '@angular/common';
 @Component({
     selector: 'app-expenses-list',
-    imports: [MatCardModule, DataTableComponent, MatFormFieldModule, MatDatepickerModule, FormsModule, MatButtonModule],
+    imports: [MatCardModule, DataTableComponent, MatFormFieldModule, MatDatepickerModule, FormsModule, MatButtonModule, DateRangePickerComponent],
     templateUrl: './expenses-list.component.html',
     styleUrl: './expenses-list.component.css',
-    providers: [provideNativeDateAdapter()],
+    providers: [DatePipe],
 })
 export class ExpensesListComponent implements OnInit, OnDestroy, AfterViewInit {
     @ViewChild('dt') dt!: DataTableComponent<ExpenseDetailsDto>;
     isLoading = false;
     isBusy = false;
     data: ExpenseDetailsDto[] = [];
-    dateRange: { start: Date | null, end: Date | null } = { start: null, end: null };
+    dateRange: DateFilterDto | undefined = undefined;
     columns: Column[] = [
         // { identifier: 'expenseId', title: 'Id' },
         { identifier: 'name', title: 'Name' },
         { identifier: 'description', title: 'Description' },
         { identifier: 'category', title: 'Category' },
+        { identifier: 'note', title: 'Note' },
         { identifier: 'amount', title: 'Amount' },
         { identifier: 'createdAt', title: 'CreatedAt' },
         { identifier: 'actions', title: 'Actions' }
@@ -38,39 +41,23 @@ export class ExpensesListComponent implements OnInit, OnDestroy, AfterViewInit {
     constructor(private _expensesService: ExpensesService,
         private _dialogService: DialogService,
         private _errorService: ErrorService,
-        private _router: Router
+        private _router: Router,
+        private datePipe: DatePipe
     ) { }
 
-    async ngOnInit() {
-        await this._expensesService.loadExpensesList();
-    }
+    async ngOnInit() { }
 
     ngOnDestroy() {
         this.data = [];
     }
 
-    ngAfterViewInit() {
-        setTimeout(() => {
-            this._loadData();
-        });
+    ngAfterViewInit() { }
+
+    onRangeInput(dateFilterDto: DateFilterDto) {
+        this.dateRange = dateFilterDto;
     }
 
-    onDateRangeChange(): void {
-        if (this.dateRange.start && this.dateRange.end) {
-            const filteredData = this.data.filter(x => {
-                const createdAt = new Date(x.createdAt);
-                return createdAt >= this.dateRange.start! && createdAt <= this.dateRange.end!;
-            });
-            this.dt.dataSource.data = filteredData;
-        }
-        else {
-            this.dt.dataSource.data = this.data;
-        }
-    }
-
-    clearDatePicker() {
-        this.dateRange.start = null;
-        this.dateRange.end = null;
+    async search() {
         this._loadData();
     }
 
@@ -85,7 +72,6 @@ export class ExpensesListComponent implements OnInit, OnDestroy, AfterViewInit {
 
             await this._expensesService.deleteExpense(data.expenseId);
             this._dialogService.message("Expense successfully deleted.");
-            await this._expensesService.loadExpensesList();
             this._loadData();
         }
         catch (error: any) {
@@ -94,9 +80,30 @@ export class ExpensesListComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     private _loadData() {
-        this.data = this._expensesService.expensesList();
-        this.onDateRangeChange();
-        // this.dt.dataSource.data = this.data;
+        if (!this.dateRange?.start && !this.dateRange?.end) {
+            this._dialogService.message("Please enter valid date.");
+            return;
+        }
+
+        const start = this.dateRange.start;
+        const end = this.dateRange.end;
+
+        const formattedStart = this.datePipe.transform(start, 'yyyy-MM-dd');
+        const formattedEnd = this.datePipe.transform(end, 'yyyy-MM-dd');
+
+        this._getExpensesList(formattedStart!, formattedEnd!);
+
+    }
+
+    private async _getExpensesList(formattedStart: string, formattedEnd: string) {
+        try {
+            const response = await this._expensesService.getExpensesList(formattedStart!.toString(), formattedEnd!.toString());
+            this.data = response.expensesList;
+            this.dt.dataSource.data = this.data;
+        }
+        catch (error: any) {
+            this._errorService.handle(error);
+        }
     }
 
     private async _getUserConfirmation(message: string) {

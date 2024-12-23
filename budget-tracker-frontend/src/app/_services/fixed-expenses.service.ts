@@ -1,4 +1,4 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { FixedExpenseDetailsDto } from '../_dtos/fixed-expenses/fixed-expenses-details-dto';
 import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
@@ -12,21 +12,19 @@ import { UpdateFixedExpenseDto } from '../_dtos/fixed-expenses/update-expense-dt
 })
 export class FixedExpensesService {
     private _baseUrl = environment.apiUrl + '/api/fixedExpenses';
-    fixedExpensesList = signal<FixedExpenseDetailsDto[]>([]);
 
     constructor(private _http: HttpClient) { }
 
-    getFixedExpensesList() {
-        return lastValueFrom(this._http.get<FixedExpensesForListDto>(`${this._baseUrl}`));
+    getFixedExpensesList(start: string, end: string) {
+        const params = {
+            startDate: start,
+            endDate: end
+        }
+        return lastValueFrom(this._http.get<FixedExpensesForListDto>(`${this._baseUrl}`, {params}));
     }
 
     getFixedExpense(fixedExpenseId: number) {
         return lastValueFrom(this._http.get<FixedExpenseDetailsDto>(`${this._baseUrl}/${fixedExpenseId}`));
-    }
-
-    async loadFixedExpensesList() {
-        const fixedExpensesList = await this.getFixedExpensesList();
-        this.fixedExpensesList.set(fixedExpensesList.fixedExpensesList);
     }
 
     createFixedExpense(createFixedExpenseDto: CreateFixedExpenseDto) {

@@ -1,4 +1,5 @@
 
+using budget_tracker_client.Dtos;
 using Microsoft.AspNetCore.Mvc;
 
 namespace budget_tracker_client.Expenses;
@@ -49,10 +50,11 @@ public static class ExpenseEndpoints
     }
 
     private static async Task<IResult> _getExpensesHandler(
-        IExpenseServices expenseServices
+        IExpenseServices expenseServices,
+        [AsParameters] DateFilterDto dateFilterDto
     )
     {
-        var result = await expenseServices.GetExpenses();
+        var result = await expenseServices.GetExpenses(dateFilterDto);
         return result.Match(
             Results.Ok,
             _ => Results.Problem(new()
