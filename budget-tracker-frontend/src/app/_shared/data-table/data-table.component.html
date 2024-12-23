@@ -36,9 +36,9 @@
         </table>
     </div>
 
-    <div class="flex {{ hasTotal ? 'justify-between' : 'justify-end' }}">
+    <div class="flex {{ hasTotal && dataSource.data.length ? 'justify-between' : 'justify-end' }}">
 
-        @if(hasTotal) {
+        @if(hasTotal && dataSource.data.length) {
             <div class="p-4">
                 Total: {{total}}
             </div>
