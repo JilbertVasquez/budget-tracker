@@ -34,10 +34,13 @@ export class DataTableComponent<T> {
     @Output() editData = new EventEmitter<T>();
     @Output() deleteData = new EventEmitter<T>();
     @Input() isLoading = false;
+    @Input() hasTotal = false;
     @Input() columns!: Column[];
 
     dataSource = new MatTableDataSource<T>();
     displayColumns: string[] = [];
+    total = 0;
+
 
     ngOnInit() {
         this.displayColumns = this.columns.map(x => x.identifier);

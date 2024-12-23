@@ -1,4 +1,4 @@
-import { Component, ViewChild, viewChild } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { Column, DataTableComponent } from '../../_shared/data-table/data-table.component';
 import { FixedExpenseDetailsDto } from '../../_dtos/fixed-expenses/fixed-expenses-details-dto';
@@ -10,7 +10,6 @@ import { firstValueFrom } from 'rxjs';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { FormsModule } from '@angular/forms';
-import { provideNativeDateAdapter } from '@angular/material/core';
 import { MatButtonModule } from '@angular/material/button';
 import { DateRangePickerComponent } from '../../date-range-picker/date-range-picker.component';
 import { DatePipe } from '@angular/common';
@@ -104,10 +103,19 @@ export class FixedExpensesListComponent {
             const response = await this._fixedexpensesService.getFixedExpensesList(formattedStart!.toString(), formattedEnd!.toString());
             this.data = response.fixedExpensesList;
             this.dt.dataSource.data = this.data;
+            this._calculateTotal();
         }
         catch (error: any) {
             this._errorService.handle(error);
         }
+    }
+
+    private _calculateTotal() {
+        const total = this.dt.dataSource.data.reduce((sum, val) => {
+            return sum + val.amount;
+        }, 0);
+
+        this.dt.total = total;
     }
 
     private async _getUserConfirmation(message: string) {

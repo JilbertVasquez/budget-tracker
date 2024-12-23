@@ -58,7 +58,7 @@ export class ExpensesListComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     async search() {
-        this._loadData();
+        await this._loadData();
     }
 
     editExpense(data: ExpenseDetailsDto) {
@@ -79,7 +79,7 @@ export class ExpensesListComponent implements OnInit, OnDestroy, AfterViewInit {
         }
     }
 
-    private _loadData() {
+    private async _loadData() {
         if (!this.dateRange?.start && !this.dateRange?.end) {
             this._dialogService.message("Please enter valid date.");
             return;
@@ -91,7 +91,7 @@ export class ExpensesListComponent implements OnInit, OnDestroy, AfterViewInit {
         const formattedStart = this.datePipe.transform(start, 'yyyy-MM-dd');
         const formattedEnd = this.datePipe.transform(end, 'yyyy-MM-dd');
 
-        this._getExpensesList(formattedStart!, formattedEnd!);
+        await this._getExpensesList(formattedStart!, formattedEnd!);
 
     }
 
@@ -100,10 +100,19 @@ export class ExpensesListComponent implements OnInit, OnDestroy, AfterViewInit {
             const response = await this._expensesService.getExpensesList(formattedStart!.toString(), formattedEnd!.toString());
             this.data = response.expensesList;
             this.dt.dataSource.data = this.data;
+            this._calculateTotal();
         }
         catch (error: any) {
             this._errorService.handle(error);
         }
+    }
+
+    private _calculateTotal() {
+        const total = this.dt.dataSource.data.reduce((sum, val) => {
+            return sum + val.amount;
+        }, 0);
+
+        this.dt.total = total;
     }
 
     private async _getUserConfirmation(message: string) {

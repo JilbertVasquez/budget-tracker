@@ -14,7 +14,7 @@
             </div>
 
             <div class="flex-1">
-                <app-data-table #dt [columns]="columns" [isLoading]="isLoading" (editData)="editExpense($event)"
+                <app-data-table #dt [columns]="columns" [isLoading]="isLoading" (editData)="editExpense($event)" [hasTotal]="true"
                     (deleteData)="deleteExpense($event)">
 
                 </app-data-table>
