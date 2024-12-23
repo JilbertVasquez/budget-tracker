@@ -1,7 +1,7 @@
 
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using budget_tracker_client.Periods;
+// using budget_tracker_client.Periods;
 using budget_tracker_client.Users;
 
 namespace budget_tracker_client.Savings

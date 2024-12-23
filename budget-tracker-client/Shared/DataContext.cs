@@ -2,7 +2,7 @@
 using budget_tracker_client.Budgets;
 using budget_tracker_client.Expenses;
 using budget_tracker_client.FixedExpenses;
-using budget_tracker_client.Periods;
+// using budget_tracker_client.Periods;
 using budget_tracker_client.Savings;
 using budget_tracker_client.Users;
 using Microsoft.EntityFrameworkCore;
@@ -13,7 +13,7 @@ namespace budget_tracker_client.Shared
     {
 
         public required DbSet<User> Users { get; set; }
-        public required DbSet<Period> Periods { get; set; }
+        // public required DbSet<Period> Periods { get; set; }
         public required DbSet<Expense> Expenses { get; set; }
         public required DbSet<FixedExpense> FixedExpenses { get; set; }
         public required DbSet<Budget> Budgets { get; set; }

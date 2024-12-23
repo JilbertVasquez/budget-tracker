@@ -1,3 +1,3 @@
-namespace budget_tracker_client.Periods;
+// namespace budget_tracker_client.Periods;
 
-public record CreatePeriodDto(string Name, string? Description);
+// public record CreatePeriodDto(string Name, string? Description);
