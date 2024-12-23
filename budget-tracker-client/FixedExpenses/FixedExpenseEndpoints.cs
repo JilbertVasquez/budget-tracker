@@ -1,4 +1,5 @@
 
+using budget_tracker_client.Dtos;
 using budget_tracker_client.Expenses;
 using Microsoft.AspNetCore.Mvc;
 
@@ -34,8 +35,8 @@ public static class FixedExpenseEndpoints
 
     private static async Task<IResult> _getFixedExpenseHandler(
         int fixedExpenseId,
-       IFixedExpenseServices fixedExpenseServices
-   )
+        IFixedExpenseServices fixedExpenseServices
+    )
     {
         var result = await fixedExpenseServices.GetFixedExpense(fixedExpenseId);
         return result.Match(
@@ -49,10 +50,11 @@ public static class FixedExpenseEndpoints
     }
 
     private static async Task<IResult> _getFixedExpensesHandler(
-        IFixedExpenseServices fixedExpenseServices
+        IFixedExpenseServices fixedExpenseServices,
+        [AsParameters] DateFilterDto dateFilterDto
     )
     {
-        var result = await fixedExpenseServices.GetFixedExpenses();
+        var result = await fixedExpenseServices.GetFixedExpenses(dateFilterDto);
         return result.Match(
             Results.Ok,
             _ => Results.Problem(new()

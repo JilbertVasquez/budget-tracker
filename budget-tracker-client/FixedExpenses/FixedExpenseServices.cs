@@ -1,5 +1,7 @@
 
 using System.Xml;
+using budget_tracker_client.Dtos;
+using budget_tracker_client.Extensions;
 using budget_tracker_client.Helpers;
 using budget_tracker_client.Models;
 using budget_tracker_client.Shared;
@@ -11,7 +13,7 @@ public interface IFixedExpenseServices
 {
     Task<Result<bool, string>> AddFixedExpenses(CreateFixedExpenseDto dto);
     Task<Result<FixedExpenseDetailsDto, string>> GetFixedExpense(int fixedExpenseId);
-    Task<Result<FixedExpensesForListDto, string>> GetFixedExpenses();
+    Task<Result<FixedExpensesForListDto, string>> GetFixedExpenses(DateFilterDto dateFilterDto);
     Task<Result<bool, string>> UpdateFixedExpense(int fixedExpenseId, UpdateFixedExpenseDto dto);
     Task<Result<bool, string>> DeleteFixedExpense(int fixedExpenseId);
 }
@@ -76,14 +78,22 @@ public class FixedExpenseService(DataContext db, IAuthGuard ag, ILogger<FixedExp
         }
     }
 
-    public async Task<Result<FixedExpensesForListDto, string>> GetFixedExpenses()
+    public async Task<Result<FixedExpensesForListDto, string>> GetFixedExpenses(DateFilterDto dateFilterDto)
     {
         try
         {
+            dateFilterDto.EnsureStartBeforeEnd();
+            dateFilterDto.StartDate = dateFilterDto.GetStartOfStartDate();
+            dateFilterDto.EndDate = dateFilterDto.GetEndOfEndDate();
             var userId = _ag.GetUserId();
 
             var fixedExpenses = await _db.FixedExpenses
-                .Where(x => x.UserId == userId && x.IsDeleted == null)
+                .Where(x => 
+                    x.UserId == userId && 
+                    x.IsDeleted == null &&
+                    x.CreatedAt >= dateFilterDto.StartDate &&
+                    x.CreatedAt <= dateFilterDto.EndDate
+                )
                 // .Include(p => p.Period)
                 .ToListAsync();
 
