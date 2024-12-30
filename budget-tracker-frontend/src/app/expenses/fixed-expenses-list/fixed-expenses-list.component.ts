@@ -20,7 +20,7 @@ import { DateFilterDto } from '../../_dtos/date/date-filter-dto';
     imports: [MatCardModule, DataTableComponent, MatFormFieldModule, MatDatepickerModule, FormsModule, MatButtonModule, DateRangePickerComponent],
     templateUrl: './fixed-expenses-list.component.html',
     styleUrl: './fixed-expenses-list.component.css',
-        providers: [DatePipe],
+    providers: [DatePipe],
 })
 export class FixedExpensesListComponent {
     @ViewChild('dt') dt!: DataTableComponent<FixedExpenseDetailsDto>;
@@ -119,7 +119,7 @@ export class FixedExpensesListComponent {
     }
 
     private async _getUserConfirmation(message: string) {
-            const dialogRef = this._dialogService.confirmationModal(message);
-            return await firstValueFrom(dialogRef.afterClosed());
-        }
+        const dialogRef = this._dialogService.confirmationModal(message);
+        return await firstValueFrom(dialogRef.afterClosed());
+    }
 }
