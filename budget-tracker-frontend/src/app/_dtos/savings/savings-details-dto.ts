@@ -1,5 +1,5 @@
 export interface SavingsDetailsDto {
-    savingsId: number;
+    savingId: number;
     name: string;
     description: string;
     note?: string;

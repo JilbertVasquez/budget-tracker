@@ -4,9 +4,11 @@ import { environment } from '../../environments/environment';
 import { lastValueFrom } from 'rxjs';
 import { SavingsForListDto } from '../_dtos/savings/savings-for-list-dto';
 import { CreateSavingsDto } from '../_dtos/savings/create-savings-dto';
+import { SavingsDetailsDto } from '../_dtos/savings/savings-details-dto';
+import { UpdateSavingseDto } from '../_dtos/savings/update-savings-dto';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class SavingsService {
     private _baseUrl = environment.apiUrl + '/api/savings';
@@ -18,10 +20,18 @@ export class SavingsService {
             startDate: start,
             endDate: end
         }
-        return lastValueFrom(this._http.get<SavingsForListDto>(`${this._baseUrl}`, {params}));
+        return lastValueFrom(this._http.get<SavingsForListDto>(`${this._baseUrl}`, { params }));
+    }
+
+    getSavings(savingId: number) {
+        return lastValueFrom(this._http.get<SavingsDetailsDto>(`${this._baseUrl}/${savingId}`));
     }
 
     createSavings(createSavingsDto: CreateSavingsDto) {
         return lastValueFrom(this._http.post(this._baseUrl, createSavingsDto));
+    }
+
+    updateSavings(fixedExpenseId: number, updateSavings: UpdateSavingseDto) {
+        return lastValueFrom(this._http.put(`${this._baseUrl}/${fixedExpenseId}`, updateSavings));
     }
 }

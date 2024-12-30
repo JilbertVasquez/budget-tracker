@@ -62,6 +62,11 @@ export class SavingsListComponent {
         this._loadData();
     }
 
+    editSavings(data: SavingsDetailsDto) {
+        console.log(data);
+        this._router.navigate(['savings/savings-details/', data.savingId]);
+    }
+
     private _loadData() {
         if (!this.dateRange?.start && !this.dateRange?.end) {
             this._dialogService.message("Please enter valid date.");
