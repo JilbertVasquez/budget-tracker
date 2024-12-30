@@ -27,7 +27,7 @@ export class SavingsListComponent {
     isLoading = false;
     isBusy = false;
     data: SavingsDetailsDto[] = [];
-        dateRange: DateFilterDto | undefined = undefined;
+    dateRange: DateFilterDto | undefined = undefined;
 
     columns: Column[] = [
         { identifier: 'name', title: 'Name' },
@@ -55,12 +55,12 @@ export class SavingsListComponent {
     ngAfterViewInit() { }
 
     onRangeInput(dateFilterDto: DateFilterDto) {
-            this.dateRange = dateFilterDto;
-        }
+        this.dateRange = dateFilterDto;
+    }
 
-        async search() {
-            this._loadData();
-        }
+    async search() {
+        this._loadData();
+    }
 
     private _loadData() {
         if (!this.dateRange?.start && !this.dateRange?.end) {

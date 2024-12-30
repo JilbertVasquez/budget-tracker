@@ -56,12 +56,12 @@ export class FixedExpensesListComponent {
     ngAfterViewInit() { }
 
     onRangeInput(dateFilterDto: DateFilterDto) {
-            this.dateRange = dateFilterDto;
-        }
+        this.dateRange = dateFilterDto;
+    }
 
-        async search() {
-            this._loadData();
-        }
+    async search() {
+        this._loadData();
+    }
 
     editFixedExpense(data: FixedExpenseDetailsDto) {
         console.log(data);
