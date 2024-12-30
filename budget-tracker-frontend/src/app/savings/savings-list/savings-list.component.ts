@@ -67,6 +67,20 @@ export class SavingsListComponent {
         this._router.navigate(['savings/savings-details/', data.savingId]);
     }
 
+    async deleteSavings(data: SavingsDetailsDto) {
+        try {
+            const isConfirm = await this._getUserConfirmation(`Do you want to delete ${data.name} savings?`);
+            if (!isConfirm) return;
+
+            await this._savingsService.deleteSavings(data.savingId);
+            this._dialogService.message("Savings successfully deleted.");
+            this._loadData();
+        }
+        catch (error: any) {
+            this._errorService.handle(error);
+        }
+    }
+
     private _loadData() {
         if (!this.dateRange?.start && !this.dateRange?.end) {
             this._dialogService.message("Please enter valid date.");
@@ -101,5 +115,10 @@ export class SavingsListComponent {
         }, 0);
 
         this.dt.total = total;
+    }
+
+    private async _getUserConfirmation(message: string) {
+        const dialogRef = this._dialogService.confirmationModal(message);
+        return await firstValueFrom(dialogRef.afterClosed());
     }
 }

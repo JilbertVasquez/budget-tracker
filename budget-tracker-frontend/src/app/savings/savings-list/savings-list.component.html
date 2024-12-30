@@ -16,7 +16,7 @@
 
             <div class="flex-1">
                 <app-data-table #dt [columns]="columns" [isLoading]="isLoading" (editData)="editSavings($event)"
-                    [hasTotal]="true">
+                    (deleteData)="deleteSavings($event)" [hasTotal]="true">
                 </app-data-table>
 
                 @if(!data.length) {

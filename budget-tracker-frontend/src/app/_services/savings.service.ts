@@ -34,4 +34,8 @@ export class SavingsService {
     updateSavings(fixedExpenseId: number, updateSavings: UpdateSavingseDto) {
         return lastValueFrom(this._http.put(`${this._baseUrl}/${fixedExpenseId}`, updateSavings));
     }
+
+    deleteSavings(savingsId: number) {
+        return lastValueFrom(this._http.delete(`${this._baseUrl}/${savingsId}`));
+    }
 }
