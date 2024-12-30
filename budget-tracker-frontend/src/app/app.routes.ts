@@ -18,5 +18,9 @@ export const routes: Routes = [
     {
         path: 'expenses',
         loadChildren: () => import('./expenses/expenses-routing.module')
+    },
+    {
+        path: 'savings',
+        loadChildren: () => import('./savings/savings-routing.module')
     }
 ];
