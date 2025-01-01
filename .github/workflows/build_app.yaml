@@ -3,6 +3,8 @@ name: Build Budget Tracker App
 on:
   release:
     type: [published]
+  push:
+    branches: [ "main" ]
 
 jobs:
   build-frontend:
@@ -28,13 +30,13 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: pnpm
-          cache-dependency-path: ./budget-tracker-frontend/pnpm-lock.yaml
+          cache-dependency-path: ./budget-tracker-frontend/package-lock.json
 
       - name: Build SPA frontend
         working-directory: ./budget-tracker-frontend
         run: |
           pnpm install --no-frozen-lockfile
-          if [ ${{ env.CONFIGURATION }} == "development"]; then
+          if [ ${{ env.CONFIGURATION }} == "development" ]; then
             echo "Building development version"
           else
             echo "Building production version"
