@@ -11,8 +11,7 @@ import { SignUpDto } from "../_dtos/users/signup-dto";
 @Injectable({
     providedIn: "root"
 })
-export class AuthService
- {
+export class AuthService {
     private _baseUrl = environment.apiUrl + '/api/users';
     private _BudgetTrackerTokenKey = 'Budget-Tracker-Token';
     isLoggedIn = signal(false);
@@ -23,6 +22,7 @@ export class AuthService
         if (!token) return;
         this.isLoggedIn.set(!this._jwtHelper.isTokenExpired(token));
         this.getUser();
+        this.getUserRoles();
     }
 
     signup(dto: SignUpDto) {
@@ -40,10 +40,18 @@ export class AuthService
         const user = this._decodeToken(token);
         const userProfile: UserProfileDto = {
             userid: user.nameid,
-            username: user.unique_name
+            username: user.unique_name,
+            userRoles: user.role
         };
 
         return this.loggedInUser.set(userProfile);
+    }
+
+    getUserRoles(): string[] {
+        const userRoles = this.loggedInUser()?.userRoles;
+
+        return userRoles ? userRoles : [];
+
     }
 
     private _getToken() {
@@ -53,4 +61,4 @@ export class AuthService
     private _decodeToken(token: string) {
         return this._jwtHelper.decodeToken(token);
     }
- }
+}
