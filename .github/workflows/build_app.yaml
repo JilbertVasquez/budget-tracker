@@ -28,7 +28,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: pnpm
-          cache-dependency-path: ./budget-tracker-frontend/pnpm-lock.json
+          cache-dependency-path: ./budget-tracker-frontend/pnpm-lock.yaml
 
       - name: Build SPA frontend
         working-directory: ./budget-tracker-frontend
