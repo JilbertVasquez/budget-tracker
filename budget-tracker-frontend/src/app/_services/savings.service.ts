@@ -31,6 +31,10 @@ export class SavingsService {
         return lastValueFrom(this._http.post(this._baseUrl, createSavingsDto));
     }
 
+    createWithdrawSavings(createSavingsDto: CreateSavingsDto) {
+        return lastValueFrom(this._http.post(`${this._baseUrl}/withdraw`, createSavingsDto));
+    }
+
     updateSavings(fixedExpenseId: number, updateSavings: UpdateSavingseDto) {
         return lastValueFrom(this._http.put(`${this._baseUrl}/${fixedExpenseId}`, updateSavings));
     }
