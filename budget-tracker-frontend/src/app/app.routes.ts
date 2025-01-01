@@ -4,6 +4,7 @@ import { LoginComponent } from './login/login.component';
 import { SignupComponent } from './signup/signup.component';
 import { authGuard } from './_guards/auth.guard';
 import { expenseTrackerGuard } from './_guards/expense-tracker.guard';
+import { savingsGuard } from './_guards/savings.guard';
 
 export const routes: Routes = [
     {
@@ -25,6 +26,6 @@ export const routes: Routes = [
     {
         path: 'savings',
         loadChildren: () => import('./savings/savings-routing.module'),
-        canActivate: [authGuard]
+        canActivate: [authGuard, savingsGuard]
     }
 ];
