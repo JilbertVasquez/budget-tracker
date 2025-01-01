@@ -3,6 +3,7 @@ import { HomeComponent } from './home/home.component';
 import { LoginComponent } from './login/login.component';
 import { SignupComponent } from './signup/signup.component';
 import { authGuard } from './_guards/auth.guard';
+import { expenseTrackerGuard } from './_guards/expense-tracker.guard';
 
 export const routes: Routes = [
     {
@@ -19,7 +20,7 @@ export const routes: Routes = [
     {
         path: 'expenses',
         loadChildren: () => import('./expenses/expenses-routing.module'),
-        canActivate: [authGuard]
+        canActivate: [authGuard, expenseTrackerGuard]
     },
     {
         path: 'savings',

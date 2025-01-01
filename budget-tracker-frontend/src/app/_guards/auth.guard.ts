@@ -1,16 +1,16 @@
-import { Inject, inject } from '@angular/core';
+import { inject } from '@angular/core';
 import { CanActivateFn } from '@angular/router';
 import { AuthService } from '../_services/auth.service';
 import { DialogService } from '../_services/dialog.service';
 
 export const authGuard: CanActivateFn = () => {
-    const authGuard = inject(AuthService);
+    const authService = inject(AuthService);
     const dialogService = inject(DialogService);
 
-    if (!authGuard.isLoggedIn()) {
+    if (!authService.isLoggedIn()) {
         dialogService.message("Login first.");
         return false;
     }
 
-    return authGuard.isLoggedIn();
+    return authService.isLoggedIn();
 };
