@@ -37,6 +37,12 @@ public class UsersService(DataContext db, ILogger<UsersService> logger, IAuthGua
                 new(ClaimTypes.NameIdentifier, user.UserId.ToString()),
             };
 
+            if (user.Roles != null && user.Roles.Any())
+            {
+                var rolesAsString = string.Join(",", user.Roles);
+                claims.Add(new Claim(ClaimTypes.Role, rolesAsString));
+            }
+
             var token = _ag.EncodeToken(claims);
             return Result<string, string>.Ok(token);
         }
