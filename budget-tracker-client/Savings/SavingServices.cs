@@ -9,6 +9,7 @@ namespace budget_tracker_client.Savings;
 public interface ISavingServices
 {
     Task<Result<bool, string>> AddSaving(CreateSavingDto dto);
+    Task<Result<bool, string>> WithdrawSaving(CreateSavingDto dto);
     Task<Result<SavingDetailsDto, string>> GetSaving(int savingId);
     Task<Result<SavingForListDto, string>> GetSavings();
     Task<Result<bool, string>> UpdateSaving(UpdateSavingDto dto, int savingId);
@@ -40,6 +41,31 @@ public class SavingService(DataContext db, IAuthGuard ag,  ILogger<SavingService
         {
             logger.LogError(e, "Failed to add saving.");
             return "Failed to add saving.";
+        }
+    }
+
+    public async Task<Result<bool, string>> WithdrawSaving(CreateSavingDto dto)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(dto.Name)) return "Invalid Name.";
+            if (string.IsNullOrEmpty(dto.Description)) return "Invalid Description.";
+
+            dto = dto with { Amount = dto.Amount > 0 ? dto.Amount * -1 : dto.Amount };
+
+            var saving = new Saving(dto)
+            {
+                CreatedAt = DateOnly.FromDateTime(DateTime.UtcNow)
+            };
+            _db.Savings.Add(saving);
+
+            await _db.SaveChangesAsync();
+            return true;
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Failed to add withdrawal saving.");
+            return "Failed to add withdrawal saving.";
         }
     }
 

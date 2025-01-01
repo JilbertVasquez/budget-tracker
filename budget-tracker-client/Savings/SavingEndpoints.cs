@@ -8,6 +8,7 @@ public static class SavingEndpoints
     public static void MapSavingEndpoints(this RouteGroupBuilder routeGroupBuilder)
     {
         routeGroupBuilder.MapPost("", _addSavingHandler);
+        routeGroupBuilder.MapPost("withdraw", _withdrawSavingHandler);
         routeGroupBuilder.MapGet("{savingId}", _getSavingHandler);
         routeGroupBuilder.MapGet("", _getSavingsHandler);
         routeGroupBuilder.MapPut("{savingId}", _updateSavingHandler);
@@ -26,6 +27,22 @@ public static class SavingEndpoints
             _ => Results.Problem(new()
             {
                 Title = "Failed to add saving.",
+                Detail = result.Error
+            })
+        );
+    }
+
+    public static async Task<IResult> _withdrawSavingHandler(
+        [FromBody] CreateSavingDto dto,
+        ISavingServices savingServices
+    )
+    {
+        var result = await savingServices.WithdrawSaving(dto);
+        return result.Match(
+            Results.Ok,
+            _ => Results.Problem(new()
+            {
+                Title = "Failed to add withdrawal saving.",
                 Detail = result.Error
             })
         );
