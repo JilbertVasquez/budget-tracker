@@ -35,6 +35,7 @@ namespace budget_tracker_client.Users
         public ICollection<FixedExpense> FixedExpenses { get; set; } = new List<FixedExpense>();
         public ICollection<Budget> Budgets { get; set; } = new List<Budget>();
         public ICollection<Saving> Savings { get; set; } = new List<Saving>();
+        public List<string> Roles { get; set; } = new List<string>();
 
         public User() { }
 
