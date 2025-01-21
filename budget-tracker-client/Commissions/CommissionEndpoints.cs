@@ -12,6 +12,7 @@ public static class CommissionEndpoints
         routeGroupBuilder.MapGet("{commissionId}", _getCommissionHandler);
         routeGroupBuilder.MapGet("", _getCommissionsHandler);
         routeGroupBuilder.MapPut("{commissionId}", _updateCommissionHandler);
+        routeGroupBuilder.MapDelete("{commissionId}", _deleteCommissionHandler);
     }
 
     private static async Task<IResult> _addCommissionHandler(
@@ -74,6 +75,22 @@ public static class CommissionEndpoints
             _ => Results.Problem(new()
             {
                 Title = "Failed to update commission.",
+                Detail = result.Error
+            })
+        );
+    }
+
+    private static async Task<IResult> _deleteCommissionHandler(
+        int commissionId,
+        ICommissionServices commissionServices
+    )
+    {
+        var result = await commissionServices.DeleteCommission(commissionId);
+        return result.Match(
+            Results.Ok,
+            _ => Results.Problem(new()
+            {
+                Title = "Failed to delete commission.",
                 Detail = result.Error
             })
         );

@@ -14,6 +14,7 @@ public interface ICommissionServices
     Task<Result<CommissionDetailsDto, string>> GetCommission(int commissionId);
     Task<Result<CommissionForListDto, string>> GetCommissions(DateFilterDto dateFilterDto);
     Task<Result<bool, string>> UpdateCommission(int commissionId, UpdateCommissionDto dto);
+    Task<Result<bool, string>> DeleteCommission(int commissionId);
 }
 
 public class CommissionService(DataContext db, IAuthGuard ag, ILogger<ICommissionServices> logger) : ICommissionServices
@@ -129,6 +130,27 @@ public class CommissionService(DataContext db, IAuthGuard ag, ILogger<ICommissio
         {
             logger.LogError(e, "Failed to update commission.");
             return "Failed to update commission.";
+        }
+    }
+
+    public async Task<Result<bool, string>> DeleteCommission(int commissionId)
+    {
+        try
+        {
+            var userId = _ag.GetUserId();
+
+            var commission = await _db.Commissions.FindAsync(commissionId);
+            if (commission == null || commission.UserId != userId || commission.IsDeleted != null) return "Failed to delete commission.";
+
+            commission.IsDeleted = true;
+
+            await _db.SaveChangesAsync();
+            return true;
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Failed to delete commission.");
+            return "Failed to delete commission.";
         }
     }
 }
