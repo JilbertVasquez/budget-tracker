@@ -62,6 +62,11 @@ export class CommissionListsComponent {
         this._loadData();
     }
 
+    editSavings(data: CommissionDetailsDto) {
+            console.log(data);
+            this._router.navigate(['commissions/commission-details/', data.commissionId]);
+        }
+
     private _loadData() {
         if (!this.dateRange?.start && !this.dateRange?.end) {
             this._dialogService.message("Please enter valid date.");
