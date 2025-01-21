@@ -9,6 +9,7 @@ public static class CommissionEndpoints
     public static void MapCommissionEndpoints(this RouteGroupBuilder routeGroupBuilder)
     {
         routeGroupBuilder.MapPost("", _addCommissionHandler);
+        routeGroupBuilder.MapGet("{commissionId}", _getCommissionHandler);
         routeGroupBuilder.MapGet("", _getCommissionsHandler);
 
 
@@ -25,6 +26,22 @@ public static class CommissionEndpoints
             _ => Results.Problem(new()
             {
                 Title = "Failed to add commission.",
+                Detail = result.Error
+            })
+        );
+    }
+
+    private static async Task<IResult> _getCommissionHandler(
+        int commissionId,
+        ICommissionServices commissionServices
+    )
+    {
+        var result = await commissionServices.GetCommission(commissionId);
+        return result.Match(
+            Results.Ok,
+            _ => Results.Problem(new()
+            {
+                Title = "Failed to get commission.",
                 Detail = result.Error
             })
         );

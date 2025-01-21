@@ -11,6 +11,7 @@ namespace budget_tracker_client.Commissions;
 public interface ICommissionServices
 {
     Task<Result<bool, string>> AddCommission(CreateCommissionDto dto);
+    Task<Result<CommissionDetailsDto, string>> GetCommission(int commissionId);
     Task<Result<CommissionForListDto, string>> GetCommissions(DateFilterDto dateFilterDto);
 }
 
@@ -20,27 +21,57 @@ public class CommissionService(DataContext db, IAuthGuard ag, ILogger<ICommissio
     private readonly IAuthGuard _ag = ag;
 
     public async Task<Result<bool, string>> AddCommission(CreateCommissionDto dto)
+    {
+        try
         {
-            try
-            {
-                if (string.IsNullOrEmpty(dto.Name)) return "Invalid Name.";
-                if (string.IsNullOrEmpty(dto.Description)) return "Invalid Description.";
+            if (string.IsNullOrEmpty(dto.Name)) return "Invalid Name.";
+            if (string.IsNullOrEmpty(dto.Description)) return "Invalid Description.";
 
-                var commission = new Commission(dto)
-                {
-                    CreatedAt = DateOnly.FromDateTime(DateTime.UtcNow)
-                };
-                _db.Commissions.Add(commission);
-
-                await _db.SaveChangesAsync();
-                return true;
-            }
-            catch (Exception e)
+            var commission = new Commission(dto)
             {
-                logger.LogError(e, "Failed to add commission.");
-                return "Failed to add commission.";
-            }
+                CreatedAt = DateOnly.FromDateTime(DateTime.UtcNow)
+            };
+            _db.Commissions.Add(commission);
+
+            await _db.SaveChangesAsync();
+            return true;
         }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Failed to add commission.");
+            return "Failed to add commission.";
+        }
+    }
+
+    public async Task<Result<CommissionDetailsDto, string>> GetCommission(int commissionId)
+    {
+        try
+        {
+            var userId = _ag.GetUserId();
+
+            var commission = await _db.Commissions
+                .Where(x => x.UserId == userId && x.CommissionId == commissionId && x.IsDeleted == null)
+                // .Include(p => p.Period)
+                .FirstOrDefaultAsync();
+            
+            if (commission == null) return "Failed to get commission.";
+
+            return new CommissionDetailsDto(
+                commission.CommissionId, 
+                commission.Name, 
+                commission.Description, 
+                commission.Note, 
+                commission.Amount, 
+                commission.Category, 
+                commission.CreatedAt
+            );
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Failed to get commission.");
+            return "Failed to get commission.";
+        }
+    }
     public async Task<Result<CommissionForListDto, string>> GetCommissions(DateFilterDto dateFilterDto)
     {
         try

@@ -13,8 +13,6 @@ public static class ExpenseEndpoints
         routeGroupBuilder.MapGet("", _getExpensesHandler);
         routeGroupBuilder.MapPut("{expenseId}", _updateExpenseHandler);
         routeGroupBuilder.MapDelete("{expenseId}", _deleteExpenseHandler);
-
-
     }
 
     private static async Task<IResult> _addExpenseHandler(
