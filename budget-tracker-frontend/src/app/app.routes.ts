@@ -27,5 +27,10 @@ export const routes: Routes = [
         path: 'savings',
         loadChildren: () => import('./savings/savings-routing.module'),
         canActivate: [authGuard, savingsGuard]
+    },
+    {
+        path: 'commissions',
+        loadChildren: () => import('./commissions/commissions-routing.module'),
+        canActivate: [authGuard, savingsGuard]
     }
 ];
