@@ -6,6 +6,7 @@ import { JwtHelperService } from "@auth0/angular-jwt";
 import { LoginDto } from "../_dtos/users/login-dto";
 import { lastValueFrom } from "rxjs";
 import { SignUpDto } from "../_dtos/users/signup-dto";
+import { UserRole } from "../_enums/user-role";
 
 
 @Injectable({
@@ -22,7 +23,7 @@ export class AuthService {
         if (!token) return;
         this.isLoggedIn.set(!this._jwtHelper.isTokenExpired(token));
         this.getUser();
-        this.getUserRoles();
+        this._getUserRoles();
     }
 
     signup(dto: SignUpDto) {
@@ -47,11 +48,20 @@ export class AuthService {
         return this.loggedInUser.set(userProfile);
     }
 
-    getUserRoles(): string[] {
+    hasPermission(role: string) {
+        const userRoles = this._getUserRoles();
+
+        if (!userRoles.length) return false;
+
+        if (userRoles.includes(UserRole.SuperUser)) return true;
+
+        return userRoles.includes(role);
+    }
+
+    private _getUserRoles(): string[] {
         const userRoles = this.loggedInUser()?.userRoles;
 
         return userRoles ? userRoles : [];
-
     }
 
     private _getToken() {

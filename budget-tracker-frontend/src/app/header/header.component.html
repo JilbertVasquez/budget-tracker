@@ -12,9 +12,15 @@
                 </button>
 
                 <mat-menu #me="matMenu">
-                    <a mat-menu-item routerLink="./expenses">Expenses</a>
-                    <a mat-menu-item routerLink="./savings">Savings</a>
-                    <a mat-menu-item routerLink="">Commissions</a>
+                    @if (isExpenseTracker || isSuperuser) {
+                        <a mat-menu-item routerLink="./expenses">Expenses</a>
+                    }
+                    @if (isSaver || isSuperuser) {
+                        <a mat-menu-item routerLink="./savings">Savings</a>
+                    }
+                    @if (isCommissioner || isSuperuser) {
+                        <a mat-menu-item routerLink="">Commissions</a>
+                    }
                     <!-- <a mat-menu-item routerLink="">Income</a> -->
                     <!-- <a mat-menu-item routerLink="">Budget</a> -->
                     <button mat-button class="w-full" (click)="logout()">
