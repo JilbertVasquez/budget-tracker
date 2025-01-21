@@ -10,8 +10,8 @@ namespace budget_tracker_client.Commissions;
 
 public interface ICommissionServices
 {
+    Task<Result<bool, string>> AddCommission(CreateCommissionDto dto);
     Task<Result<CommissionForListDto, string>> GetCommissions(DateFilterDto dateFilterDto);
-
 }
 
 public class CommissionService(DataContext db, IAuthGuard ag, ILogger<ICommissionServices> logger) : ICommissionServices
@@ -19,6 +19,28 @@ public class CommissionService(DataContext db, IAuthGuard ag, ILogger<ICommissio
     private readonly DataContext _db = db;
     private readonly IAuthGuard _ag = ag;
 
+    public async Task<Result<bool, string>> AddCommission(CreateCommissionDto dto)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(dto.Name)) return "Invalid Name.";
+                if (string.IsNullOrEmpty(dto.Description)) return "Invalid Description.";
+
+                var commission = new Commission(dto)
+                {
+                    CreatedAt = DateOnly.FromDateTime(DateTime.UtcNow)
+                };
+                _db.Commissions.Add(commission);
+
+                await _db.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "Failed to add commission.");
+                return "Failed to add commission.";
+            }
+        }
     public async Task<Result<CommissionForListDto, string>> GetCommissions(DateFilterDto dateFilterDto)
     {
         try
