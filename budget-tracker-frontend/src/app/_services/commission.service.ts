@@ -31,6 +31,10 @@ export class CommissionService {
         return lastValueFrom(this._http.post(this._baseUrl, createCommmissionDto));
     }
 
+    createCashOutCommission(createCashOutCommissionDto: CreateCommissionDto) {
+            return lastValueFrom(this._http.post(`${this._baseUrl}/cashout`, createCashOutCommissionDto));
+        }
+
     updateCommission(commissionId: number, updateCommission: UpdateCommissionDto) {
         return lastValueFrom(this._http.put(`${this._baseUrl}/${commissionId}`, updateCommission));
     }
