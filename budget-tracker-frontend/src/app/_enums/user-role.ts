@@ -1,6 +1,6 @@
 export enum UserRole {
     SuperUser = "superuser",
     Commissioner = "commissioner",
-    ExpenseTracker = "expense-tracker",
+    ExpenseTracker = "expensetracker",
     Saver = "saver",
 }
