@@ -11,8 +11,7 @@ public static class CommissionEndpoints
         routeGroupBuilder.MapPost("", _addCommissionHandler);
         routeGroupBuilder.MapGet("{commissionId}", _getCommissionHandler);
         routeGroupBuilder.MapGet("", _getCommissionsHandler);
-
-
+        routeGroupBuilder.MapPut("{commissionId}", _updateCommissionHandler);
     }
 
     private static async Task<IResult> _addCommissionHandler(
@@ -58,6 +57,23 @@ public static class CommissionEndpoints
             _ => Results.Problem(new()
             {
                 Title = "Failed to get commissions.",
+                Detail = result.Error
+            })
+        );
+    }
+
+    private static async Task<IResult> _updateCommissionHandler(
+        [FromBody] UpdateCommissionDto dto,
+        int commissionId,
+        ICommissionServices commissionServices
+    )
+    {
+        var result = await commissionServices.UpdateCommission(commissionId, dto);
+        return result.Match(
+            Results.Ok,
+            _ => Results.Problem(new()
+            {
+                Title = "Failed to update commission.",
                 Detail = result.Error
             })
         );

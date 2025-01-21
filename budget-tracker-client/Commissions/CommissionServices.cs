@@ -13,6 +13,7 @@ public interface ICommissionServices
     Task<Result<bool, string>> AddCommission(CreateCommissionDto dto);
     Task<Result<CommissionDetailsDto, string>> GetCommission(int commissionId);
     Task<Result<CommissionForListDto, string>> GetCommissions(DateFilterDto dateFilterDto);
+    Task<Result<bool, string>> UpdateCommission(int commissionId, UpdateCommissionDto dto);
 }
 
 public class CommissionService(DataContext db, IAuthGuard ag, ILogger<ICommissionServices> logger) : ICommissionServices
@@ -51,7 +52,6 @@ public class CommissionService(DataContext db, IAuthGuard ag, ILogger<ICommissio
 
             var commission = await _db.Commissions
                 .Where(x => x.UserId == userId && x.CommissionId == commissionId && x.IsDeleted == null)
-                // .Include(p => p.Period)
                 .FirstOrDefaultAsync();
             
             if (commission == null) return "Failed to get commission.";
@@ -106,6 +106,29 @@ public class CommissionService(DataContext db, IAuthGuard ag, ILogger<ICommissio
         {
             logger.LogError(e, "Failed to get commissions.");
             return "Failed to get commissions.";
+        }
+    }
+
+    public async Task<Result<bool, string>> UpdateCommission(int commissionId, UpdateCommissionDto dto)
+    {
+        try
+        {
+            var commission = await _db.Commissions.FindAsync(commissionId);
+            if (commission == null || commission.UserId != dto.UserId || commission.IsDeleted != null) return "Failed to update commission.";
+
+            commission.Name = dto.Name;
+            commission.Description = dto.Description;
+            commission.Note = dto.Note;
+            commission.Amount = dto.Amount;
+            commission.Category = dto.Category;
+
+            await _db.SaveChangesAsync();
+            return true;
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Failed to update commission.");
+            return "Failed to update commission.";
         }
     }
 }
