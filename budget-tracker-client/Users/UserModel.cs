@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using budget_tracker_client.Budgets;
+using budget_tracker_client.Commissions;
 using budget_tracker_client.Expenses;
 using budget_tracker_client.FixedExpenses;
 using budget_tracker_client.Savings;
@@ -31,10 +32,10 @@ namespace budget_tracker_client.Users
         public bool? IsDeleted { get; set; }
 
         public ICollection<Expense> Expenses { get; set; } = new List<Expense>();
-       
         public ICollection<FixedExpense> FixedExpenses { get; set; } = new List<FixedExpense>();
         public ICollection<Budget> Budgets { get; set; } = new List<Budget>();
         public ICollection<Saving> Savings { get; set; } = new List<Saving>();
+        public ICollection<Commission> Commissions { get; set; } = new List<Commission>();
         public List<string> Roles { get; set; } = new List<string>();
 
         public User() { }

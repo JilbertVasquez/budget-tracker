@@ -1,5 +1,6 @@
 
 using budget_tracker_client.Budgets;
+using budget_tracker_client.Commissions;
 using budget_tracker_client.Expenses;
 using budget_tracker_client.FixedExpenses;
 // using budget_tracker_client.Periods;
@@ -18,6 +19,7 @@ namespace budget_tracker_client.Shared
         public required DbSet<FixedExpense> FixedExpenses { get; set; }
         public required DbSet<Budget> Budgets { get; set; }
         public required DbSet<Saving> Savings { get; set; }
+        public required DbSet<Commission> Commissions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
             {
@@ -25,6 +27,7 @@ namespace budget_tracker_client.Shared
                 onFixedExpensesModelCreating(modelBuilder);
                 onBudgetModelCreating(modelBuilder);
                 onSavingModelCreating(modelBuilder);
+                onCommissionModelCreating(modelBuilder);
         }
 
         private void onExpensesModelCreating(ModelBuilder modelBuilder)
@@ -56,6 +59,14 @@ namespace budget_tracker_client.Shared
             modelBuilder.Entity<Saving>()
                 .HasOne(e => e.User)
                 .WithMany(u => u.Savings)
+                .HasForeignKey(e => e.UserId);
+        }
+
+        private void onCommissionModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Commission>()
+                .HasOne(e => e.User)
+                .WithMany(u => u.Commissions)
                 .HasForeignKey(e => e.UserId);
         }
     }

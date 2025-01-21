@@ -1,4 +1,5 @@
 using budget_tracker_client.Budgets;
+using budget_tracker_client.Commissions;
 using budget_tracker_client.Configuration;
 using budget_tracker_client.Expenses;
 using budget_tracker_client.FixedExpenses;
@@ -48,5 +49,6 @@ app.MapGroup("api/expenses").RequireAuthorization().MapExpenseEndpoints();
 app.MapGroup("api/fixedExpenses").RequireAuthorization().MapFixedExpenseEndpoints();
 app.MapGroup("api/budgets").RequireAuthorization().MapBudgetEndpoints();
 app.MapGroup("api/savings").RequireAuthorization().MapSavingEndpoints();
+app.MapGroup("api/commissions").RequireAuthorization().MapCommissionEndpoints();
 
 app.Run();
