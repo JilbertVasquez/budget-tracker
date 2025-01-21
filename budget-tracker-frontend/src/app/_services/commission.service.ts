@@ -5,6 +5,7 @@ import { lastValueFrom } from 'rxjs';
 import { CommissionForListDto } from '../_dtos/commissions/commission-for-list-dto';
 import { CommissionDetailsDto } from '../_dtos/commissions/commission-details-dto';
 import { UpdateCommissionDto } from '../_dtos/commissions/update-commission-dto';
+import { CreateCommissionDto } from '../_dtos/commissions/create-commission-dto';
 
 @Injectable({
     providedIn: 'root',
@@ -24,6 +25,10 @@ export class CommissionService {
 
     getCommission(commissionId: number) {
         return lastValueFrom(this._http.get<CommissionDetailsDto>(`${this._baseUrl}/${commissionId}`));
+    }
+
+    createCommission(createCommmissionDto: CreateCommissionDto) {
+        return lastValueFrom(this._http.post(this._baseUrl, createCommmissionDto));
     }
 
     updateCommission(commissionId: number, updateCommission: UpdateCommissionDto) {
