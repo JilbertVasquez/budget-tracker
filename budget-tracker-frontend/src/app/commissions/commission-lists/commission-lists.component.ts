@@ -62,10 +62,24 @@ export class CommissionListsComponent {
         this._loadData();
     }
 
-    editSavings(data: CommissionDetailsDto) {
-            console.log(data);
-            this._router.navigate(['commissions/commission-details/', data.commissionId]);
+    editCommission(data: CommissionDetailsDto) {
+        console.log(data);
+        this._router.navigate(['commissions/commission-details/', data.commissionId]);
+    }
+
+    async deleteCommission(data: CommissionDetailsDto) {
+        try {
+            const isConfirm = await this._getUserConfirmation(`Do you want to delete ${data.name} savings?`);
+            if (!isConfirm) return;
+
+            await this._commissionService.deleteCommission(data.commissionId);
+            this._dialogService.message("Commission successfully deleted.");
+            this._loadData();
         }
+        catch (error: any) {
+            this._errorService.handle(error);
+        }
+    }
 
     private _loadData() {
         if (!this.dateRange?.start && !this.dateRange?.end) {
@@ -101,5 +115,10 @@ export class CommissionListsComponent {
         }, 0);
 
         this.dt.total = total;
+    }
+
+    private async _getUserConfirmation(message: string) {
+        const dialogRef = this._dialogService.confirmationModal(message);
+        return await firstValueFrom(dialogRef.afterClosed());
     }
 }

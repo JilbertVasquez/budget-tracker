@@ -27,6 +27,10 @@ export class CommissionService {
     }
 
     updateCommission(commissionId: number, updateCommission: UpdateCommissionDto) {
-            return lastValueFrom(this._http.put(`${this._baseUrl}/${commissionId}`, updateCommission));
-        }
+        return lastValueFrom(this._http.put(`${this._baseUrl}/${commissionId}`, updateCommission));
+    }
+
+    deleteCommission(commissionId: number) {
+        return lastValueFrom(this._http.delete(`${this._baseUrl}/${commissionId}`));
+    }
 }
