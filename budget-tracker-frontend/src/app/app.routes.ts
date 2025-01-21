@@ -5,6 +5,7 @@ import { SignupComponent } from './signup/signup.component';
 import { authGuard } from './_guards/auth.guard';
 import { expenseTrackerGuard } from './_guards/expense-tracker.guard';
 import { savingsGuard } from './_guards/savings.guard';
+import { commissionGuard } from './_guards/commission.guard';
 
 export const routes: Routes = [
     {
@@ -31,6 +32,6 @@ export const routes: Routes = [
     {
         path: 'commissions',
         loadChildren: () => import('./commissions/commissions-routing.module'),
-        canActivate: [authGuard, savingsGuard]
+        canActivate: [authGuard, commissionGuard]
     }
 ];
