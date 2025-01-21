@@ -9,6 +9,7 @@ public static class CommissionEndpoints
     public static void MapCommissionEndpoints(this RouteGroupBuilder routeGroupBuilder)
     {
         routeGroupBuilder.MapPost("", _addCommissionHandler);
+        routeGroupBuilder.MapPost("cashout", _cashOutCommissionHandler);
         routeGroupBuilder.MapGet("{commissionId}", _getCommissionHandler);
         routeGroupBuilder.MapGet("", _getCommissionsHandler);
         routeGroupBuilder.MapPut("{commissionId}", _updateCommissionHandler);
@@ -26,6 +27,23 @@ public static class CommissionEndpoints
             _ => Results.Problem(new()
             {
                 Title = "Failed to add commission.",
+                Detail = result.Error
+            })
+        );
+    }
+
+    public static async Task<IResult> _cashOutCommissionHandler(
+        [FromBody] CreateCommissionDto dto,
+        ICommissionServices commissionServices
+
+    )
+    {
+        var result = await commissionServices.CashOutCommission(dto);
+        return result.Match(
+            Results.Ok,
+            _ => Results.Problem(new()
+            {
+                Title = "Failed to add cashout commission.",
                 Detail = result.Error
             })
         );
