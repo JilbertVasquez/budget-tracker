@@ -4,6 +4,7 @@ using budget_tracker_client.Helpers;
 using budget_tracker_client.Models;
 using budget_tracker_client.Shared;
 using Microsoft.EntityFrameworkCore;
+using budget_tracker_client.Dictionary;
 
 namespace budget_tracker_client.Users;
 
@@ -67,7 +68,12 @@ public class UsersService(DataContext db, ILogger<UsersService> logger, IAuthGua
 
             var user = new User(dto)
             {
-                CreatedAt = DateOnly.FromDateTime(DateTime.UtcNow)
+                CreatedAt = DateOnly.FromDateTime(DateTime.UtcNow),
+                Roles = new List<string> 
+                {
+                    RolesDictionary.ExpenseTracker.ToString().ToLower(),
+                    RolesDictionary.Saver.ToString().ToLower()
+                }
             };
             _db.Users.Add(user);
 
