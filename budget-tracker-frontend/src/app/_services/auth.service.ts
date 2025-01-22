@@ -12,14 +12,14 @@ import {UserRole} from '../_enums/user-role';
     providedIn: 'root',
 })
 export class AuthService {
+    private _jwtHelper = new JwtHelperService();
     private _baseUrl = environment.apiUrl + '/api/users';
     private _BudgetTrackerTokenKey = 'Budget-Tracker-Token';
     isLoggedIn = signal(false);
     loggedInUser = signal<UserProfileDto | null>(null);
 
     constructor(
-        private _http: HttpClient,
-        private _jwtHelper: JwtHelperService
+        private _http: HttpClient
     ) {
         const token = this._getToken();
         if (!token) return;
