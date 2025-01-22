@@ -4,36 +4,30 @@
     </div>
     <div>
         @if (authService.isLoggedIn()) {
-            <div>
-                <button mat-button [matMenuTriggerFor]="me">
-                    {{authService.loggedInUser()?.username}}
-                    <mat-icon>arrow_drop_down</mat-icon>
+        <div>
+            <button mat-button [matMenuTriggerFor]="me">
+                {{ authService.loggedInUser()?.username }}
+                <mat-icon>arrow_drop_down</mat-icon>
+            </button>
 
+            <mat-menu #me="matMenu">
+                @if (isExpenseTracker || isSuperuser) {
+                <a mat-menu-item routerLink="./expenses">Expenses</a>
+                } @if (isSaver || isSuperuser) {
+                <a mat-menu-item routerLink="./savings">Savings</a>
+                } @if (isCommissioner || isSuperuser) {
+                <a mat-menu-item routerLink="./commissions">Commissions</a>
+                }
+                <button mat-button class="w-full" (click)="logout()">
+                    Logout
                 </button>
-
-                <mat-menu #me="matMenu">
-                    @if (isExpenseTracker || isSuperuser) {
-                        <a mat-menu-item routerLink="./expenses">Expenses</a>
-                    }
-                    @if (isSaver || isSuperuser) {
-                        <a mat-menu-item routerLink="./savings">Savings</a>
-                    }
-                    @if (isCommissioner || isSuperuser) {
-                        <a mat-menu-item routerLink="./commissions">Commissions</a>
-                    }
-                    <!-- <a mat-menu-item routerLink="">Income</a> -->
-                    <!-- <a mat-menu-item routerLink="">Budget</a> -->
-                    <button mat-button class="w-full" (click)="logout()">
-                        Logout
-                    </button>
-                </mat-menu>
-            </div>
-        }
-        @else {
-            <div class="flex gap-4">
-                <button (click)="login()">Login</button>
-                <button (click)="signup()">Signup</button>
-            </div>
+            </mat-menu>
+        </div>
+        } @else {
+        <div class="flex gap-4">
+            <button (click)="login()">Login</button>
+            <button (click)="signup()">Signup</button>
+        </div>
         }
     </div>
 </mat-toolbar>

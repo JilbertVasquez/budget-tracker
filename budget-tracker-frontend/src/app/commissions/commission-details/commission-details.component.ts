@@ -1,20 +1,33 @@
 import {Component} from '@angular/core';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { CommissionDetailsDto } from '../../_dtos/commissions/commission-details-dto';
-import { AuthService } from '../../_services/auth.service';
-import { CommissionService } from '../../_services/commission.service';
-import { DialogService } from '../../_services/dialog.service';
-import { ErrorService } from '../../_services/error.service';
-import { ActivatedRoute, Router } from '@angular/router';
-import { UpdateCommissionDto } from '../../_dtos/commissions/update-commission-dto';
+import {
+    FormControl,
+    FormGroup,
+    FormsModule,
+    ReactiveFormsModule,
+    Validators,
+} from '@angular/forms';
+import {MatButtonModule} from '@angular/material/button';
+import {MatCardModule} from '@angular/material/card';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
+import {CommissionDetailsDto} from '../../_dtos/commissions/commission-details-dto';
+import {AuthService} from '../../_services/auth.service';
+import {CommissionService} from '../../_services/commission.service';
+import {DialogService} from '../../_services/dialog.service';
+import {ErrorService} from '../../_services/error.service';
+import {ActivatedRoute, Router} from '@angular/router';
+import {UpdateCommissionDto} from '../../_dtos/commissions/update-commission-dto';
 
 @Component({
     selector: 'app-commission-details',
-    imports: [MatCardModule, MatFormFieldModule, MatButtonModule, FormsModule, MatInputModule, ReactiveFormsModule],
+    imports: [
+        MatCardModule,
+        MatFormFieldModule,
+        MatButtonModule,
+        FormsModule,
+        MatInputModule,
+        ReactiveFormsModule,
+    ],
     templateUrl: './commission-details.component.html',
     styleUrl: './commission-details.component.css',
 })
@@ -25,7 +38,8 @@ export class CommissionDetailsComponent {
 
     commissionDetails: CommissionDetailsDto | null = null;
 
-    constructor(private _authService: AuthService,
+    constructor(
+        private _authService: AuthService,
         private _commissionService: CommissionService,
         private _dialogService: DialogService,
         private _errorService: ErrorService,
@@ -33,33 +47,17 @@ export class CommissionDetailsComponent {
         private _route: ActivatedRoute
     ) {
         this.editForm = new FormGroup({
-            name: new FormControl('',
-                [
-                    Validators.required,
-                    Validators.minLength(2),
-                ]
-            ),
-            description: new FormControl('',
-                [
-                    Validators.required,
-                    Validators.minLength(2),
-                ]
-            ),
-            note: new FormControl('',
-                [
-                    Validators.minLength(2)
-                ]
-            ),
-            amount: new FormControl('',
-                [
-                    Validators.required
-                ]
-            ),
-            category: new FormControl('',
-                [
-                    Validators.minLength(2),
-                ]
-            )
+            name: new FormControl('', [
+                Validators.required,
+                Validators.minLength(2),
+            ]),
+            description: new FormControl('', [
+                Validators.required,
+                Validators.minLength(2),
+            ]),
+            note: new FormControl('', [Validators.minLength(2)]),
+            amount: new FormControl('', [Validators.required]),
+            category: new FormControl('', [Validators.minLength(2)]),
         });
     }
 
@@ -73,17 +71,17 @@ export class CommissionDetailsComponent {
         this.commissionId = +expenseId;
 
         try {
-            this.commissionDetails = await this._commissionService.getCommission(this.commissionId);
+            this.commissionDetails =
+                await this._commissionService.getCommission(this.commissionId);
 
             this.editForm.setValue({
                 name: this.commissionDetails.name,
                 description: this.commissionDetails.description,
                 note: this.commissionDetails.note,
                 amount: this.commissionDetails.amount,
-                category: this.commissionDetails.category
+                category: this.commissionDetails.category,
             });
-        }
-        catch (error: any) {
+        } catch (error: any) {
             this._errorService.handle(error);
         }
     }
@@ -91,8 +89,9 @@ export class CommissionDetailsComponent {
     async submit() {
         const user = this._authService.loggedInUser();
 
-        if (!this.editForm.valid) return this._dialogService.error("Invalid form.");
-        if (!user) return this._dialogService.error("Invalid user.");
+        if (!this.editForm.valid)
+            return this._dialogService.error('Invalid form.');
+        if (!user) return this._dialogService.error('Invalid user.');
 
         const name = this.editForm.value.name;
         const description = this.editForm.value.description;
@@ -108,15 +107,17 @@ export class CommissionDetailsComponent {
             note: note,
             amount: amount,
             category: category,
-            userId: userId
+            userId: userId,
         };
 
         try {
-            await this._commissionService.updateCommission(this.commissionId!, updateExpense);
+            await this._commissionService.updateCommission(
+                this.commissionId!,
+                updateExpense
+            );
             this._dialogService.message('Commission successfully updated.');
             this._router.navigate(['./commissions/commission-list']);
-        }
-        catch (error: any) {
+        } catch (error: any) {
             this._errorService.handle(error);
         }
     }

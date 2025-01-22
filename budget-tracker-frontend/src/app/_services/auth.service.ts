@@ -1,16 +1,15 @@
-import { Injectable, signal } from "@angular/core"
-import { environment } from "../../environments/environment"
-import { UserProfileDto } from "../_dtos/users/user-profile-dto";
-import { HttpClient } from "@angular/common/http";
-import { JwtHelperService } from "@auth0/angular-jwt";
-import { LoginDto } from "../_dtos/users/login-dto";
-import { lastValueFrom } from "rxjs";
-import { SignUpDto } from "../_dtos/users/signup-dto";
-import { UserRole } from "../_enums/user-role";
-
+import {Injectable, signal} from '@angular/core';
+import {environment} from '../../environments/environment';
+import {UserProfileDto} from '../_dtos/users/user-profile-dto';
+import {HttpClient} from '@angular/common/http';
+import {JwtHelperService} from '@auth0/angular-jwt';
+import {LoginDto} from '../_dtos/users/login-dto';
+import {lastValueFrom} from 'rxjs';
+import {SignUpDto} from '../_dtos/users/signup-dto';
+import {UserRole} from '../_enums/user-role';
 
 @Injectable({
-    providedIn: "root"
+    providedIn: 'root',
 })
 export class AuthService {
     private _baseUrl = environment.apiUrl + '/api/users';
@@ -18,7 +17,10 @@ export class AuthService {
     isLoggedIn = signal(false);
     loggedInUser = signal<UserProfileDto | null>(null);
 
-    constructor(private _http: HttpClient, private _jwtHelper: JwtHelperService) {
+    constructor(
+        private _http: HttpClient,
+        private _jwtHelper: JwtHelperService
+    ) {
         const token = this._getToken();
         if (!token) return;
         this.isLoggedIn.set(!this._jwtHelper.isTokenExpired(token));
@@ -31,7 +33,7 @@ export class AuthService {
     }
 
     login(dto: LoginDto) {
-        return lastValueFrom(this._http.post(this._baseUrl + "/login", dto));
+        return lastValueFrom(this._http.post(this._baseUrl + '/login', dto));
     }
 
     getUser() {
@@ -42,7 +44,7 @@ export class AuthService {
         const userProfile: UserProfileDto = {
             userid: user.nameid,
             username: user.unique_name,
-            userRoles: user.role
+            userRoles: user.role,
         };
 
         return this.loggedInUser.set(userProfile);

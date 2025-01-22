@@ -1,15 +1,14 @@
-import { Routes } from "@angular/router";
-import { SavingsHomeComponent } from "./savings-home/savings-home.component";
-import { SavingsListComponent } from "./savings-list/savings-list.component";
-import { SavingsDetailsComponent } from "./savings-details/savings-details.component";
-import { CreateSavingsComponent } from "./create-savings/create-savings.component";
-import { WithdrawSavingsComponent } from "./withdraw-savings/withdraw-savings.component";
-
+import {Routes} from '@angular/router';
+import {SavingsHomeComponent} from './savings-home/savings-home.component';
+import {SavingsListComponent} from './savings-list/savings-list.component';
+import {SavingsDetailsComponent} from './savings-details/savings-details.component';
+import {CreateSavingsComponent} from './create-savings/create-savings.component';
+import {WithdrawSavingsComponent} from './withdraw-savings/withdraw-savings.component';
 
 export default [
     {
         path: '',
-        component: SavingsHomeComponent
+        component: SavingsHomeComponent,
     },
     {
         path: 'savings-list',

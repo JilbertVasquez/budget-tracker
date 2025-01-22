@@ -1,22 +1,35 @@
-import { Component } from '@angular/core';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { AuthService } from '../../_services/auth.service';
-import { SavingsService } from '../../_services/savings.service';
-import { DialogService } from '../../_services/dialog.service';
-import { ErrorService } from '../../_services/error.service';
-import { ActivatedRoute, Router } from '@angular/router';
-import { SavingsDetailsDto } from '../../_dtos/savings/savings-details-dto';
-import { MatCardModule } from '@angular/material/card';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatButtonModule } from '@angular/material/button';
-import { MatInputModule } from '@angular/material/input';
-import { UpdateSavingseDto } from '../../_dtos/savings/update-savings-dto';
+import {Component} from '@angular/core';
+import {
+    FormControl,
+    FormGroup,
+    FormsModule,
+    ReactiveFormsModule,
+    Validators,
+} from '@angular/forms';
+import {AuthService} from '../../_services/auth.service';
+import {SavingsService} from '../../_services/savings.service';
+import {DialogService} from '../../_services/dialog.service';
+import {ErrorService} from '../../_services/error.service';
+import {ActivatedRoute, Router} from '@angular/router';
+import {SavingsDetailsDto} from '../../_dtos/savings/savings-details-dto';
+import {MatCardModule} from '@angular/material/card';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatButtonModule} from '@angular/material/button';
+import {MatInputModule} from '@angular/material/input';
+import {UpdateSavingseDto} from '../../_dtos/savings/update-savings-dto';
 
 @Component({
     selector: 'app-savings-details',
-    imports: [MatCardModule, MatFormFieldModule, MatButtonModule, FormsModule, MatInputModule, ReactiveFormsModule],
+    imports: [
+        MatCardModule,
+        MatFormFieldModule,
+        MatButtonModule,
+        FormsModule,
+        MatInputModule,
+        ReactiveFormsModule,
+    ],
     templateUrl: './savings-details.component.html',
-    styleUrl: './savings-details.component.css'
+    styleUrl: './savings-details.component.css',
 })
 export class SavingsDetailsComponent {
     editForm: FormGroup;
@@ -25,7 +38,8 @@ export class SavingsDetailsComponent {
 
     savingsDetails: SavingsDetailsDto | null = null;
 
-    constructor(private _authService: AuthService,
+    constructor(
+        private _authService: AuthService,
         private _savingsService: SavingsService,
         private _dialogService: DialogService,
         private _errorService: ErrorService,
@@ -33,33 +47,17 @@ export class SavingsDetailsComponent {
         private _route: ActivatedRoute
     ) {
         this.editForm = new FormGroup({
-            name: new FormControl('',
-                [
-                    Validators.required,
-                    Validators.minLength(2),
-                ]
-            ),
-            description: new FormControl('',
-                [
-                    Validators.required,
-                    Validators.minLength(2),
-                ]
-            ),
-            note: new FormControl('',
-                [
-                    Validators.minLength(2)
-                ]
-            ),
-            amount: new FormControl('',
-                [
-                    Validators.required
-                ]
-            ),
-            category: new FormControl('',
-                [
-                    Validators.minLength(2),
-                ]
-            )
+            name: new FormControl('', [
+                Validators.required,
+                Validators.minLength(2),
+            ]),
+            description: new FormControl('', [
+                Validators.required,
+                Validators.minLength(2),
+            ]),
+            note: new FormControl('', [Validators.minLength(2)]),
+            amount: new FormControl('', [Validators.required]),
+            category: new FormControl('', [Validators.minLength(2)]),
         });
     }
 
@@ -73,17 +71,18 @@ export class SavingsDetailsComponent {
         this.savingId = +expenseId;
 
         try {
-            this.savingsDetails = await this._savingsService.getSavings(this.savingId);
+            this.savingsDetails = await this._savingsService.getSavings(
+                this.savingId
+            );
 
             this.editForm.setValue({
                 name: this.savingsDetails.name,
                 description: this.savingsDetails.description,
                 note: this.savingsDetails.note,
                 amount: this.savingsDetails.amount,
-                category: this.savingsDetails.category
+                category: this.savingsDetails.category,
             });
-        }
-        catch (error: any) {
+        } catch (error: any) {
             this._errorService.handle(error);
         }
     }
@@ -91,8 +90,9 @@ export class SavingsDetailsComponent {
     async submit() {
         const user = this._authService.loggedInUser();
 
-        if (!this.editForm.valid) return this._dialogService.error("Invalid form.");
-        if (!user) return this._dialogService.error("Invalid user.");
+        if (!this.editForm.valid)
+            return this._dialogService.error('Invalid form.');
+        if (!user) return this._dialogService.error('Invalid user.');
 
         const name = this.editForm.value.name;
         const description = this.editForm.value.description;
@@ -108,15 +108,17 @@ export class SavingsDetailsComponent {
             note: note,
             amount: amount,
             category: category,
-            userId: userId
+            userId: userId,
         };
 
         try {
-            await this._savingsService.updateSavings(this.savingId!, updateExpense);
+            await this._savingsService.updateSavings(
+                this.savingId!,
+                updateExpense
+            );
             this._dialogService.message('Savings successfully updated.');
             this._router.navigate(['./savings/savings-list']);
-        }
-        catch (error: any) {
+        } catch (error: any) {
             this._errorService.handle(error);
         }
     }

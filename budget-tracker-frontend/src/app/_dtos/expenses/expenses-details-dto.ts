@@ -1,5 +1,3 @@
-import { PeriodDto } from "../periods/periodDto";
-
 export interface ExpenseDetailsDto {
     expenseId: number;
     name: string;
@@ -7,6 +5,5 @@ export interface ExpenseDetailsDto {
     note?: string;
     category?: string;
     amount: number;
-    // period: PeriodDto;
     createdAt: string
 }

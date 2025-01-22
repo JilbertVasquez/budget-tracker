@@ -1,16 +1,19 @@
-import {Component, EventEmitter, Input, Output, signal, ViewChild} from '@angular/core';
+import {
+    Component,
+    EventEmitter,
+    Input,
+    Output,
+    ViewChild,
+} from '@angular/core';
 import {MatSort, MatSortModule} from '@angular/material/sort';
 import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
-import {
-    MatTableDataSource,
-    MatTableModule,
-} from '@angular/material/table';
+import {MatTableDataSource, MatTableModule} from '@angular/material/table';
 import {MatCardModule} from '@angular/material/card';
 import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
 
 @Component({
     selector: 'app-data-table',
@@ -23,7 +26,7 @@ import { MatInputModule } from '@angular/material/input';
         MatIconModule,
         MatProgressBarModule,
         MatFormFieldModule,
-        MatInputModule
+        MatInputModule,
     ],
     templateUrl: './data-table.component.html',
     styleUrl: './data-table.component.css',
@@ -40,7 +43,6 @@ export class DataTableComponent<T> {
     dataSource = new MatTableDataSource<T>();
     displayColumns: string[] = [];
     total = 0;
-
 
     ngOnInit() {
         this.displayColumns = this.columns.map(x => x.identifier);

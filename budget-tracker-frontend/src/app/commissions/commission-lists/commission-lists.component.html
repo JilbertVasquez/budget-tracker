@@ -1,27 +1,38 @@
-<div class=" flex-1">
+<div class="flex-1">
     <div class="flex justify-center mx-8 mt-8">
         <mat-card appearance="outlined" class="w-[96%] flex">
             <div class="flex justify-between">
                 <mat-card-title class="px-5 pt-4">Savings List</mat-card-title>
 
                 <div class="px-4">
-                    <app-date-range-picker (onRangeInput)="onRangeInput($event)"></app-date-range-picker>
+                    <app-date-range-picker
+                        (onRangeInput)="onRangeInput($event)"
+                    ></app-date-range-picker>
 
-                    <button mat-raised-button color="primary" (click)="search()">
+                    <button
+                        mat-raised-button
+                        color="primary"
+                        (click)="search()"
+                    >
                         Search
                     </button>
                 </div>
-
             </div>
 
             <div class="flex-1">
-                <app-data-table #dt [columns]="columns" [isLoading]="isLoading" (editData)="editCommission($event)"
-                (deleteData)="deleteCommission($event)" [hasTotal]="true">
+                <app-data-table
+                    #dt
+                    [columns]="columns"
+                    [isLoading]="isLoading"
+                    (editData)="editCommission($event)"
+                    (deleteData)="deleteCommission($event)"
+                    [hasTotal]="true"
+                >
                 </app-data-table>
 
                 @if(!data.length) {
                 <div class="flex justify-center my-5">
-                    {{isLoading ? "Fetching data..." : "No data to display"}}
+                    {{ isLoading ? 'Fetching data...' : 'No data to display' }}
                 </div>
                 }
             </div>

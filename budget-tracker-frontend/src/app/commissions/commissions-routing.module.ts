@@ -1,14 +1,14 @@
-import { Routes } from "@angular/router";
-import { CommissionHomeComponent } from "./commission-home/commission-home.component";
-import { CashOutComponent } from "./cash-out/cash-out.component";
-import { CreateCommissionComponent } from "./create-commission/create-commission.component";
-import { CommissionDetailsComponent } from "./commission-details/commission-details.component";
-import { CommissionListsComponent } from "./commission-lists/commission-lists.component";
+import {Routes} from '@angular/router';
+import {CommissionHomeComponent} from './commission-home/commission-home.component';
+import {CashOutComponent} from './cash-out/cash-out.component';
+import {CreateCommissionComponent} from './create-commission/create-commission.component';
+import {CommissionDetailsComponent} from './commission-details/commission-details.component';
+import {CommissionListsComponent} from './commission-lists/commission-lists.component';
 
 export default [
     {
         path: '',
-        component: CommissionHomeComponent
+        component: CommissionHomeComponent,
     },
     {
         path: 'commission-list',
