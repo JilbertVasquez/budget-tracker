@@ -64,10 +64,10 @@ export class LoginComponent {
             };
 
             try {
-                const response: any = await this._appAuthService.login(user);
-                localStorage.setItem('Budget-Tracker-Token', response);
-                this._appAuthService.getUser();
-                this._appAuthService.isLoggedIn.set(true);
+                // const response: any = await this._appAuthService.login(user);
+                // localStorage.setItem('Budget-Tracker-Token', response);
+                // this._appAuthService.getUser();
+                // this._appAuthService.isLoggedIn.set(true);
                 this._router.navigate(['/']);
             } catch (error: any) {
                 this._errorService.handle(error);

@@ -70,7 +70,7 @@ export class SignupComponent {
             };
 
             try {
-                await this._appAuthService.signup(user);
+                // await this._appAuthService.signup(user);
                 this._router.navigate(['./login']);
             } catch (error: any) {
                 this._errorService.handle(error);

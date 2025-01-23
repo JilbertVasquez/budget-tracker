@@ -7,6 +7,8 @@ import {LoginDto} from '../_dtos/users/login-dto';
 import {lastValueFrom} from 'rxjs';
 import {SignUpDto} from '../_dtos/users/signup-dto';
 import {UserRole} from '../_enums/user-role';
+import { AuthService } from '@auth0/auth0-angular';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Injectable({
     providedIn: 'root',
@@ -19,58 +21,80 @@ export class appAuthService {
     loggedInUser = signal<UserProfileDto | null>(null);
 
     constructor(
-        private _http: HttpClient
+        private _http: HttpClient,
+        private _auth: AuthService
     ) {
-        const token = this._getToken();
-        if (!token) return;
-        this.isLoggedIn.set(!this._jwtHelper.isTokenExpired(token));
-        this.getUser();
-        this._getUserRoles();
+        this._auth.isAuthenticated$
+            .pipe(takeUntilDestroyed())
+            .subscribe((isLoggedIn) => {
+                if (isLoggedIn) {
+                    this._initialize();
+                }
+            })
+        // const token = this._getToken();
+        // if (!token) return;
+        // this.isLoggedIn.set(!this._jwtHelper.isTokenExpired(token));
+        // this.getUser();
+        // this._getUserRoles();
     }
 
-    signup(dto: SignUpDto) {
-        return lastValueFrom(this._http.post(this._baseUrl + '/register', dto));
+    private async _initialize() {
+        const token = await lastValueFrom(this._auth.getAccessTokenSilently());
+        const isTokenExpired = this._jwtHelper.isTokenExpired(token);
+
+        if (token && !isTokenExpired) {
+            // const decodedToken = this._jwtHelper.decodeToken(token);
+            this.isLoggedIn.set(true);
+        }
     }
 
-    login(dto: LoginDto) {
-        return lastValueFrom(this._http.post(this._baseUrl + '/login', dto));
-    }
+    // signup(dto: SignUpDto) {
+    //     return lastValueFrom(this._http.post(this._baseUrl + '/register', dto));
+    // }
 
-    getUser() {
-        const token = this._getToken();
-        if (!token) return null;
+    // login(dto: LoginDto) {
+    //     return lastValueFrom(this._http.post(this._baseUrl + '/login', dto));
+    // }
 
-        const user = this._decodeToken(token);
-        const userProfile: UserProfileDto = {
-            userid: user.nameid,
-            username: user.unique_name,
-            userRoles: user.role,
-        };
+    // getUser() {
+    //     const token = this._getToken();
+    //     if (!token) return null;
 
-        return this.loggedInUser.set(userProfile);
-    }
+    //     const user = this._decodeToken(token);
+    //     const userProfile: UserProfileDto = {
+    //         userid: user.nameid,
+    //         username: user.unique_name,
+    //         userRoles: user.role,
+    //     };
+
+    //     return this.loggedInUser.set(userProfile);
+    // }
+
+    // hasPermission(role: string) {
+    //     const userRoles = this._getUserRoles();
+
+    //     if (!userRoles.length) return false;
+
+    //     if (userRoles.includes(UserRole.SuperUser)) return true;
+
+    //     return userRoles.includes(role);
+    // }
 
     hasPermission(role: string) {
-        const userRoles = this._getUserRoles();
-
-        if (!userRoles.length) return false;
-
-        if (userRoles.includes(UserRole.SuperUser)) return true;
-
-        return userRoles.includes(role);
+        return true;
     }
 
-    private _getUserRoles(): string[] {
-        const userRoles = this.loggedInUser()?.userRoles;
+    // private _getUserRoles(): string[] {
+    //     const userRoles = this.loggedInUser()?.userRoles;
 
-        return userRoles ? userRoles : [];
-    }
+    //     return userRoles ? userRoles : [];
+    // }
 
-    private _getToken() {
-        return localStorage.getItem(this._BudgetTrackerTokenKey);
-    }
+    // private _getToken() {
+    //     return localStorage.getItem(this._BudgetTrackerTokenKey);
+    // }
 
-    private _decodeToken(token: string) {
-        return this._jwtHelper.decodeToken(token);
-    }
+    // private _decodeToken(token: string) {
+    //     return this._jwtHelper.decodeToken(token);
+    // }
 }
