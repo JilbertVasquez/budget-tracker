@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {AuthService} from '../_services/auth.service';
+import {appAuthService} from '../_services/app-auth.service';
 import {Router} from '@angular/router';
 import {
     FormControl,
@@ -35,7 +35,7 @@ export class SignupComponent {
     isBusy = false;
 
     constructor(
-        private _authService: AuthService,
+        private _appAuthService: appAuthService,
         private _router: Router,
         private _errorService: ErrorService
     ) {
@@ -70,7 +70,7 @@ export class SignupComponent {
             };
 
             try {
-                await this._authService.signup(user);
+                await this._appAuthService.signup(user);
                 this._router.navigate(['./login']);
             } catch (error: any) {
                 this._errorService.handle(error);

@@ -7,7 +7,7 @@ import {
     ReactiveFormsModule,
     Validators,
 } from '@angular/forms';
-import {AuthService} from '../../_services/auth.service';
+import {appAuthService} from '../../_services/app-auth.service';
 import {SavingsService} from '../../_services/savings.service';
 import {DialogService} from '../../_services/dialog.service';
 import {ErrorService} from '../../_services/error.service';
@@ -37,7 +37,7 @@ export class WithdrawSavingsComponent {
     withCategory = false;
 
     constructor(
-        private _authService: AuthService,
+        private _appAuthService: appAuthService,
         private _savingsService: SavingsService,
         private _dialogService: DialogService,
         private _errorService: ErrorService,
@@ -67,7 +67,7 @@ export class WithdrawSavingsComponent {
     }
 
     async submit() {
-        const user = this._authService.loggedInUser();
+        const user = this._appAuthService.loggedInUser();
 
         if (!this.createForm.valid)
             return this._dialogService.error('Invalid form.');

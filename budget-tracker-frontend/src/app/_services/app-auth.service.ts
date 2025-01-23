@@ -11,7 +11,7 @@ import {UserRole} from '../_enums/user-role';
 @Injectable({
     providedIn: 'root',
 })
-export class AuthService {
+export class appAuthService {
     private _jwtHelper = new JwtHelperService();
     private _baseUrl = environment.apiUrl + '/api/users';
     private _BudgetTrackerTokenKey = 'Budget-Tracker-Token';
