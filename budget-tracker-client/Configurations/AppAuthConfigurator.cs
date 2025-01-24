@@ -12,13 +12,15 @@ public static class AppAuthConfigurator
         builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options => 
             {
-                options.TokenValidationParameters = new() 
-                {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(appSettings.TokenSigningKey)),
-                    ValidateIssuer = false,
-                    ValidateAudience = false
-                };
+                // options.TokenValidationParameters = new() 
+                // {
+                //     ValidateIssuerSigningKey = true,
+                //     IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(appSettings.TokenSigningKey)),
+                //     ValidateIssuer = false,
+                //     ValidateAudience = false
+                // };
+                options.Authority = appSettings.Auth0Authority;
+                options.Audience = appSettings.Auth0Audience;
             });
     }
 }

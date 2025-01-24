@@ -45,10 +45,10 @@ app.UseAuthorization();
 app.MapCustomFallbackToFile();
 app.MapGroup("api/users").MapUsersEndpoints();
 // app.MapGroup("api/periods").RequireAuthorization().MapPeriodsEndpoints();
-app.MapGroup("api/expenses").MapExpenseEndpoints();
-app.MapGroup("api/fixedExpenses").MapFixedExpenseEndpoints();
-app.MapGroup("api/budgets").MapBudgetEndpoints();
-app.MapGroup("api/savings").MapSavingEndpoints();
-app.MapGroup("api/commissions").MapCommissionEndpoints();
+app.MapGroup("api/expenses").RequireAuthorization().MapExpenseEndpoints();
+app.MapGroup("api/fixedExpenses").RequireAuthorization().MapFixedExpenseEndpoints();
+app.MapGroup("api/budgets").RequireAuthorization().MapBudgetEndpoints();
+app.MapGroup("api/savings").RequireAuthorization().MapSavingEndpoints();
+app.MapGroup("api/commissions").RequireAuthorization().MapCommissionEndpoints();
 
 app.Run();
