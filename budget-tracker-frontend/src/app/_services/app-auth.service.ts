@@ -51,12 +51,9 @@ export class appAuthService {
                 email: decodedToken.email,
                 userPermissions: decodedToken.permissions,
             };
+
             this.loggedInUser.set(userProfile);
-
-            console.log(this.loggedInUser());
-
             await this._checkAndSaveUser();
-
             this.isLoggedIn.set(true);
         }
     }

@@ -6,5 +6,5 @@ public record CreateCommissionDto(
     string? Note,
     double Amount,
     string? Category,
-    int UserId
+    string UserId
 );
