@@ -12,6 +12,7 @@ public interface IUsersServices
 {
     Task<Result<string, string>> LoginUser(LoginUserDto dto);
     Task<Result<bool, string>> RegisterUser(RegisterUserDto dto);
+    Task<Result<bool, string>> CheckAndSaveUser(Auth0UserDto dto);
     Task<Result<UserDetailsDto, string>> GetUser(int userId);
     Task<Result<UserDetailsDto[], string>> GetUsers();
     Task<Result<bool, string>> UpdateUser(int userId, UpdateUserDto dto);
@@ -66,16 +67,16 @@ public class UsersService(DataContext db, ILogger<UsersService> logger, IAuthGua
             if (await _db.Users.AnyAsync(x => (x.Username == dto.Username || x.Email == dto.Email) && x.IsDeleted == null))
                 return "Username or email is already taken.";
 
-            var user = new User(dto)
-            {
-                CreatedAt = DateOnly.FromDateTime(DateTime.UtcNow),
-                Roles = new List<string> 
-                {
-                    RolesDictionary.ExpenseTracker.ToString().ToLower(),
-                    RolesDictionary.Saver.ToString().ToLower()
-                }
-            };
-            _db.Users.Add(user);
+            // var user = new User(dto)
+            // {
+            //     CreatedAt = DateOnly.FromDateTime(DateTime.UtcNow),
+            //     Roles = new List<string> 
+            //     {
+            //         RolesDictionary.ExpenseTracker.ToString().ToLower(),
+            //         RolesDictionary.Saver.ToString().ToLower()
+            //     }
+            // };
+            // _db.Users.Add(user);     // no more registration, when user login, it checks if the auth0 id is exist, if not, save user credentials
 
             await _db.SaveChangesAsync();
             return true;
@@ -84,6 +85,41 @@ public class UsersService(DataContext db, ILogger<UsersService> logger, IAuthGua
         {
             logger.LogError(e, "Failed to register user.");
             return "Failed to register user.";
+        }
+    }
+
+    public async Task<Result<bool, string>> CheckAndSaveUser(Auth0UserDto dto)
+    {
+        try 
+        {
+            var isUserExist = await _db.Users.FirstOrDefaultAsync(x => x.Auth0Id == dto.UserId);
+
+            if (isUserExist != null) return true;
+
+            var isSuccess = false;
+
+            if (isUserExist == null)
+            {
+                var user = new User(dto)
+                {
+                    CreatedAt = DateOnly.FromDateTime(DateTime.UtcNow),
+                    Auth0Id = dto.UserId
+                };
+                _db.Users.Add(user);
+
+                await _db.SaveChangesAsync();
+
+                isSuccess = true;
+            }
+
+            if (isSuccess) return true;
+
+            return "Failed to save user.";
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Failed to save user.");
+            return "Failed to save user.";
         }
     }
 

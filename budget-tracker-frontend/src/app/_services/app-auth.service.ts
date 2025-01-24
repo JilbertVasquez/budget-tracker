@@ -52,8 +52,17 @@ export class appAuthService {
                 userPermissions: decodedToken.permissions,
             };
             this.loggedInUser.set(userProfile);
+
+            console.log(this.loggedInUser());
+
+            await this._checkAndSaveUser();
+
             this.isLoggedIn.set(true);
         }
+    }
+
+    private _checkAndSaveUser() {
+        return lastValueFrom(this._http.post(this._baseUrl + '/check-and-save-user', this.loggedInUser()));
     }
 
     // signup(dto: SignUpDto) {
