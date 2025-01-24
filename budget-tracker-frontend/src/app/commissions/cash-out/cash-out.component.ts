@@ -79,7 +79,7 @@ export class CashOutComponent {
         const amount = this.createForm.value.amount;
         const category = this.createForm.value.category;
 
-        const userId = user!.userid;
+        const userId = user!.userId;
 
         const createCashOutCommission: CreateCashOutCommissionDto = {
             name: name,

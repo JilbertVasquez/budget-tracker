@@ -43,7 +43,15 @@ export class appAuthService {
         const isTokenExpired = this._jwtHelper.isTokenExpired(token);
 
         if (token && !isTokenExpired) {
-            // const decodedToken = this._jwtHelper.decodeToken(token);
+            const decodedToken = this._jwtHelper.decodeToken(token);
+            const userProfile: UserProfileDto = {
+                userId: decodedToken.sub,
+                name: decodedToken.name,
+                username: decodedToken.username,
+                email: decodedToken.email,
+                userPermissions: decodedToken.permissions,
+            };
+            this.loggedInUser.set(userProfile);
             this.isLoggedIn.set(true);
         }
     }

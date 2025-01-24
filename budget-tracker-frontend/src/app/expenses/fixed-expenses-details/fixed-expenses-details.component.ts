@@ -101,7 +101,7 @@ export class FixedExpensesDetailsComponent {
         const amount = this.editForm.value.amount;
         const category = this.editForm.value.category;
 
-        const userId = user!.userid;
+        const userId = user!.userId;
 
         const updateExpense: UpdateFixedExpenseDto = {
             name: name,

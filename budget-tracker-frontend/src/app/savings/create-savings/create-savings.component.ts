@@ -79,7 +79,7 @@ export class CreateSavingsComponent {
         const amount = this.createForm.value.amount;
         const category = this.createForm.value.category;
 
-        const userId = user!.userid;
+        const userId = user!.userId;
 
         const createSavings: CreateSavingsDto = {
             name: name,
