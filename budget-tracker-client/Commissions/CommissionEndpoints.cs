@@ -9,12 +9,12 @@ public static class CommissionEndpoints
 {
     public static void MapCommissionEndpoints(this RouteGroupBuilder routeGroupBuilder)
     {
-        routeGroupBuilder.MapPost("", _addCommissionHandler).RequireAuthorization(policyNames: nameof(IsCommissioner));
-        routeGroupBuilder.MapPost("cashout", _cashOutCommissionHandler).RequireAuthorization(policyNames: nameof(IsCommissioner));
-        routeGroupBuilder.MapGet("{commissionId}", _getCommissionHandler).RequireAuthorization(policyNames: nameof(IsCommissioner));
-        routeGroupBuilder.MapGet("", _getCommissionsHandler).RequireAuthorization(policyNames: nameof(IsCommissioner));
-        routeGroupBuilder.MapPut("{commissionId}", _updateCommissionHandler).RequireAuthorization(policyNames: nameof(IsCommissioner));
-        routeGroupBuilder.MapDelete("{commissionId}", _deleteCommissionHandler).RequireAuthorization(policyNames: nameof(IsCommissioner));
+        routeGroupBuilder.MapPost("", _addCommissionHandler);
+        routeGroupBuilder.MapPost("cashout", _cashOutCommissionHandler);
+        routeGroupBuilder.MapGet("{commissionId}", _getCommissionHandler);
+        routeGroupBuilder.MapGet("", _getCommissionsHandler);
+        routeGroupBuilder.MapPut("{commissionId}", _updateCommissionHandler);
+        routeGroupBuilder.MapDelete("{commissionId}", _deleteCommissionHandler);
     }
 
     private static async Task<IResult> _addCommissionHandler(
