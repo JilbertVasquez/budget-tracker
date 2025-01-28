@@ -29,6 +29,7 @@ public static class AppAuthConfigurator
     {
         _addPolicyAndRegisterDI<IsSuperUserRequirement, IsSuperUser>(builder);
         _addPolicyAndRegisterDI<IsCommissionerRequirement, IsCommissioner>(builder);
+        _addPolicyAndRegisterDI<IsExpenseTrackerRequirement, IsExpenseTracker>(builder);
     }
 
     private  static void _addPolicyAndRegisterDI<TRequirement, THandler>(WebApplicationBuilder builder)
