@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace budget_tracker_client.Configuration.AuthorizationPolicy;
 
-public class HasPermissionHandler<T> : AuthorizationHandler<T> where T : PErmissionRequirement
+public class HasPermissionHandler<T> : AuthorizationHandler<T> where T : PermissionRequirement
 {
     private const string _superUserPermission = "superuser";
 
