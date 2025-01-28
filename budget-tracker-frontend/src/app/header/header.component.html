@@ -28,8 +28,6 @@
         @if ((auth.isAuthenticated$ | async) === false) {
             <div class="flex gap-4">
                 <app-auth-button></app-auth-button>
-                <!-- <button (click)="login()">Login</button>
-                <button (click)="signup()">Signup</button> -->
             </div>
         }
     </div>

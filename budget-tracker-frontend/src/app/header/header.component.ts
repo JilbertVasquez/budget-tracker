@@ -25,13 +25,13 @@ import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
     templateUrl: './header.component.html',
     styleUrl: './header.component.css',
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent {
     isCommissioner: boolean = false;
     isExpenseTracker: boolean = false;
     isSaver: boolean = false;
     isSuperuser: boolean = false;
 
-    constructor(public auth: AuthService, private _router: Router, private _appAuthService: appAuthService) {
+    constructor(public auth: AuthService, private _appAuthService: appAuthService) {
         toObservable(this._appAuthService.isLoggedIn)
             .pipe(takeUntilDestroyed())
             .subscribe((isLoggedIn) => {
@@ -42,21 +42,5 @@ export class HeaderComponent implements OnInit {
                     this.isSuperuser = this._appAuthService.hasPermission([UserRole.SuperUser]);
                 }
             })
-    }
-
-    ngOnInit(): void { }
-
-    login() {
-        this._router.navigate(['/login']);
-    }
-
-    signup() {
-        this._router.navigate(['/signup']);
-    }
-
-    logout() {
-        localStorage.removeItem('Budget-Tracker-Token');
-        // this.authService.isLoggedIn.set(false);
-        this._router.navigate(['/']);
     }
 }
