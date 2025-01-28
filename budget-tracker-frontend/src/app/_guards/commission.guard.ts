@@ -4,11 +4,13 @@ import { DialogService } from '../_services/dialog.service';
 import { UserRole } from '../_enums/user-role';
 import { inject } from '@angular/core';
 
-export const commissionGuard: CanActivateFn = () => {
+export const commissionGuard: CanActivateFn = (route) => {
     const authService = inject(appAuthService);
     const dialogService = inject(DialogService);
 
-    if (!authService.hasPermission(UserRole.Commissioner)) {
+    const permissions = route.data['permissions'] as string[];
+
+    if (!authService.hasPermission(permissions)) {
         dialogService.message("You don't have enough permission.");
         return false;
     }

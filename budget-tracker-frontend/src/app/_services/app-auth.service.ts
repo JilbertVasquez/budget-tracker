@@ -9,6 +9,7 @@ import {SignUpDto} from '../_dtos/users/signup-dto';
 import {UserRole} from '../_enums/user-role';
 import { AuthService } from '@auth0/auth0-angular';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Permission } from '../_enums/permission';
 
 @Injectable({
     providedIn: 'root',
@@ -17,6 +18,7 @@ export class appAuthService {
     private _jwtHelper = new JwtHelperService();
     private _baseUrl = environment.apiUrl + '/api/users';
     private _BudgetTrackerTokenKey = 'Budget-Tracker-Token';
+    private _userPermissionsStrorageName = 'Budget-Tracker-User-Permissions';
     isLoggedIn = signal(false);
     loggedInUser = signal<UserProfileDto | null>(null);
 
@@ -29,6 +31,9 @@ export class appAuthService {
             .subscribe((isLoggedIn) => {
                 if (isLoggedIn) {
                     this._initialize();
+                }
+                else {
+                    localStorage.removeItem(this._userPermissionsStrorageName);
                 }
             })
         // const token = this._getToken();
@@ -44,15 +49,19 @@ export class appAuthService {
 
         if (token && !isTokenExpired) {
             const decodedToken = this._jwtHelper.decodeToken(token);
+
             const userProfile: UserProfileDto = {
                 userId: decodedToken.sub,
                 name: decodedToken.name,
                 username: decodedToken.username,
                 email: decodedToken.email,
-                userPermissions: decodedToken.permissions,
+                userPermissions: decodedToken.permissions as string[],
             };
 
             this.loggedInUser.set(userProfile);
+
+            const userPermissions = this.loggedInUser()?.userPermissions;
+            localStorage.setItem(this._userPermissionsStrorageName, JSON.stringify(userPermissions));
             await this._checkAndSaveUser();
             this.isLoggedIn.set(true);
         }
@@ -94,8 +103,42 @@ export class appAuthService {
     //     return userRoles.includes(role);
     // }
 
-    hasPermission(role: string) {
-        return true;
+    hasPermission(permission: string[], requiredAll: boolean = true) {
+        if (!this.isLoggedIn || this.loggedInUser == null) return false;
+        if (this.isSuperUser()) return true;
+
+        const userPermissions = this.getUserPermissions();
+
+        if (requiredAll) {
+            return permission.every(per => this._checkPermission(userPermissions, per));
+        }
+        else {
+            return permission.some(per => this._checkPermission(userPermissions, per));
+        }
+    }
+
+    private _checkPermission(userPermissions: string[], permission: string) {
+        return userPermissions.includes(permission);
+    }
+
+    isSuperUser() {
+        const userPermissions = this.getUserPermissions();
+
+        if (!userPermissions || !userPermissions.length) return false;
+
+        return userPermissions.includes(Permission.SuperUser);
+    }
+
+    getUserPermissions() {
+        try
+        {
+            const localStorageUserPermissions = localStorage.getItem(this._userPermissionsStrorageName);
+            const userPermissions = localStorageUserPermissions ? JSON.parse(localStorageUserPermissions) : [];
+            return userPermissions;
+        }
+        catch (error) {
+            return [];
+        }
     }
 
     // private _getUserRoles(): string[] {
