@@ -1,4 +1,4 @@
-export interface UpdateSavingseDto {
+export interface UpdateSavingsDto {
     name: string;
     description: string;
     note?: string;

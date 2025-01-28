@@ -16,7 +16,7 @@ import {MatCardModule} from '@angular/material/card';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatButtonModule} from '@angular/material/button';
 import {MatInputModule} from '@angular/material/input';
-import {UpdateSavingseDto} from '../../_dtos/savings/update-savings-dto';
+import {UpdateSavingsDto} from '../../_dtos/savings/update-savings-dto';
 
 @Component({
     selector: 'app-savings-details',
@@ -102,7 +102,7 @@ export class SavingsDetailsComponent {
 
         const userId = user!.userId;
 
-        const updateExpense: UpdateSavingseDto = {
+        const updateExpense: UpdateSavingsDto = {
             name: name,
             description: description,
             note: note,
