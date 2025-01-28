@@ -6,12 +6,14 @@ import {SavingsForListDto} from '../_dtos/savings/savings-for-list-dto';
 import {CreateSavingsDto} from '../_dtos/savings/create-savings-dto';
 import {SavingsDetailsDto} from '../_dtos/savings/savings-details-dto';
 import {UpdateSavingsDto} from '../_dtos/savings/update-savings-dto';
+import { DateFilterDto } from '../_dtos/date/date-filter-dto';
 
 @Injectable({
     providedIn: 'root',
 })
 export class SavingsService {
     private _baseUrl = environment.apiUrl + '/api/savings';
+    dateRange: DateFilterDto | null = null;
 
     constructor(private _http: HttpClient) {}
 

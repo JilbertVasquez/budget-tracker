@@ -38,7 +38,8 @@ export class CommissionListsComponent {
     isLoading = false;
     isBusy = false;
     data: CommissionDetailsDto[] = [];
-    dateRange: DateFilterDto | undefined = undefined;
+    dateRange: DateFilterDto | null = null;
+    isEdit = false;
 
     columns: Column[] = [
         {identifier: 'name', title: 'Name'},
@@ -58,16 +59,21 @@ export class CommissionListsComponent {
         private datePipe: DatePipe
     ) {}
 
-    async ngOnInit() {}
+    async ngOnInit() {
+        this.dateRange = this._commissionService.dateRange;
+        if (this.dateRange) this._loadData();
+    }
 
     ngOnDestroy() {
         this.data = [];
+        if (!this.isEdit) this._commissionService.dateRange = null;
     }
 
     ngAfterViewInit() {}
 
     onRangeInput(dateFilterDto: DateFilterDto) {
         this.dateRange = dateFilterDto;
+        this._commissionService.dateRange = dateFilterDto;
     }
 
     async search() {
@@ -75,11 +81,8 @@ export class CommissionListsComponent {
     }
 
     editCommission(data: CommissionDetailsDto) {
-        console.log(data);
-        this._router.navigate([
-            'commissions/commission-details/',
-            data.commissionId,
-        ]);
+        this.isEdit = true;
+        this._router.navigate(['commissions/commission-details/', data.commissionId,]);
     }
 
     async deleteCommission(data: CommissionDetailsDto) {

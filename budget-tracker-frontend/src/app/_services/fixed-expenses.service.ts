@@ -6,12 +6,14 @@ import {lastValueFrom} from 'rxjs';
 import {FixedExpensesForListDto} from '../_dtos/fixed-expenses/fixed-expenses-for-list-dto';
 import {CreateFixedExpenseDto} from '../_dtos/fixed-expenses/create-fixed-expense-dto';
 import {UpdateFixedExpenseDto} from '../_dtos/fixed-expenses/update-expense-dto';
+import { DateFilterDto } from '../_dtos/date/date-filter-dto';
 
 @Injectable({
     providedIn: 'root',
 })
 export class FixedExpensesService {
     private _baseUrl = environment.apiUrl + '/api/fixedExpenses';
+    dateRange: DateFilterDto | null = null;
 
     constructor(private _http: HttpClient) {}
 

@@ -6,12 +6,14 @@ import {CommissionForListDto} from '../_dtos/commissions/commission-for-list-dto
 import {CommissionDetailsDto} from '../_dtos/commissions/commission-details-dto';
 import {UpdateCommissionDto} from '../_dtos/commissions/update-commission-dto';
 import {CreateCommissionDto} from '../_dtos/commissions/create-commission-dto';
+import { DateFilterDto } from '../_dtos/date/date-filter-dto';
 
 @Injectable({
     providedIn: 'root',
 })
 export class CommissionService {
     private _baseUrl = environment.apiUrl + '/api/commissions';
+    dateRange: DateFilterDto | null = null;
 
     constructor(private _http: HttpClient) {}
 
