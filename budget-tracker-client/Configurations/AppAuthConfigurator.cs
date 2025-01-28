@@ -28,6 +28,7 @@ public static class AppAuthConfigurator
     private static void SetupAuthorization(this WebApplicationBuilder builder)
     {
         _addPolicyAndRegisterDI<IsSuperUserRequirement, IsSuperUser>(builder);
+        _addPolicyAndRegisterDI<IsCommissionerRequirement, IsCommissioner>(builder);
     }
 
     private  static void _addPolicyAndRegisterDI<TRequirement, THandler>(WebApplicationBuilder builder)
