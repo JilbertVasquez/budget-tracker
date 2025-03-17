@@ -30,8 +30,10 @@ public class FixedExpenseService(DataContext db, IAuthGuard ag, ILogger<FixedExp
             if(string.IsNullOrEmpty(dto.Name)) return "Invalid Name.";
             if(string.IsNullOrEmpty(dto.Description)) return "Invalid Description.";
 
+            var userId = await _ag.GetUserId(_db);
             var fixedExpense = new FixedExpense(dto)
             {
+                UserId = userId,
                 CreatedAt = DateOnly.FromDateTime(DateTime.UtcNow)
             };
 
@@ -51,7 +53,7 @@ public class FixedExpenseService(DataContext db, IAuthGuard ag, ILogger<FixedExp
     {
         try
         {
-            var userId = _ag.GetUserId();
+            var userId = await _ag.GetUserId(_db);
 
             var fixedExpense = await _db.FixedExpenses
                 .Where(x => x.UserId == userId && x.FixedExpensesId == fixedExpenseId && x.IsDeleted == null)
@@ -85,7 +87,7 @@ public class FixedExpenseService(DataContext db, IAuthGuard ag, ILogger<FixedExp
             dateFilterDto.EnsureStartBeforeEnd();
             dateFilterDto.StartDate = dateFilterDto.GetStartOfStartDate();
             dateFilterDto.EndDate = dateFilterDto.GetEndOfEndDate();
-            var userId = _ag.GetUserId();
+            var userId = await _ag.GetUserId(_db);
 
             var fixedExpenses = await _db.FixedExpenses
                 .Where(x => 
@@ -122,8 +124,8 @@ public class FixedExpenseService(DataContext db, IAuthGuard ag, ILogger<FixedExp
         try
         {
             var fixedExpense = await _db.FixedExpenses.FindAsync(fixedExpenseId);
-
-            if (fixedExpense == null || fixedExpense.UserId != dto.UserId || fixedExpense.IsDeleted != null) return "Failed to update fixed expense.";
+            var userId = await _ag.GetUserId(_db);
+            if (fixedExpense == null || fixedExpense.UserId != userId || fixedExpense.IsDeleted != null) return "Failed to update fixed expense.";
 
             fixedExpense.Name = dto.Name;
             fixedExpense.Description = dto.Description;
@@ -146,7 +148,7 @@ public class FixedExpenseService(DataContext db, IAuthGuard ag, ILogger<FixedExp
     {
         try
         {
-            var userId = _ag.GetUserId();
+            var userId = await _ag.GetUserId(_db);
 
             var fixedExpense = await _db.FixedExpenses.FindAsync(fixedExpenseId);
             if (fixedExpense == null || fixedExpense.UserId != userId || fixedExpense.IsDeleted != null) return "Failed to delete fixed expense.";

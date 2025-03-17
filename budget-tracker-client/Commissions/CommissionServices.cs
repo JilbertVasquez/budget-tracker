@@ -30,9 +30,11 @@ public class CommissionService(DataContext db, IAuthGuard ag, ILogger<ICommissio
             if (string.IsNullOrEmpty(dto.Name)) return "Invalid Name.";
             if (string.IsNullOrEmpty(dto.Description)) return "Invalid Description.";
 
+            var userId = await _ag.GetUserId(_db);
             var commission = new Commission(dto)
             {
-                CreatedAt = DateOnly.FromDateTime(DateTime.UtcNow)
+                CreatedAt = DateOnly.FromDateTime(DateTime.UtcNow),
+                UserId = userId
             };
             _db.Commissions.Add(commission);
 
@@ -53,10 +55,12 @@ public class CommissionService(DataContext db, IAuthGuard ag, ILogger<ICommissio
             if (string.IsNullOrEmpty(dto.Name)) return "Invalid Name.";
             if (string.IsNullOrEmpty(dto.Description)) return "Invalid Description.";
 
+            var userId = await _ag.GetUserId(_db);
             dto = dto with { Amount = dto.Amount > 0 ? dto.Amount * -1 : dto.Amount };
 
             var commission = new Commission(dto)
             {
+                UserId = userId,
                 CreatedAt = DateOnly.FromDateTime(DateTime.UtcNow)
             };
             _db.Commissions.Add(commission);
@@ -75,7 +79,7 @@ public class CommissionService(DataContext db, IAuthGuard ag, ILogger<ICommissio
     {
         try
         {
-            var userId = _ag.GetUserId();
+            var userId = await _ag.GetUserId(_db);
 
             var commission = await _db.Commissions
                 .Where(x => x.UserId == userId && x.CommissionId == commissionId && x.IsDeleted == null)
@@ -106,7 +110,7 @@ public class CommissionService(DataContext db, IAuthGuard ag, ILogger<ICommissio
             dateFilterDto.EnsureStartBeforeEnd();
             dateFilterDto.StartDate = dateFilterDto.GetStartOfStartDate();
             dateFilterDto.EndDate = dateFilterDto.GetEndOfEndDate();
-            var userId = _ag.GetUserId();
+            var userId = await _ag.GetUserId(_db);
 
             var commissions = await _db.Commissions
                 .Where(x => 
@@ -141,7 +145,9 @@ public class CommissionService(DataContext db, IAuthGuard ag, ILogger<ICommissio
         try
         {
             var commission = await _db.Commissions.FindAsync(commissionId);
-            if (commission == null || commission.UserId != dto.UserId || commission.IsDeleted != null) return "Failed to update commission.";
+            var userId = await _ag.GetUserId(_db);
+
+            if (commission == null || commission.UserId != userId || commission.IsDeleted != null) return "Failed to update commission.";
 
             commission.Name = dto.Name;
             commission.Description = dto.Description;
@@ -163,7 +169,7 @@ public class CommissionService(DataContext db, IAuthGuard ag, ILogger<ICommissio
     {
         try
         {
-            var userId = _ag.GetUserId();
+            var userId = await _ag.GetUserId(_db);
 
             var commission = await _db.Commissions.FindAsync(commissionId);
             if (commission == null || commission.UserId != userId || commission.IsDeleted != null) return "Failed to delete commission.";

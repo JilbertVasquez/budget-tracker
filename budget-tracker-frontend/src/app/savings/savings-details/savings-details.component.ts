@@ -6,7 +6,7 @@ import {
     ReactiveFormsModule,
     Validators,
 } from '@angular/forms';
-import {AuthService} from '../../_services/auth.service';
+import {appAuthService} from '../../_services/app-auth.service';
 import {SavingsService} from '../../_services/savings.service';
 import {DialogService} from '../../_services/dialog.service';
 import {ErrorService} from '../../_services/error.service';
@@ -16,7 +16,7 @@ import {MatCardModule} from '@angular/material/card';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatButtonModule} from '@angular/material/button';
 import {MatInputModule} from '@angular/material/input';
-import {UpdateSavingseDto} from '../../_dtos/savings/update-savings-dto';
+import {UpdateSavingsDto} from '../../_dtos/savings/update-savings-dto';
 
 @Component({
     selector: 'app-savings-details',
@@ -39,7 +39,7 @@ export class SavingsDetailsComponent {
     savingsDetails: SavingsDetailsDto | null = null;
 
     constructor(
-        private _authService: AuthService,
+        private _appAuthService: appAuthService,
         private _savingsService: SavingsService,
         private _dialogService: DialogService,
         private _errorService: ErrorService,
@@ -88,7 +88,7 @@ export class SavingsDetailsComponent {
     }
 
     async submit() {
-        const user = this._authService.loggedInUser();
+        const user = this._appAuthService.loggedInUser();
 
         if (!this.editForm.valid)
             return this._dialogService.error('Invalid form.');
@@ -100,9 +100,9 @@ export class SavingsDetailsComponent {
         const amount = this.editForm.value.amount;
         const category = this.editForm.value.category;
 
-        const userId = user!.userid;
+        const userId = user!.userId;
 
-        const updateExpense: UpdateSavingseDto = {
+        const updateExpense: UpdateSavingsDto = {
             name: name,
             description: description,
             note: note,

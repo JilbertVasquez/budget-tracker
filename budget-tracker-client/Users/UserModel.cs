@@ -24,12 +24,12 @@ namespace budget_tracker_client.Users
         [Required]
         public string Username { get; set; } = default!;
 
-        [Required]
-        public string Password { get; set; } = default!;
+        public string? Password { get; set; }
 
         public DateOnly? CreatedAt { get; set; }
 
         public bool? IsDeleted { get; set; }
+        public string? Auth0Id { get; set; }
 
         public ICollection<Expense> Expenses { get; set; } = new List<Expense>();
         public ICollection<FixedExpense> FixedExpenses { get; set; } = new List<FixedExpense>();
@@ -40,12 +40,11 @@ namespace budget_tracker_client.Users
 
         public User() { }
 
-        public User(RegisterUserDto dto)
+        public User(Auth0UserDto dto)
         {
             Name = dto.Name;
             Email = dto.Email;
             Username = dto.Username;
-            Password = BCrypt.Net.BCrypt.HashPassword(dto.Password, 11);
             CreatedAt = DateOnly.FromDateTime(DateTime.UtcNow);
         }
     }

@@ -1,8 +1,8 @@
-export interface UpdateSavingseDto {
+export interface UpdateSavingsDto {
     name: string;
     description: string;
     note?: string;
     amount: number;
     category?: string;
-    userId: number;
+    userId: string;
 }

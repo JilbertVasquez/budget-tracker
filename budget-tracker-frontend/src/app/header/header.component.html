@@ -3,10 +3,10 @@
         <a href="">Home</a>
     </div>
     <div>
-        @if (authService.isLoggedIn()) {
+        @if (auth.user$ | async) {
         <div>
             <button mat-button [matMenuTriggerFor]="me">
-                {{ authService.loggedInUser()?.username }}
+                {{ (auth.user$ | async)?.name }}
                 <mat-icon>arrow_drop_down</mat-icon>
             </button>
 
@@ -18,16 +18,17 @@
                 } @if (isCommissioner || isSuperuser) {
                 <a mat-menu-item routerLink="./commissions">Commissions</a>
                 }
-                <button mat-button class="w-full" (click)="logout()">
+                <button mat-button class="w-full" (click)="auth.logout()">
                     Logout
                 </button>
             </mat-menu>
         </div>
-        } @else {
-        <div class="flex gap-4">
-            <button (click)="login()">Login</button>
-            <button (click)="signup()">Signup</button>
-        </div>
+        }
+
+        @if ((auth.isAuthenticated$ | async) === false) {
+            <div class="flex gap-4">
+                <app-auth-button></app-auth-button>
+            </div>
         }
     </div>
 </mat-toolbar>

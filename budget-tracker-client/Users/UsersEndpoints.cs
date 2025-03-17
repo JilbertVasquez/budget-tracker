@@ -9,6 +9,7 @@ public static class UsersEndpoints
     {
         routeGroupBuilder.MapPost("/login", _loginUserHandler);
         routeGroupBuilder.MapPost("/register", _registerUserHandler);
+        routeGroupBuilder.MapPost("/check-and-save-user", _checkAndSaveUserHandler);
         routeGroupBuilder.MapGet("/{userId}", _getUserHandler);
         routeGroupBuilder.MapGet("", _getUsersHandler);
         routeGroupBuilder.MapPut("{userId}", _updateUserHandler);
@@ -42,6 +43,22 @@ public static class UsersEndpoints
             _ => Results.Problem(new()
             {
                 Title = "Failed to register user.",
+                Detail = result.Error
+            })
+        );
+    }
+
+    private static async Task<IResult> _checkAndSaveUserHandler(
+        [FromBody] Auth0UserDto dto,
+        IUsersServices usersService
+    )
+    {
+        var result = await usersService.CheckAndSaveUser(dto);
+        return result.Match(
+            Results.Ok,
+            _ => Results.Problem(new()
+            {
+                Title = "Failed to save user.",
                 Detail = result.Error
             })
         );

@@ -43,7 +43,9 @@ export class ExpensesListComponent implements OnInit, OnDestroy, AfterViewInit {
     isLoading = false;
     isBusy = false;
     data: ExpenseDetailsDto[] = [];
-    dateRange: DateFilterDto | undefined = undefined;
+    dateRange: DateFilterDto | null = null;
+    isEdit = false;
+
     columns: Column[] = [
         {identifier: 'name', title: 'Name'},
         {identifier: 'description', title: 'Description'},
@@ -62,16 +64,21 @@ export class ExpensesListComponent implements OnInit, OnDestroy, AfterViewInit {
         private datePipe: DatePipe
     ) {}
 
-    async ngOnInit() {}
+    async ngOnInit() {
+        this.dateRange = this._expensesService.dateRange;
+        if (this.dateRange) this._loadData();
+    }
 
     ngOnDestroy() {
         this.data = [];
+        if (!this.isEdit) this._expensesService.dateRange = null;
     }
 
     ngAfterViewInit() {}
 
     onRangeInput(dateFilterDto: DateFilterDto) {
         this.dateRange = dateFilterDto;
+        this._expensesService.dateRange = dateFilterDto;
     }
 
     async search() {
@@ -79,6 +86,7 @@ export class ExpensesListComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     editExpense(data: ExpenseDetailsDto) {
+        this.isEdit = true;
         this._router.navigate(['expenses/expenses-details/', data.expenseId]);
     }
 

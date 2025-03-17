@@ -3,6 +3,8 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using budget_tracker_client.Configuration;
+using budget_tracker_client.Shared;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
@@ -11,7 +13,7 @@ namespace budget_tracker_client.Helpers;
 public interface IAuthGuard
 {
     string EncodeToken(IEnumerable<Claim> claims);
-    int GetUserId();
+    Task<int> GetUserId(DataContext db);
 }
 
 public class AuthGuard : IAuthGuard
@@ -46,9 +48,15 @@ public class AuthGuard : IAuthGuard
         return tokenHandler.WriteToken(token);
     }
 
-    public int GetUserId() {
+    public async Task<int> GetUserId(DataContext db) {
         var userIdClaim = _http.User.FindFirst(ClaimTypes.NameIdentifier);
-        if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out var userId)) throw new("Unable to get user id.");
-        return userId;
+        // if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out var userId)) throw new("Unable to get user id.");
+        if (userIdClaim == null) throw new ("Unable to get user Id.");
+
+        var user = await db.Users.FirstOrDefaultAsync(x => x.Auth0Id == userIdClaim.Value);
+
+        if (user == null) throw new ("Unable to get user Id.");
+
+        return user.UserId;
     }
 }

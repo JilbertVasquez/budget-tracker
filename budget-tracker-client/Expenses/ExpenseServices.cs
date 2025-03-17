@@ -30,8 +30,10 @@ public class ExpenseService(DataContext db, IAuthGuard ag, ILogger<ExpenseServic
             if (string.IsNullOrEmpty(dto.Name)) return "Invalid Name.";
             if (string.IsNullOrEmpty(dto.Description)) return "Invalid Description.";
 
+            var userId = await _ag.GetUserId(_db);
             var expense = new Expense(dto)
             {
+                UserId = userId,
                 CreatedAt = DateOnly.FromDateTime(DateTime.UtcNow)
             };
             _db.Expenses.Add(expense);
@@ -50,7 +52,7 @@ public class ExpenseService(DataContext db, IAuthGuard ag, ILogger<ExpenseServic
     {
         try
         {
-            var userId = _ag.GetUserId();
+            var userId = await _ag.GetUserId(_db);
 
             var expense = await _db.Expenses
                 .Where(x => x.UserId == userId && x.ExpensesId == expenseId && x.IsDeleted == null)
@@ -84,7 +86,7 @@ public class ExpenseService(DataContext db, IAuthGuard ag, ILogger<ExpenseServic
             dateFilterDto.EnsureStartBeforeEnd();
             dateFilterDto.StartDate = dateFilterDto.GetStartOfStartDate();
             dateFilterDto.EndDate = dateFilterDto.GetEndOfEndDate();
-            var userId = _ag.GetUserId();
+            var userId = await _ag.GetUserId(_db);
 
             var expenses = await _db.Expenses
                 .Where(x => 
@@ -121,7 +123,8 @@ public class ExpenseService(DataContext db, IAuthGuard ag, ILogger<ExpenseServic
         try
         {
             var expense = await _db.Expenses.FindAsync(expenseId);
-            if (expense == null || expense.UserId != dto.UserId || expense.IsDeleted != null) return "Failed to update expense.";
+            var userId = await _ag.GetUserId(_db);
+            if (expense == null || expense.UserId != userId || expense.IsDeleted != null) return "Failed to update expense.";
 
             expense.Name = dto.Name;
             expense.Description = dto.Description;
@@ -144,7 +147,7 @@ public class ExpenseService(DataContext db, IAuthGuard ag, ILogger<ExpenseServic
     {
         try
         {
-            var userId = _ag.GetUserId();
+            var userId = await _ag.GetUserId(_db);
 
             var expense = await _db.Expenses.FindAsync(expenseId);
             if (expense == null || expense.UserId != userId || expense.IsDeleted != null) return "Failed to delete expense.";

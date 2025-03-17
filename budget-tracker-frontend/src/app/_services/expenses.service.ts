@@ -6,12 +6,14 @@ import {ExpenseDetailsDto} from '../_dtos/expenses/expenses-details-dto';
 import {ExpensesForListDto} from '../_dtos/expenses/expenses-for-list-dto';
 import {CreateExpenseDto} from '../_dtos/expenses/create-expense-dto';
 import {UpdateExpenseDto} from '../_dtos/expenses/update-expense-dto';
+import { DateFilterDto } from '../_dtos/date/date-filter-dto';
 
 @Injectable({
     providedIn: 'root',
 })
 export class ExpensesService {
     private _baseUrl = environment.apiUrl + '/api/expenses';
+    dateRange: DateFilterDto | null = null;
 
     constructor(private _http: HttpClient) {}
 

@@ -38,7 +38,8 @@ export class FixedExpensesListComponent {
     isLoading = false;
     isBusy = false;
     data: FixedExpenseDetailsDto[] = [];
-    dateRange: DateFilterDto | undefined = undefined;
+    dateRange: DateFilterDto | null = null;
+    isEdit = false;
 
     columns: Column[] = [
         {identifier: 'name', title: 'Name'},
@@ -58,16 +59,21 @@ export class FixedExpensesListComponent {
         private datePipe: DatePipe
     ) {}
 
-    async ngOnInit() {}
+    async ngOnInit() {
+        this.dateRange = this._fixedexpensesService.dateRange;
+        if (this.dateRange) this._loadData();
+    }
 
     ngOnDestroy() {
         this.data = [];
+        if (!this.isEdit) this._fixedexpensesService.dateRange = null;
     }
 
     ngAfterViewInit() {}
 
     onRangeInput(dateFilterDto: DateFilterDto) {
         this.dateRange = dateFilterDto;
+        this._fixedexpensesService.dateRange = dateFilterDto;
     }
 
     async search() {
@@ -75,7 +81,7 @@ export class FixedExpensesListComponent {
     }
 
     editFixedExpense(data: FixedExpenseDetailsDto) {
-        console.log(data);
+        this.isEdit = true;
         this._router.navigate([
             'expenses/fixed-expenses-details/',
             data.fixedExpenseId,

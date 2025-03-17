@@ -28,8 +28,10 @@ public class SavingService(DataContext db, IAuthGuard ag,  ILogger<SavingService
             if (string.IsNullOrEmpty(dto.Name)) return "Invalid Name.";
             if (string.IsNullOrEmpty(dto.Description)) return "Invalid Description.";
 
+            var userId = await _ag.GetUserId(_db);
             var saving = new Saving(dto)
             {
+                UserId = userId,
                 CreatedAt = DateOnly.FromDateTime(DateTime.UtcNow)
             };
             _db.Savings.Add(saving);
@@ -51,10 +53,12 @@ public class SavingService(DataContext db, IAuthGuard ag,  ILogger<SavingService
             if (string.IsNullOrEmpty(dto.Name)) return "Invalid Name.";
             if (string.IsNullOrEmpty(dto.Description)) return "Invalid Description.";
 
+            var userId = await _ag.GetUserId(_db);
             dto = dto with { Amount = dto.Amount > 0 ? dto.Amount * -1 : dto.Amount };
 
             var saving = new Saving(dto)
             {
+                UserId = userId,
                 CreatedAt = DateOnly.FromDateTime(DateTime.UtcNow)
             };
             _db.Savings.Add(saving);
@@ -73,7 +77,7 @@ public class SavingService(DataContext db, IAuthGuard ag,  ILogger<SavingService
     {
         try
         {
-            var userId = _ag.GetUserId();
+            var userId = await _ag.GetUserId(_db);
 
             var saving = await _db.Savings
                 .Where(x => x.UserId == userId && x.SavingId == savingId && x.IsDeleted == null)
@@ -104,7 +108,7 @@ public class SavingService(DataContext db, IAuthGuard ag,  ILogger<SavingService
     {
         try
         {
-            var userId = _ag.GetUserId();
+            var userId = await _ag.GetUserId(_db);
 
             var savings = await _db.Savings
                 .Where(x => x.UserId == userId && x.IsDeleted == null)
@@ -160,7 +164,7 @@ public class SavingService(DataContext db, IAuthGuard ag,  ILogger<SavingService
     {
         try
         {
-            var userId = _ag.GetUserId();
+            var userId = await _ag.GetUserId(_db);
 
             var saving = await _db.Savings.FindAsync(savingId);
 

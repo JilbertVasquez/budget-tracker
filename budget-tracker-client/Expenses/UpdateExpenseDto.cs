@@ -8,7 +8,6 @@ public record UpdateExpenseDto
     string Description,
     string? Note,
     double Amount,
-    string? Category,
+    string? Category
     // int PeriodId,
-    int UserId
 );

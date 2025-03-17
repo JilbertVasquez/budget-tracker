@@ -41,8 +41,6 @@ namespace budget_tracker_client.Commissions
             Note = dto.Note;
             Amount = dto.Amount;
             Category = dto.Category;
-            UserId = dto.UserId;
-            CreatedAt = DateOnly.FromDateTime(DateTime.UtcNow);
         }
     }
 }

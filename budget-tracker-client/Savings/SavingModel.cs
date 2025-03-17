@@ -46,7 +46,6 @@ namespace budget_tracker_client.Savings
             Amount = dto.Amount;
             Category = dto.Category;
             // PeriodId = dto.PeriodId;
-            UserId = dto.UserId;
             CreatedAt = DateOnly.FromDateTime(DateTime.UtcNow);
         }
     }

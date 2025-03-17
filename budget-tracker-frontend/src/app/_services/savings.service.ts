@@ -5,13 +5,15 @@ import {lastValueFrom} from 'rxjs';
 import {SavingsForListDto} from '../_dtos/savings/savings-for-list-dto';
 import {CreateSavingsDto} from '../_dtos/savings/create-savings-dto';
 import {SavingsDetailsDto} from '../_dtos/savings/savings-details-dto';
-import {UpdateSavingseDto} from '../_dtos/savings/update-savings-dto';
+import {UpdateSavingsDto} from '../_dtos/savings/update-savings-dto';
+import { DateFilterDto } from '../_dtos/date/date-filter-dto';
 
 @Injectable({
     providedIn: 'root',
 })
 export class SavingsService {
     private _baseUrl = environment.apiUrl + '/api/savings';
+    dateRange: DateFilterDto | null = null;
 
     constructor(private _http: HttpClient) {}
 
@@ -41,7 +43,7 @@ export class SavingsService {
         );
     }
 
-    updateSavings(fixedExpenseId: number, updateSavings: UpdateSavingseDto) {
+    updateSavings(fixedExpenseId: number, updateSavings: UpdateSavingsDto) {
         return lastValueFrom(
             this._http.put(`${this._baseUrl}/${fixedExpenseId}`, updateSavings)
         );

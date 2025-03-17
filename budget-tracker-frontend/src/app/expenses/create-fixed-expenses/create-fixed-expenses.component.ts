@@ -10,7 +10,7 @@ import {
     Validators,
 } from '@angular/forms';
 import {MatInputModule} from '@angular/material/input';
-import {AuthService} from '../../_services/auth.service';
+import {appAuthService} from '../../_services/app-auth.service';
 import {FixedExpensesService} from '../../_services/fixed-expenses.service';
 import {DialogService} from '../../_services/dialog.service';
 import {ErrorService} from '../../_services/error.service';
@@ -37,7 +37,7 @@ export class CreateFixedExpensesComponent {
     withCategory = false;
 
     constructor(
-        private _authService: AuthService,
+        private _appAuthService: appAuthService,
         private _fixedExpensesService: FixedExpensesService,
         private _dialogService: DialogService,
         private _errorService: ErrorService,
@@ -67,7 +67,7 @@ export class CreateFixedExpensesComponent {
     }
 
     async submit() {
-        const user = this._authService.loggedInUser();
+        const user = this._appAuthService.loggedInUser();
 
         if (!this.createForm.valid)
             return this._dialogService.error('Invalid form.');
@@ -79,7 +79,7 @@ export class CreateFixedExpensesComponent {
         const amount = this.createForm.value.amount;
         const category = this.createForm.value.category;
 
-        const userId = user!.userid;
+        const userId = user!.userId;
 
         const createFixedExpense: CreateFixedExpenseDto = {
             name: name,

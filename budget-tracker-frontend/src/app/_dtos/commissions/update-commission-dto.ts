@@ -4,5 +4,5 @@ export interface UpdateCommissionDto {
     note?: string;
     amount: number;
     category?: string;
-    userId: number;
+    userId: string;
 }

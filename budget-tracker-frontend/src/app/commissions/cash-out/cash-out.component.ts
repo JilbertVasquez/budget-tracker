@@ -10,7 +10,7 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatCardModule} from '@angular/material/card';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
-import {AuthService} from '../../_services/auth.service';
+import {appAuthService} from '../../_services/app-auth.service';
 import {CommissionService} from '../../_services/commission.service';
 import {DialogService} from '../../_services/dialog.service';
 import {ErrorService} from '../../_services/error.service';
@@ -37,7 +37,7 @@ export class CashOutComponent {
     withCategory = false;
 
     constructor(
-        private _authService: AuthService,
+        private _appAuthService: appAuthService,
         private _commissionService: CommissionService,
         private _dialogService: DialogService,
         private _errorService: ErrorService,
@@ -67,7 +67,7 @@ export class CashOutComponent {
     }
 
     async submit() {
-        const user = this._authService.loggedInUser();
+        const user = this._appAuthService.loggedInUser();
 
         if (!this.createForm.valid)
             return this._dialogService.error('Invalid form.');
@@ -79,7 +79,7 @@ export class CashOutComponent {
         const amount = this.createForm.value.amount;
         const category = this.createForm.value.category;
 
-        const userId = user!.userid;
+        const userId = user!.userId;
 
         const createCashOutCommission: CreateCashOutCommissionDto = {
             name: name,

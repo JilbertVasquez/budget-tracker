@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {AuthService} from '../_services/auth.service';
+import {appAuthService} from '../_services/app-auth.service';
 import {
     FormControl,
     FormGroup,
@@ -35,7 +35,7 @@ export class LoginComponent {
     isBusy = false;
 
     constructor(
-        private _authService: AuthService,
+        private _appAuthService: appAuthService,
         private _router: Router,
         private _errorService: ErrorService
     ) {
@@ -64,10 +64,10 @@ export class LoginComponent {
             };
 
             try {
-                const response: any = await this._authService.login(user);
-                localStorage.setItem('Budget-Tracker-Token', response);
-                this._authService.getUser();
-                this._authService.isLoggedIn.set(true);
+                // const response: any = await this._appAuthService.login(user);
+                // localStorage.setItem('Budget-Tracker-Token', response);
+                // this._appAuthService.getUser();
+                // this._appAuthService.isLoggedIn.set(true);
                 this._router.navigate(['/']);
             } catch (error: any) {
                 this._errorService.handle(error);

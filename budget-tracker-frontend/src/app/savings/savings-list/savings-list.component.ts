@@ -38,7 +38,8 @@ export class SavingsListComponent {
     isLoading = false;
     isBusy = false;
     data: SavingsDetailsDto[] = [];
-    dateRange: DateFilterDto | undefined = undefined;
+    dateRange: DateFilterDto | null = null;
+    isEdit = false;
 
     columns: Column[] = [
         {identifier: 'name', title: 'Name'},
@@ -58,16 +59,21 @@ export class SavingsListComponent {
         private datePipe: DatePipe
     ) {}
 
-    async ngOnInit() {}
+    async ngOnInit() {
+        this.dateRange = this._savingsService.dateRange;
+        if (this.dateRange) this._loadData();
+    }
 
     ngOnDestroy() {
         this.data = [];
+        if (!this.isEdit) this._savingsService.dateRange = null;
     }
 
     ngAfterViewInit() {}
 
     onRangeInput(dateFilterDto: DateFilterDto) {
         this.dateRange = dateFilterDto;
+        this._savingsService.dateRange = dateFilterDto;
     }
 
     async search() {
@@ -75,7 +81,7 @@ export class SavingsListComponent {
     }
 
     editSavings(data: SavingsDetailsDto) {
-        console.log(data);
+        this.isEdit = true;
         this._router.navigate(['savings/savings-details/', data.savingId]);
     }
 

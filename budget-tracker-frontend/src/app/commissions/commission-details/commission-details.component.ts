@@ -11,7 +11,7 @@ import {MatCardModule} from '@angular/material/card';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {CommissionDetailsDto} from '../../_dtos/commissions/commission-details-dto';
-import {AuthService} from '../../_services/auth.service';
+import {appAuthService} from '../../_services/app-auth.service';
 import {CommissionService} from '../../_services/commission.service';
 import {DialogService} from '../../_services/dialog.service';
 import {ErrorService} from '../../_services/error.service';
@@ -39,7 +39,7 @@ export class CommissionDetailsComponent {
     commissionDetails: CommissionDetailsDto | null = null;
 
     constructor(
-        private _authService: AuthService,
+        private _appAuthService: appAuthService,
         private _commissionService: CommissionService,
         private _dialogService: DialogService,
         private _errorService: ErrorService,
@@ -87,7 +87,7 @@ export class CommissionDetailsComponent {
     }
 
     async submit() {
-        const user = this._authService.loggedInUser();
+        const user = this._appAuthService.loggedInUser();
 
         if (!this.editForm.valid)
             return this._dialogService.error('Invalid form.');
@@ -99,7 +99,7 @@ export class CommissionDetailsComponent {
         const amount = this.editForm.value.amount;
         const category = this.editForm.value.category;
 
-        const userId = user!.userid;
+        const userId = user!.userId;
 
         const updateExpense: UpdateCommissionDto = {
             name: name,

@@ -47,7 +47,7 @@ public class BudgetService(DataContext db, IAuthGuard ag, ILogger<BudgetService>
     {
         try
         {
-            var userId = _ag.GetUserId();
+            var userId = await _ag.GetUserId(_db);
 
             var budget = await _db.Budgets
                 .Where(x => x.UserId == userId && x.BudgetId == budgetId && x.IsDeleted == null)
@@ -77,7 +77,7 @@ public class BudgetService(DataContext db, IAuthGuard ag, ILogger<BudgetService>
     {
         try
         {
-            var userId = _ag.GetUserId();
+            var userId = await _ag.GetUserId(_db);
 
             var budget = await _db.Budgets
                 .Where(x => x.UserId == userId && x.IsDeleted == null)
@@ -133,7 +133,7 @@ public class BudgetService(DataContext db, IAuthGuard ag, ILogger<BudgetService>
     {
         try
         {
-            var userId = _ag.GetUserId();
+            var userId = await _ag.GetUserId(_db);
 
             var budget = await _db.Budgets.FindAsync(budgetId);
             if (budget == null || budget.UserId != userId || budget.IsDeleted != null) return "Failed to delete budget.";

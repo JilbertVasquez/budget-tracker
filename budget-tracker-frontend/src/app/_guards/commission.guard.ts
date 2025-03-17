@@ -1,14 +1,16 @@
 import { CanActivateFn } from '@angular/router';
-import { AuthService } from '../_services/auth.service';
+import { appAuthService } from '../_services/app-auth.service';
 import { DialogService } from '../_services/dialog.service';
 import { UserRole } from '../_enums/user-role';
 import { inject } from '@angular/core';
 
-export const commissionGuard: CanActivateFn = () => {
-    const authService = inject(AuthService);
+export const commissionGuard: CanActivateFn = (route) => {
+    const authService = inject(appAuthService);
     const dialogService = inject(DialogService);
 
-    if (!authService.hasPermission(UserRole.Commissioner)) {
+    const permissions = route.data['permissions'] as string[];
+
+    if (!authService.hasPermission(permissions)) {
         dialogService.message("You don't have enough permission.");
         return false;
     }

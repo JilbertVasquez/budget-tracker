@@ -1,6 +1,7 @@
 using budget_tracker_client.Budgets;
 using budget_tracker_client.Commissions;
 using budget_tracker_client.Configuration;
+using budget_tracker_client.Configuration.AuthorizationPolicy;
 using budget_tracker_client.Expenses;
 using budget_tracker_client.FixedExpenses;
 // using budget_tracker_client.Periods;
@@ -45,10 +46,10 @@ app.UseAuthorization();
 app.MapCustomFallbackToFile();
 app.MapGroup("api/users").MapUsersEndpoints();
 // app.MapGroup("api/periods").RequireAuthorization().MapPeriodsEndpoints();
-app.MapGroup("api/expenses").RequireAuthorization().MapExpenseEndpoints();
-app.MapGroup("api/fixedExpenses").RequireAuthorization().MapFixedExpenseEndpoints();
-app.MapGroup("api/budgets").RequireAuthorization().MapBudgetEndpoints();
-app.MapGroup("api/savings").RequireAuthorization().MapSavingEndpoints();
-app.MapGroup("api/commissions").RequireAuthorization().MapCommissionEndpoints();
+app.MapGroup("api/expenses").RequireAuthorization(policyNames: nameof(IsExpenseTracker)).MapExpenseEndpoints();
+app.MapGroup("api/fixedExpenses").RequireAuthorization(policyNames: nameof(IsExpenseTracker)).MapFixedExpenseEndpoints();
+// app.MapGroup("api/budgets").RequireAuthorization().MapBudgetEndpoints();
+app.MapGroup("api/savings").RequireAuthorization(policyNames: nameof(IsSaver)).MapSavingEndpoints();
+app.MapGroup("api/commissions").RequireAuthorization(policyNames: nameof(IsCommissioner)).MapCommissionEndpoints();
 
 app.Run();
