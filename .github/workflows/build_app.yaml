@@ -1,10 +1,14 @@
-name: Build Budget Tracker App
+name: Build And Push Budget Tracker App
 
 on:
   release:
     type: [published]
   push:
     branches: [ "main" ]
+
+  env:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
 jobs:
   build-frontend:
@@ -41,3 +45,21 @@ jobs:
           else
             echo "Building production version"
           fi
+      - name: Extract release version
+        id: extract_version
+        run: |
+          TAG_NAME=${GITHUB_REF##*/}
+          echo "RELEASE_VERSION=$TAG_NAME" >> $GITHUB_ENV
+
+      - name: Log in to Docker Hub
+        run: echo "${DOCKERHUB_TOKEN}" | docker login -u "${DOCKERHUB_USERNAME}" --password-stdin
+
+      - name: Build and tag Docker image
+        run: |
+          docker build -t $DOCKERHUB_USERNAME/budget-tracker:$RELEASE_VERSION .
+          docker tag $DOCKERHUB_USERNAME/budget-tracker:$RELEASE_VERSION $DOCKERHUB_USERNAME/budget-tracker:latest
+
+      - name: Push Docker image to Docker Hub
+        run: |
+          docker push $DOCKERHUB_USERNAME/budget-tracker:$RELEASE_VERSION
+          docker push $DOCKERHUB_USERNAME/budget-tracker:latest
