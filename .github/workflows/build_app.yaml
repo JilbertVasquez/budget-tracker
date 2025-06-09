@@ -61,7 +61,7 @@ jobs:
 
       - name: Build and tag Docker image
         run: |
-          docker build -t $DOCKERHUB_USERNAME/budget-tracker:$RELEASE_VERSION .
+          docker build -t $DOCKERHUB_USERNAME/budget-tracker:$RELEASE_VERSION ./budget-tracker-client
           docker tag $DOCKERHUB_USERNAME/budget-tracker:$RELEASE_VERSION $DOCKERHUB_USERNAME/budget-tracker:latest
 
       - name: Push Docker image to Docker Hub
