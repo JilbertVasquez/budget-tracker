@@ -45,11 +45,15 @@ jobs:
         working-directory: ./budget-tracker-frontend
         run: |
           pnpm install --no-frozen-lockfile
-          if [ ${{ env.CONFIGURATION }} == "development" ]; then
+
+          if [ "$CONFIGURATION" = "development" ]; then
             echo "Building development version"
+            pnpm ng build --configuration development
           else
             echo "Building production version"
+            pnpm ng build --configuration production
           fi
+
       - name: Extract release version
         id: extract_version
         run: |
