@@ -61,10 +61,19 @@ jobs:
 
       - name: Build and tag Docker image
         run: |
-          docker build -t $DOCKERHUB_USERNAME/budget-tracker:$RELEASE_VERSION ./budget-tracker-client
-          docker tag $DOCKERHUB_USERNAME/budget-tracker:$RELEASE_VERSION $DOCKERHUB_USERNAME/budget-tracker:latest
+          if [[ "${{ github.event_name }}" == "release" ]]; then
+            TAG_NAME=${GITHUB_REF##*/}
+            echo "RELEASE_VERSION=$TAG_NAME" >> $GITHUB_ENV
+            docker build -t $DOCKERHUB_USERNAME/budget-tracker:$TAG_NAME -t $DOCKERHUB_USERNAME/budget-tracker:latest -f ./budget-tracker-client/Dockerfile .
+          else
+            docker build -t $DOCKERHUB_USERNAME/budget-tracker:development -f ./budget-tracker-client/Dockerfile .
+          fi
 
       - name: Push Docker image to Docker Hub
         run: |
-          docker push $DOCKERHUB_USERNAME/budget-tracker:$RELEASE_VERSION
-          docker push $DOCKERHUB_USERNAME/budget-tracker:latest
+          if [[ "${{ github.event_name }}" == "release" ]]; then
+            docker push $DOCKERHUB_USERNAME/budget-tracker:$RELEASE_VERSION
+            docker push $DOCKERHUB_USERNAME/budget-tracker:latest
+          else
+            docker push $DOCKERHUB_USERNAME/budget-tracker:development
+          fi
