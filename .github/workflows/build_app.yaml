@@ -1,39 +1,40 @@
-name: Build And Push Budget Tracker App
+name: Build and Push Budget Tracker App
 
 on:
   release:
-    type: [published]
+    types: [published]
   push:
-    branches: [ "main" ]
+    branches: [main]
 
 env:
-    DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-    DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+  DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+  DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
 jobs:
-  build-frontend:
+  build-and-push:
     runs-on: ubuntu-latest
     strategy:
       matrix:
         node-version: [20.x]
 
     steps:
-      - uses: actions/checkout@v4
-        name: Checkout
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-      - uses: pnpm/action-setup@v4
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v4
         with:
           version: latest
           package_json_file: ./budget-tracker-frontend/package.json
 
-      - name: Setup node ${{ matrix.node-version }}
+      - name: Setup Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
           cache: pnpm
           cache-dependency-path: ./budget-tracker-frontend/package-lock.json
 
-      - name: Set environment config
+      - name: Set Build Environment Configuration
         run: |
           if [[ "${{ github.event_name }}" == "release" ]]; then
             echo "CONFIGURATION=production" >> $GITHUB_ENV
@@ -41,39 +42,37 @@ jobs:
             echo "CONFIGURATION=development" >> $GITHUB_ENV
           fi
 
-      - name: Build SPA frontend
+      - name: Build SPA Frontend
         working-directory: ./budget-tracker-frontend
         run: |
           pnpm install --no-frozen-lockfile
+          echo "Building $CONFIGURATION version"
+          pnpm ng build --configuration $CONFIGURATION
 
-          if [ "$CONFIGURATION" = "development" ]; then
-            echo "Building development version"
-            pnpm ng build --configuration development
-          else
-            echo "Building production version"
-            pnpm ng build --configuration production
-          fi
-
-      - name: Extract release version
+      - name: Extract Release Version
         id: extract_version
-        run: |
-          TAG_NAME=${GITHUB_REF##*/}
-          echo "RELEASE_VERSION=$TAG_NAME" >> $GITHUB_ENV
+        if: github.event_name == 'release'
+        run: echo "RELEASE_VERSION=${GITHUB_REF##*/}" >> $GITHUB_ENV
 
       - name: Log in to Docker Hub
         run: echo "${DOCKERHUB_TOKEN}" | docker login -u "${DOCKERHUB_USERNAME}" --password-stdin
 
-      - name: Build and tag Docker image
+      - name: Build and Tag Docker Image
         run: |
           if [[ "${{ github.event_name }}" == "release" ]]; then
             TAG_NAME=${GITHUB_REF##*/}
-            echo "RELEASE_VERSION=$TAG_NAME" >> $GITHUB_ENV
-            docker build -t $DOCKERHUB_USERNAME/budget-tracker:$TAG_NAME -t $DOCKERHUB_USERNAME/budget-tracker:latest -f ./budget-tracker-client/Dockerfile .
+            docker build \
+              -t $DOCKERHUB_USERNAME/budget-tracker:$TAG_NAME \
+              -t $DOCKERHUB_USERNAME/budget-tracker:latest \
+              -f ./budget-tracker-client/Dockerfile .
           else
-            docker build -t $DOCKERHUB_USERNAME/budget-tracker:development -f ./budget-tracker-client/Dockerfile .
+            docker build \
+              -t $DOCKERHUB_USERNAME/budget-tracker:development \
+              -f ./budget-tracker-client/Dockerfile .
           fi
 
-      - name: Push Docker image to Docker Hub
+      # Push Docker image
+      - name: Push Docker Image to Docker Hub
         run: |
           if [[ "${{ github.event_name }}" == "release" ]]; then
             docker push $DOCKERHUB_USERNAME/budget-tracker:$RELEASE_VERSION
