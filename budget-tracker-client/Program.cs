@@ -38,11 +38,6 @@ app.UseStaticFiles(new StaticFileOptions
     FileProvider = new PhysicalFileProvider(Path.Combine(app.Environment.WebRootPath, "browser"))
 });
 
-if (!app.Environment.IsProduction())
-{
-    app.UseHttpsRedirection();
-}
-
 app.UseAuthentication();
 app.UseAuthorization();
 
