@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 env:
-  ACR_REGISTRY: budgettracker.azurecr.io
+  ACR_REGISTRY: jlbrtvsqz.azurecr.io
   IMAGE_NAME: budgettracker
 
 jobs:
@@ -64,7 +64,7 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Docker Login to ACR
-        run: az acr login --name budgettracker
+        run: az acr login --name jlbrtvsqz
 
       - name: Build and Push Docker Image to ACR
         run: |
