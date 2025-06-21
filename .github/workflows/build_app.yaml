@@ -7,8 +7,8 @@ on:
     branches: [main]
 
 env:
-  DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-  DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+  ACR_REGISTRY: budgettracker.azurecr.io
+  IMAGE_NAME: budgettracker
 
 jobs:
   build-and-push:
@@ -40,6 +40,7 @@ jobs:
             echo "CONFIGURATION=production" >> $GITHUB_ENV
           else
             echo "CONFIGURATION=development" >> $GITHUB_ENV
+            echo "TAG=development" >> $GITHUB_ENV
           fi
 
       - name: Build SPA Frontend
@@ -54,29 +55,20 @@ jobs:
         if: github.event_name == 'release'
         run: echo "RELEASE_VERSION=${GITHUB_REF##*/}" >> $GITHUB_ENV
 
-      - name: Log in to Docker Hub
-        run: echo "${DOCKERHUB_TOKEN}" | docker login -u "${DOCKERHUB_USERNAME}" --password-stdin
+      - name: Azure Login (ACR)
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.ACR_REGISTRY }}
+          username: ${{ secrets.AZURE_CLIENT_ID }}
+          password: ${{ secrets.AZURE_CLIENT_SECRET }}
 
-      - name: Build and Tag Docker Image
+      - name: Build and Push Docker Image to ACR
         run: |
-          if [[ "${{ github.event_name }}" == "release" ]]; then
-            TAG_NAME=${GITHUB_REF##*/}
-            docker build \
-              -t $DOCKERHUB_USERNAME/budget-tracker:$TAG_NAME \
-              -t $DOCKERHUB_USERNAME/budget-tracker:latest \
-              -f ./budget-tracker-client/Dockerfile .
-          else
-            docker build \
-              -t $DOCKERHUB_USERNAME/budget-tracker:development \
-              -f ./budget-tracker-client/Dockerfile .
-          fi
+          docker build -t $IMAGE_NAME:$TAG -f ./budget-tracker-client/Dockerfile .
+          docker tag $IMAGE_NAME:$TAG $ACR_REGISTRY/$IMAGE_NAME:$TAG
+          docker push $ACR_REGISTRY/$IMAGE_NAME:$TAG
 
-      # Push Docker image
-      - name: Push Docker Image to Docker Hub
-        run: |
-          if [[ "${{ github.event_name }}" == "release" ]]; then
-            docker push $DOCKERHUB_USERNAME/budget-tracker:$RELEASE_VERSION
-            docker push $DOCKERHUB_USERNAME/budget-tracker:latest
-          else
-            docker push $DOCKERHUB_USERNAME/budget-tracker:development
+          if [[ "$TAG" != "development" ]]; then
+            docker tag $IMAGE_NAME:$TAG $ACR_REGISTRY/$IMAGE_NAME:latest
+            docker push $ACR_REGISTRY/$IMAGE_NAME:latest
           fi
