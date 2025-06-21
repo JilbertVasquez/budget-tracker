@@ -56,11 +56,12 @@ jobs:
         run: echo "RELEASE_VERSION=${GITHUB_REF##*/}" >> $GITHUB_ENV
 
       - name: Azure Login (ACR)
-        uses: docker/login-action@v3
+        uses: azure/login@v2
         with:
-          registry: ${{ env.ACR_REGISTRY }}
-          username: ${{ secrets.AZURE_CLIENT_ID }}
-          password: ${{ secrets.AZURE_CLIENT_SECRET }}
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Docker Login to ACR
+        run: az acr login --name budgettracker
 
       - name: Build and Push Docker Image to ACR
         run: |
