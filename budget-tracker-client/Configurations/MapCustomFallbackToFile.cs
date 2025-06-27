@@ -10,7 +10,7 @@ public static class FallbackConfigurator
         app.Use(async (context, next) => {
             if (!context.Request.Path.StartsWithSegments("/api"))
             {
-                var fileInfo = new PhysicalFileInfo(new(Path.Combine(app.Environment.WebRootPath, "browser", "index.html")));
+                var fileInfo = new PhysicalFileInfo(new(Path.Combine(app.Environment.WebRootPath, "index.html")));
                 await context.Response.SendFileAsync(fileInfo);
                 return;
             }
