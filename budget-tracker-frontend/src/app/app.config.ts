@@ -43,7 +43,9 @@ export const appConfig: ApplicationConfig = {
                             }
                         }
                     }]
-                }
+                },
+                useRefreshTokens: true,
+                cacheLocation: 'localstorage'
             })
         ),
         provideZoneChangeDetection({eventCoalescing: true}),
